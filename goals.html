@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Goals · PFT</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="brand">PFT</div>
+        <nav class="nav">
+          <a href="dashboard.html">🏠 Dashboard</a>
+          <a href="expenses.html">💸 Expenses</a>
+          <a href="transactions.html">📄 Transactions</a>
+          <a href="goals.html" class="active">🎯 Goals</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <h1>Goals</h1>
+
+        <!-- Create goal -->
+        <div class="card">
+          <div class="toolbar">
+            <input
+              id="goalName"
+              class="input"
+              placeholder="Goal name (e.g., New Laptop)"
+            />
+            <input
+              id="goalTarget"
+              class="input"
+              type="number"
+              min="1"
+              placeholder="Target amount (¥)"
+            />
+            <button id="addGoal" class="btn">Add Goal</button>
+          </div>
+        </div>
+
+        <!-- Goals list -->
+        <div id="goalsList" class="list"></div>
+      </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/goals.js"></script>
+  </body>
+</html>

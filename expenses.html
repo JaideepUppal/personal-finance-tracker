@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Expenses · PFT</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="brand">PFT</div>
+        <nav class="nav">
+          <a href="dashboard.html">🏠 Dashboard</a>
+          <a href="expenses.html" class="active">💸 Expenses</a>
+          <a href="transactions.html">📄 Transactions</a>
+          <a href="goals.html">🎯 Goals</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <h1>Expenses</h1>
+
+        <!-- Monthly budget setter -->
+        <div class="card">
+          <p style="margin: 0 0 10px"><strong>Monthly Budget</strong></p>
+          <div class="toolbar">
+            <input
+              id="budgetInput"
+              class="input"
+              type="number"
+              min="0"
+              placeholder="Set your monthly budget (¥)"
+            />
+            <button id="saveBudgetBtn" class="btn">Save Budget</button>
+            <span id="budgetHint" class="badge"></span>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card">
+          <p style="margin: 0 0 10px"><strong>Filters</strong></p>
+          <div class="toolbar">
+            <input
+              id="search"
+              class="input"
+              placeholder="Search description or method..."
+            />
+            <select id="cat" class="select">
+              <option value="all">All categories</option>
+              <option>food</option>
+              <option>rent</option>
+              <option>travel</option>
+              <option>shopping</option>
+              <option>utilities</option>
+              <option>entertainment</option>
+              <option>health</option>
+              <option>education</option>
+              <option>other</option>
+            </select>
+            <button id="reset" class="btn ghost">Reset</button>
+          </div>
+        </div>
+
+        <!-- List of expenses + Add -->
+        <div class="card">
+          <p style="margin: 0 0 10px"><strong>Recent Expenses</strong></p>
+          <div id="list" class="list"></div>
+          <div class="right" style="margin-top: 10px">
+            <button id="addBtn" class="btn">+ Add Expense</button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Simple modal for Add/Edit -->
+    <div id="backdrop" class="backdrop"></div>
+    <div id="modal" class="modal">
+      <div class="modal-panel">
+        <div class="modal-head">
+          <strong id="modalTitle">Add Expense</strong>
+          <button id="close" class="btn ghost">✕</button>
+        </div>
+        <div class="modal-body">
+          <form id="form">
+            <input type="hidden" id="eid" />
+            <div class="field">
+              <label>Description</label>
+              <input
+                id="desc"
+                class="input"
+                required
+                placeholder="e.g., Groceries"
+              />
+            </div>
+            <div class="field">
+              <label>Amount (¥)</label>
+              <input id="amt" class="input" type="number" min="1" required />
+            </div>
+            <div class="field">
+              <label>Category</label>
+              <select id="catIn" class="select" required>
+                <option>food</option>
+                <option>rent</option>
+                <option>travel</option>
+                <option>shopping</option>
+                <option>utilities</option>
+                <option>entertainment</option>
+                <option>health</option>
+                <option>education</option>
+                <option>other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Date</label>
+              <input id="dateIn" class="input" type="date" required />
+            </div>
+            <div class="field">
+              <label>Method</label>
+              <input
+                id="method"
+                class="input"
+                placeholder="e.g., Suica, Cash, Card"
+              />
+            </div>
+            <div class="right">
+              <button type="submit" class="btn">Save</button>
+              <button type="button" id="cancel" class="btn ghost">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/expenses.js"></script>
+  </body>
+</html>

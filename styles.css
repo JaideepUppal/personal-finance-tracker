@@ -1,0 +1,180 @@
+/* styles.css
+   Simple, beginner-friendly styles shared by all pages.
+   Feel free to tweak colors and spacing.
+*/
+
+:root {
+  --bg: #101418;
+  --panel: #151b22;
+  --text: #e9eef5;
+  --muted: #98a3b3;
+  --accent: #48b0f7;
+  --border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, Arial, sans-serif;
+}
+
+/* Layout: sidebar + main content */
+.container {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  min-height: 100vh;
+}
+
+/* Sidebar with simple nav */
+.sidebar {
+  background: #0f141a;
+  border-right: 1px solid var(--border);
+  padding: 16px;
+}
+.brand {
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.nav a {
+  display: block;
+  padding: 10px 12px;
+  margin: 6px 0;
+  color: #d5deea;
+  text-decoration: none;
+  border-radius: 8px;
+}
+.nav a.active,
+.nav a:hover {
+  background: #192230;
+}
+
+/* Main content area */
+.main {
+  padding: 18px;
+}
+h1 {
+  margin: 8px 0 14px;
+}
+
+/* Simple card */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+/* Inputs and buttons */
+.input,
+.select {
+  background: #0e131a;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.btn {
+  background: var(--accent);
+  border: none;
+  color: #072131;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn.ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+/* Small toolbar row */
+.toolbar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* List items (for expenses) */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0f141b;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.badge {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Modal (for add/edit expense) */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: none;
+}
+.modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.modal-panel {
+  width: min(520px, 92vw);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-body {
+  padding: 12px;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+/* Simple table (transactions) */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th,
+td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+tr:hover {
+  background: #0f1420;
+}
+.right {
+  text-align: right;
+}

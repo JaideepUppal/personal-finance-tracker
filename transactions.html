@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Transactions · PFT</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <aside class="sidebar">
+        <div class="brand">PFT</div>
+        <nav class="nav">
+          <a href="dashboard.html">🏠 Dashboard</a>
+          <a href="expenses.html">💸 Expenses</a>
+          <a href="transactions.html" class="active">📄 Transactions</a>
+          <a href="goals.html">🎯 Goals</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <h1>Transactions</h1>
+
+        <div class="card">
+          <div class="toolbar">
+            <input id="q" class="input" placeholder="Search..." />
+            <select id="cat" class="select">
+              <option value="all">All categories</option>
+              <option>food</option>
+              <option>rent</option>
+              <option>travel</option>
+              <option>shopping</option>
+              <option>utilities</option>
+              <option>entertainment</option>
+              <option>health</option>
+              <option>education</option>
+              <option>other</option>
+            </select>
+            <button id="exportBtn" class="btn">Export CSV</button>
+          </div>
+
+          <div class="card" style="padding: 0; overflow: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Method</th>
+                  <th class="right">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/transactions.js"></script>
+  </body>
+</html>

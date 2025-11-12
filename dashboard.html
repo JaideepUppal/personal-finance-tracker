@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dashboard · PFT</title>
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar navigation -->
+      <aside class="sidebar">
+        <div class="brand">PFT</div>
+        <nav class="nav">
+          <a href="dashboard.html" class="active">🏠 Dashboard</a>
+          <a href="expenses.html">💸 Expenses</a>
+          <a href="transactions.html">📄 Transactions</a>
+          <a href="goals.html">🎯 Goals</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <h1>Dashboard</h1>
+
+        <div class="card">
+          <p><strong>This month total:</strong> <span id="kTotal">¥0</span></p>
+          <p>
+            <strong>Average per day (this month):</strong>
+            <span id="kAvg">¥0</span>
+          </p>
+          <p>
+            <strong>Top category (this month):</strong> <span id="kTop">—</span>
+          </p>
+          <p>
+            <strong>Budget remaining:</strong> <span id="kRemain">¥0</span>
+            <span class="badge" id="kBudgetNote"></span>
+          </p>
+        </div>
+
+        <div class="card">
+          <p>
+            This app is beginner-friendly: all data is saved in your browser
+            (localStorage). Try adding expenses on the “Expenses” page, then
+            check back here.
+          </p>
+        </div>
+      </main>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>
