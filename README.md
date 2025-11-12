@@ -57,8 +57,11 @@ personal-expense-tracker/
    ```bash
    git clone https://github.com/<your-username>/personal-expense-tracker.git
    ```
-2. Open the folder in VS Code or your file explorer.
-3. Launch any of the HTML files directly (e.g., dashboard.html) or use Live Server in VS Code for a smoother experience.
+2. Inside the project folder, manually create two subfolders:
+   a. css
+   b. js
+4. Open the folder in VS Code or your file explorer.
+5. Launch any of the HTML files directly (e.g., dashboard.html) or use Live Server in VS Code for a smoother experience.
 
 ## 🧠 Learning Goals
 
