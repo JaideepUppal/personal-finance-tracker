@@ -32,6 +32,7 @@ It demonstrates my current understanding of **frontend development fundamentals*
 
 ## 📁 Folder Structure
 
+```
 personal-expense-tracker/
 │
 ├── css/
@@ -48,7 +49,7 @@ personal-expense-tracker/
 ├── expenses.html
 ├── transactions.html
 └── goals.html
-
+```
 ---
 
 ## 🚀 How to Run Locally
