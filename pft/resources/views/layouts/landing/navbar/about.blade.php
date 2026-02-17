@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PFT – About us</title>
+    <title>PFT – About</title>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
@@ -15,7 +15,8 @@
           <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
           <a class="nav-link" href="{{ route('pricing') }}">Pricing</a>
-          <a class="nav-link" href="{{ route('about') }}">About us</a>
+          <a class="nav-link" href="{{ route('about') }}">About</a>
+          <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
@@ -26,9 +27,9 @@
 
     <main class="page about">
       <section class="fun-hero card">
-        <h1 class="page-title">We’re students building PFT between classes ☕📚</h1>
+        <h1 class="page-title">I am building PFT between classes</h1>
         <p class="page-subtitle">
-          Budgeting apps felt either boring or complicated. So we’re making one that’s <em>actually</em> nice to use: clean, fast, and built around real campus life.
+          Many budgeting apps felt either rigid or overly complex. I am building PFT to be clean, fast, and practical for real student finances.
         </p>
         <div class="sticker-row">
           <span class="pill">No spreadsheets</span>
@@ -41,31 +42,32 @@
         <article class="card">
           <h3 class="card-title">The spark</h3>
           <p class="card-text">
-            PFT began as a simple class project. When we realized how challenging it could be to manage student finances, we decided to build a tool to make budgeting easier. What started as a classroom project has now grown into a real app designed for students, by students.
+            PFT started as a class project. After seeing how hard student budgeting can be, I turned it into a real app focused on clarity and everyday use.
           </p>
         </article>
 
         <article class="card">
-          <h3 class="card-title">What we believe</h3>
+          <h3 class="card-title">What I value</h3>
           <ul class="bullet">
             <li>Clarity over complexity</li>
             <li>Helpful, not preachy</li>
             <li>Privacy by default</li>
-            <li>Enjoyable experience → a smooth, friendly design makes good habits stick.</li>
+            <li>A smooth, friendly experience that supports consistent habits</li>
           </ul>
         </article>
 
         <article class="card">
-          <h3 class="card-title">How we build</h3>
+          <h3 class="card-title">How I build</h3>
           <p class="card-text">
-            Small releases, real student budgets, zero fluff. We iterate late at night, keep the interface clean, and focus on making month-end finances stress-free.          </p>
+            Small releases, real student budget scenarios, and no fluff. The focus is a clean interface that reduces month-end money stress.
+          </p>
         </article>
       </section>
 
       <section class="grid three stats">
         <article class="card stat">
           <div class="stat-num">3:17 AM</div>
-          <div class="stat-label">average commit time 😅</div>
+          <div class="stat-label">average commit time</div>
         </article>
         <article class="card stat">
           <div class="stat-num">∞</div>
@@ -73,23 +75,14 @@
         </article>
         <article class="card stat">
           <div class="stat-num">100%</div>
-          <div class="stat-label">student-first energy</div>
+          <div class="stat-label">finance-first focus</div>
         </article>
       </section>
 
-      <section class="card team">
-        <h3 class="card-title">The tiny team</h3>
-        <p class="card-text">We’re a small crew of student devs/designers. Say hi if you want to help!</p>
-        <div class="avatar-row">
-          <div class="avatar">
-            <img src="{{ asset('images/IMG_6130.jpg') }}" alt="Description" />
-          </div>
-        </div>
-        <div class="cta-row center">
-          <a href="{{ route('login') }}" class="cta cta-primary">Try PFT free</a>
-          <a href="{{ route('products') }}" class="cta cta-ghost">See what it does</a>
-        </div>
-      </section>
+      <div class="cta-row center about-cta">
+        <a href="{{ route('login') }}" class="cta cta-primary">Try PFT free</a>
+        <a href="{{ route('products') }}" class="cta cta-ghost">See what it does</a>
+      </div>
 
     </main>
 

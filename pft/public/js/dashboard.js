@@ -62,6 +62,45 @@ async function deleteJSON(url) {
   return res.json();
 }
 
+const CATEGORY_META = {
+  food: { icon: "🍜", tone: "food", label: "Food" },
+  rent: { icon: "🏠", tone: "rent", label: "Rent" },
+  travel: { icon: "🚗", tone: "travel", label: "Travel" },
+  shopping: { icon: "🛍️", tone: "shopping", label: "Shopping" },
+  other: { icon: "💳", tone: "other", label: "Other" },
+  "part-time": { icon: "💼", tone: "part-time", label: "Part-time" },
+  allowance: { icon: "🎁", tone: "allowance", label: "Allowance" },
+  stipend: { icon: "🏫", tone: "stipend", label: "Stipend" },
+  scholarship: { icon: "🎓", tone: "scholarship", label: "Scholarship" },
+};
+
+function prettyCategory(category) {
+  return (category || "other")
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+function getCategoryMeta(category, type = "expense") {
+  const normalized = (category || "other").toLowerCase();
+  const meta = CATEGORY_META[normalized];
+  if (meta) {
+    if (type === "income" && normalized === "other") {
+      return { ...meta, icon: "💰" };
+    }
+    return meta;
+  }
+  return {
+    icon: type === "income" ? "💰" : "💳",
+    tone: "custom",
+    label: prettyCategory(normalized),
+  };
+}
+
+function renderCategoryPill(category, type = "expense") {
+  const meta = getCategoryMeta(category, type);
+  return `<span class="category-pill cat-${meta.tone}"><span class="category-dot" aria-hidden="true"></span>${meta.label}</span>`;
+}
+
 //  Sidebar navigation logic (same as before)
 //  Sidebar navigation logic with tab memory
 const navItems = document.querySelectorAll(".nav-item");
@@ -171,15 +210,7 @@ if (savedSection && document.getElementById(savedSection)) {
     const now = isoDateOptional ? new Date(isoDateOptional) : new Date();
     item.dataset.date = now.toISOString();
 
-    const iconMap = {
-      food: "🍜",
-      rent: "🏠",
-      travel: "🚗",
-      shopping: "🛍️",
-      other: "💳",
-    };
-    const icon = iconMap[category] || "💳";
-    const prettyCat = category.charAt(0).toUpperCase() + category.slice(1);
+    const meta = getCategoryMeta(category, "expense");
 
     // Short visible date for the row (e.g., "Sep 25")
     const display = new Intl.DateTimeFormat(undefined, {
@@ -189,10 +220,11 @@ if (savedSection && document.getElementById(savedSection)) {
 
     item.innerHTML = `
     <div class="expense-info">
-      <div class="expense-icon">${icon}</div>
+      <div class="expense-icon">${meta.icon}</div>
       <div class="expense-details">
         <h4>${title}</h4>
-        <p>${display} · ${prettyCat}</p>
+        <p>${display} · ${meta.label}</p>
+        ${renderCategoryPill(category, "expense")}
       </div>
     </div>
     <div class="expense-amount negative">-${yen(amount)}</div>
@@ -523,18 +555,7 @@ if (savedSection && document.getElementById(savedSection)) {
     item.dataset.category = category;
     item.dataset.amount = amount;
     item.dataset.date = isoDate;
-
-    const iconMap = {
-      "part-time": "💼",
-      allowance: "🎁",
-      stipend: "🏫", // 0/10 emoji choice
-      scholarship: "🎓",
-      other: "💰",
-    };
-    const icon = iconMap[category] || "💰";
-    const pretty = category
-      .replace(/-/g, " ")
-      .replace(/\b\w/g, (m) => m.toUpperCase());
+    const meta = getCategoryMeta(category, "income");
 
     const display = new Intl.DateTimeFormat(undefined, {
       month: "short",
@@ -543,10 +564,11 @@ if (savedSection && document.getElementById(savedSection)) {
 
     item.innerHTML = `
       <div class="expense-info">
-        <div class="expense-icon">${icon}</div>
+        <div class="expense-icon">${meta.icon}</div>
         <div class="expense-details">
           <h4>${title}</h4>
-          <p>${display} · ${pretty}</p>
+          <p>${display} · ${meta.label}</p>
+          ${renderCategoryPill(category, "income")}
         </div>
       </div>
       <div class="income-amount positive">+${yen(amount)}</div>
@@ -1352,6 +1374,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="expense-details">
             <h4>No expenses yet</h4>
             <p>Add some in Expense Tracking</p>
+            ${renderCategoryPill("other", "expense")}
           </div>
         </div>
         <div class="expense-amount negative">-¥0</div>
@@ -1371,21 +1394,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     sorted.forEach(({ el }) => {
       const amount = Number(el.dataset.amount || 0);
       const cat = (el.dataset.category || "other").toLowerCase();
+      const meta = getCategoryMeta(cat, "expense");
       const title =
         el.querySelector(".expense-details h4")?.textContent || "Expense";
       const iso = el.dataset.date || new Date().toISOString();
-      const icon = el.querySelector(".expense-icon")?.textContent || "💳";
 
       const row = document.createElement("div");
       row.className = "expense-item";
+      row.dataset.category = cat;
       row.innerHTML = `
       <div class="expense-info">
-        <div class="expense-icon">${icon}</div>
+        <div class="expense-icon">${meta.icon}</div>
         <div class="expense-details">
           <h4>${title}</h4>
-          <p>${fmtShort(iso)} · ${
-        cat.charAt(0).toUpperCase() + cat.slice(1)
-      }</p>
+          <p>${fmtShort(iso)} · ${meta.label}</p>
+          ${renderCategoryPill(cat, "expense")}
         </div>
       </div>
       <div class="expense-amount negative">-${yen(amount)}</div>
@@ -1542,13 +1565,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         month: "short",
         day: "numeric",
       }).format(new Date(iso));
+      const meta = getCategoryMeta(category, "expense");
 
       div.innerHTML = `
         <div class="expense-info">
-          <div class="expense-icon">💳</div>
+          <div class="expense-icon">${meta.icon}</div>
           <div class="expense-details">
             <h4>${title}</h4>
-            <p>${display} · ${category}</p>
+            <p>${display} · ${meta.label}</p>
+            ${renderCategoryPill(category, "expense")}
           </div>
         </div>
         <div class="expense-amount negative">-¥${amount.toLocaleString()}</div>
@@ -2026,4 +2051,30 @@ function wireFloatingQuickAdd() {
   }
 }
 
+function wireOnboarding() {
+  const modal = document.getElementById("onboardingModal");
+  const closeBtn = document.getElementById("onboardingClose");
+  const doneBtn = document.getElementById("onboardingDone");
+  const key = "pft_onboarded";
+
+  if (!modal || localStorage.getItem(key) === "1") return;
+
+  const close = () => {
+    modal.classList.add("hidden");
+    localStorage.setItem(key, "1");
+  };
+
+  modal.classList.remove("hidden");
+
+  closeBtn?.addEventListener("click", close);
+  doneBtn?.addEventListener("click", close);
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) close();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) close();
+  });
+}
+
 document.addEventListener("DOMContentLoaded", wireFloatingQuickAdd);
+document.addEventListener("DOMContentLoaded", wireOnboarding);

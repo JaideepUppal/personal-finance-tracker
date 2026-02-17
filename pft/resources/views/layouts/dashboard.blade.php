@@ -24,7 +24,7 @@
     <div class="main-container">
       <!-- Sidebar -->
       <aside class="sidebar">
-        <nav class="nav-menu">
+        <nav class="nav-menu" aria-label="Dashboard navigation">
           <a class="nav-item active" data-section="dashboard">
             <span>Dashboard</span>
           </a>
@@ -60,7 +60,7 @@
       </aside>
 
       <!-- Content Area -->
-      <main class="content-area">
+      <main class="content-area" aria-live="polite">
         <!-- Dashboard Section -->
         <section id="dashboard" class="content-section active">
           <h1 class="section-title">Dashboard</h1>
@@ -69,7 +69,7 @@
           <div class="summary-grid">
             <div class="summary-card">
               <div class="card-label">Total Income (This Month)</div>
-              <div class="card-amount positive" id="dashTotalIncome">¥0</div>
+              <div class="card-amount positive" id="dashTotalIncome" aria-live="polite">¥0</div>
               <div class="card-change positive" id="dashIncomeChange">
                 <span></span>
                 <span>—</span>
@@ -78,7 +78,7 @@
 
             <div class="summary-card">
               <div class="card-label">Total Expenses (This Month)</div>
-              <div class="card-amount negative" id="dashTotalExpenses">-¥0</div>
+              <div class="card-amount negative" id="dashTotalExpenses" aria-live="polite">-¥0</div>
               <div class="card-change negative" id="dashExpenseChange">
                 <span></span>
                 <span>—</span>
@@ -87,7 +87,7 @@
 
             <div class="summary-card">
               <div class="card-label">Balance (Income − Expenses)</div>
-              <div class="card-amount" id="dashBalance">¥0</div>
+              <div class="card-amount" id="dashBalance" aria-live="polite">¥0</div>
               <div class="card-change positive" id="dashBalanceChange">
                 <span></span>
                 <span>—</span>
@@ -96,7 +96,7 @@
 
             <div class="summary-card">
               <div class="card-label">Savings (This Month)</div>
-              <div class="card-amount positive" id="dashSavings">¥0</div>
+              <div class="card-amount positive" id="dashSavings" aria-live="polite">¥0</div>
               <div class="card-change positive" id="dashSavingsNote">
                 <span></span>
                 <span>—</span>
@@ -112,7 +112,7 @@
                 <h2 class="panel-title">Recent Expenses</h2>
                 <a class="view-all" data-section="expense-tracking">View All</a>
               </div>
-              <div class="expense-list" id="dashRecentExpenses"></div>
+              <div class="expense-list" id="dashRecentExpenses" aria-live="polite"></div>
             </div>
 
             <!-- Bill Reminders (derived from budgets + heuristics) -->
@@ -121,7 +121,7 @@
                 <h2 class="panel-title">Bill Reminders</h2>
                 <a class="view-all" data-section="monthly-budget"></a>
               </div>
-              <div class="bill-list" id="dashBillList"></div>
+              <div class="bill-list" id="dashBillList" aria-live="polite"></div>
             </div>
           </div>
         </section>
@@ -511,6 +511,26 @@
     >
       +
     </button>
+
+    <div id="onboardingModal" class="onboarding-modal hidden" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+      <div class="onboarding-card">
+        <h2 id="onboardingTitle" class="onboarding-title">Welcome to your finance workspace</h2>
+        <p class="onboarding-sub">
+          A quick tour to get started:
+        </p>
+        <ul class="onboarding-list">
+          <li><strong>Dashboard:</strong> Track totals, balance, recent expenses, and bill reminders in one place.</li>
+          <li><strong>Add Expense:</strong> Capture transactions quickly with category, date, and recurring options.</li>
+          <li><strong>Budgets:</strong> Set category limits and monitor progress through live usage bars.</li>
+          <li><strong>Analytics:</strong> Review trends, category breakdowns, and monthly comparisons.</li>
+          <li><strong>Quick Add (+):</strong> Use the floating button for fast expense entry from any section.</li>
+        </ul>
+        <div class="onboarding-actions">
+          <button id="onboardingClose" class="onboarding-close" type="button">Skip</button>
+          <button id="onboardingDone" class="onboarding-done" type="button">Start Using PFT</button>
+        </div>
+      </div>
+    </div>
 
     <script>
       window.PFT = {

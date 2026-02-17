@@ -31,6 +31,7 @@ Route::get('/about', fn() => view('layouts.landing.navbar.about'))->name('about'
 Route::get('/products', fn() => view('layouts.landing.navbar.products'))->name('products');
 Route::get('/pricing', fn() => view('layouts.landing.navbar.pricing'))->name('pricing');
 Route::get('/solutions', fn() => view('layouts.landing.navbar.solutions'))->name('solutions');
+Route::get('/help', fn() => view('layouts.landing.navbar.help'))->name('help');
 
 /*
 |--------------------------------------------------------------------------

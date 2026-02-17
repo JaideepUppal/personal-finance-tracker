@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PFT – Solutions for Students</title>
+    <title>PFT – Student Finance Solutions</title>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
@@ -15,7 +15,8 @@
           <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
           <a class="nav-link" href="{{ route('pricing') }}">Pricing</a>
-          <a class="nav-link" href="{{ route('about') }}">About us</a>
+          <a class="nav-link" href="{{ route('about') }}">About</a>
+          <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
@@ -25,9 +26,9 @@
     </header>
 
     <main class="page">
-      <h1 class="page-title">Built for college students</h1>
+      <h1 class="page-title">Built for student finance</h1>
       <p class="page-subtitle">
-        Budgeting for the real student life — paychecks that disappear, rent reminders that hurt, and the daily debate between saving money or ordering takeout again. No ugly spreadsheets needed.
+        Designed for real campus budgets: part-time income, rent reminders, and day-to-day spending decisions without spreadsheet overhead.
       </p>
 
       <section class="grid three">
@@ -61,7 +62,7 @@
         <article class="card">
           <h3 class="card-title">Also useful for…</h3>
           <p class="card-tagline">
-            Technically, adults too. But we’re building the ultimate student money sidekick first — adult mode later.
+            Useful beyond campus too, while staying focused on practical student finance workflows.
           </p>
         </article>
       </section>

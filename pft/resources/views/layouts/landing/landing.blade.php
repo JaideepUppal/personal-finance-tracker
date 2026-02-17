@@ -14,11 +14,12 @@
       <div class="site-header-inner">
         <div class="brand-logo">PFT</div>
 
-        <nav class="nav-links">
+        <nav class="nav-links" aria-label="Main navigation">
             <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
           <a class="nav-link" href="{{ route('pricing') }}">Pricing</a>
-          <a class="nav-link" href="{{ route('about') }}">About us</a>
+          <a class="nav-link" href="{{ route('about') }}">About</a>
+          <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
 
         <div class="auth-actions">
@@ -88,7 +89,7 @@
     <!-- FOOTER -->
     <footer class="page-footer">
       <p class="footer-text">
-        © 2025 PFT. Built for students who actually care where their money goes.
+        © 2025 PFT. Built by one student for clear student finance.
       </p>
     </footer>
   </body>

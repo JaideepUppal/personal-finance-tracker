@@ -14,7 +14,8 @@
           <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
           <a class="nav-link" href="{{ route('pricing') }}">Pricing</a>
-          <a class="nav-link" href="{{ route('about') }}">About us</a>
+          <a class="nav-link" href="{{ route('about') }}">About</a>
+          <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
@@ -35,7 +36,7 @@
 
         <article class="card">
           <h3 class="card-title">Expense Tracking</h3>
-          <p class="card-tagline">Log spending in seconds from ramen runs to 2AM matcha regret purchases. Future AI tagging if we stop being broke first.</p>
+          <p class="card-tagline">Log spending in seconds, from ramen runs to late-night impulse buys. Future AI tagging is planned for a later release.</p>
         </article>
 
         <article class="card">

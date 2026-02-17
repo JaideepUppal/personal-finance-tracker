@@ -13,18 +13,18 @@
 
     <!-- Sign Up Form -->
     <div class="form-container sign-up-container">
-        <form method="POST" action="{{ route('signup') }}">
+        <form method="POST" action="{{ route('signup') }}" aria-label="Create account form">
             @csrf
             <h1>Create Account</h1>
             <span>Use your email for registration</span>
 
-            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" required />
-            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
-            <input type="password" name="password" placeholder="Password" required />
-            <input type="password" name="password_confirmation" placeholder="Confirm Password" required />
+            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" autocomplete="name" required />
+            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
+            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required />
+            <input type="password" name="password_confirmation" placeholder="Confirm Password" autocomplete="new-password" required />
 
             @if ($errors->any() && session('form') === 'signup')
-                <div class="error">
+                <div class="error" role="alert" aria-live="polite">
                     @foreach ($errors->all() as $error)
                         <p>{{ $error }}</p>
                     @endforeach
@@ -37,16 +37,16 @@
 
     <!-- Sign In Form -->
     <div class="form-container sign-in-container">
-        <form method="POST" action="{{ route('login.submit') }}">
+        <form method="POST" action="{{ route('login.submit') }}" aria-label="Sign in form">
             @csrf
             <h1>Sign In</h1>
             <span>Use your account</span>
 
-            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" required />
-            <input type="password" name="password" placeholder="Password" required />
+            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
+            <input type="password" name="password" placeholder="Password" autocomplete="current-password" required />
 
             @if ($errors->any() && session('form') === 'signin')
-                <div class="error">
+                <div class="error" role="alert" aria-live="polite">
                     @foreach ($errors->all() as $error)
                         <p>{{ $error }}</p>
                     @endforeach
