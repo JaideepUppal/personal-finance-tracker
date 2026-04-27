@@ -104,6 +104,27 @@
             </div>
           </div>
 
+          <div id="aiCoachPanel" class="panel ai-coach-panel">
+            <div class="panel-header ai-coach-header">
+              <div>
+                <h2 class="panel-title">AI Finance Coach</h2>
+                <p class="ai-coach-copy">
+                  Get a quick spending summary and practical next steps based on your current Ledgerly dashboard.
+                </p>
+              </div>
+              <button id="aiCoachButton" class="filter-btn ai-coach-button" type="button">
+                Analyze my month
+              </button>
+            </div>
+            <div id="aiCoachLoading" class="ai-coach-loading hidden" aria-live="polite">
+              Analyzing your month...
+            </div>
+            <div id="aiCoachError" class="ai-coach-error hidden" role="alert" aria-live="polite"></div>
+            <div id="aiCoachOutput" class="ai-coach-output" aria-live="polite">
+              Your AI Finance Coach summary will appear here.
+            </div>
+          </div>
+
           <!-- Two Column Layout -->
           <div class="two-column">
             <!-- Recent Expenses (live from Expense Tracking) -->

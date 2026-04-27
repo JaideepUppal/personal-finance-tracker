@@ -6,6 +6,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\SavingGoalController;
+use App\Http\Controllers\AiFinanceCoachController;
 
 
 
@@ -69,4 +70,6 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/api/saving-goals', [SavingGoalController::class, 'store']);
     Route::post('/api/saving-goals/{savingGoal}/contribute', [SavingGoalController::class, 'contribute']);
     Route::delete('/api/saving-goals/{savingGoal}', [SavingGoalController::class, 'destroy']);
+
+    Route::post('/api/ai/finance-coach', AiFinanceCoachController::class);
 });

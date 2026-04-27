@@ -125,6 +125,14 @@ function localDateKey(value) {
   ].join("-");
 }
 
+function isSameLocalMonth(value, reference = new Date()) {
+  const date = dateFromAny(value);
+  return (
+    date.getFullYear() === reference.getFullYear() &&
+    date.getMonth() === reference.getMonth()
+  );
+}
+
 function formatShortDate(value) {
   return new Intl.DateTimeFormat(undefined, {
     month: "short",
@@ -2130,5 +2138,174 @@ function wireOnboarding() {
   });
 }
 
+function numberFromMoney(text = "") {
+  const value = Number(String(text).replace(/[^\d.-]/g, ""));
+  return Number.isFinite(value) ? Math.abs(value) : 0;
+}
+
+function readCurrentBudgets(month) {
+  try {
+    const raw = localStorage.getItem(`pft_budgets_${month}`);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function collectAiFinanceSummary() {
+  const now = new Date();
+  const month = localDateKey(now).slice(0, 7);
+  const expenseItems = [
+    ...document.querySelectorAll("#expenseList .expense-item"),
+  ];
+  const incomeItems = [...document.querySelectorAll("#incomeList .expense-item")];
+
+  const categoryTotals = {};
+  let expenses = 0;
+  expenseItems.forEach((item) => {
+    if (!isSameLocalMonth(item.dataset.date, now)) return;
+    const amount = Number(item.dataset.amount || 0);
+    const category = (item.dataset.category || "other")
+      .toLowerCase()
+      .slice(0, 48);
+    expenses += amount;
+    categoryTotals[category] = (categoryTotals[category] || 0) + amount;
+  });
+
+  let income = 0;
+  incomeItems.forEach((item) => {
+    if (!isSameLocalMonth(item.dataset.date, now)) return;
+    income += Number(item.dataset.amount || 0);
+  });
+
+  const categorySpending = Object.entries(categoryTotals)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([category, amount]) => ({
+      category,
+      amount: Math.round(amount * 100) / 100,
+    }));
+
+  const budgets = Object.entries(readCurrentBudgets(month))
+    .slice(0, 12)
+    .map(([category, limit]) => {
+      const key = String(category).toLowerCase().slice(0, 48);
+      return {
+        category: key,
+        limit: Number(limit || 0),
+        spent: Math.round(Number(categoryTotals[key] || 0) * 100) / 100,
+      };
+    });
+
+  const goalCards = [
+    ...document.querySelectorAll("#sgList .savings-goal-card[data-id]"),
+  ];
+  const savingGoals = goalCards.reduce(
+    (acc, card) => {
+      acc.count += 1;
+      acc.saved_total += numberFromMoney(
+        card.querySelector(".sg-saved")?.textContent || ""
+      );
+      acc.target_total += numberFromMoney(
+        card.querySelector(".sg-target")?.textContent || ""
+      );
+      return acc;
+    },
+    { count: 0, target_total: 0, saved_total: 0 }
+  );
+
+  const bills = { paid: 0, due: 0, overdue: 0, upcoming: 0 };
+  document.querySelectorAll("#dashBillList .bill-chip").forEach((chip) => {
+    if (chip.classList.contains("chip-paid")) bills.paid += 1;
+    if (chip.classList.contains("chip-due")) bills.due += 1;
+    if (chip.classList.contains("chip-overdue")) bills.overdue += 1;
+    if (chip.classList.contains("chip-upcoming")) bills.upcoming += 1;
+  });
+
+  const balance = income - expenses;
+
+  return {
+    currency: "JPY",
+    month,
+    income: Math.round(income * 100) / 100,
+    expenses: Math.round(expenses * 100) / 100,
+    balance: Math.round(balance * 100) / 100,
+    savings: Math.round(Math.max(0, balance) * 100) / 100,
+    category_spending: categorySpending,
+    budgets,
+    saving_goals: {
+      count: savingGoals.count,
+      target_total: Math.round(savingGoals.target_total * 100) / 100,
+      saved_total: Math.round(savingGoals.saved_total * 100) / 100,
+    },
+    bills,
+  };
+}
+
+function renderAiCoachAdvice(output, advice) {
+  output.textContent = "";
+  output.classList.add("has-advice");
+
+  const bullets = String(advice || "")
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^[-*•\d.)\s]+/, "").trim())
+    .filter(Boolean)
+    .slice(0, 5);
+
+  if (!bullets.length) {
+    output.textContent = "No advice returned. Please try again.";
+    return;
+  }
+
+  const list = document.createElement("ul");
+  bullets.forEach((bullet) => {
+    const item = document.createElement("li");
+    item.textContent = bullet;
+    list.appendChild(item);
+  });
+  output.appendChild(list);
+}
+
+function wireAiFinanceCoach() {
+  const panel = document.getElementById("aiCoachPanel");
+  const button = document.getElementById("aiCoachButton");
+  const output = document.getElementById("aiCoachOutput");
+  const loading = document.getElementById("aiCoachLoading");
+  const error = document.getElementById("aiCoachError");
+
+  if (!panel || !button || !output || !loading || !error) return;
+
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    loading.classList.remove("hidden");
+    error.classList.add("hidden");
+    error.textContent = "";
+
+    try {
+      const res = await apiFetch("/api/ai/finance-coach", {
+        method: "POST",
+        body: JSON.stringify({ summary: collectAiFinanceSummary() }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(
+          data.message || "AI Finance Coach could not analyze this month."
+        );
+      }
+
+      renderAiCoachAdvice(output, data.advice || "");
+    } catch (err) {
+      error.textContent =
+        err.message || "AI Finance Coach is unavailable right now.";
+      error.classList.remove("hidden");
+    } finally {
+      loading.classList.add("hidden");
+      button.disabled = false;
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", wireFloatingQuickAdd);
 document.addEventListener("DOMContentLoaded", wireOnboarding);
+document.addEventListener("DOMContentLoaded", wireAiFinanceCoach);
