@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PFT – Help</title>
+    <title>Ledgerly – Help</title>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
     <header class="site-header">
       <div class="site-header-inner">
-        <a href="{{ route('landing') }}" class="brand-logo">PFT</a>
+        <a href="{{ route('landing') }}" class="brand-logo">Ledgerly</a>
         <nav class="nav-links">
           <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
@@ -27,7 +27,7 @@
     <main class="page">
       <h1 class="page-title">Help & FAQ</h1>
       <p class="page-subtitle">
-        Quick answers for everyday actions in PFT.
+        Quick answers for everyday actions in Ledgerly.
       </p>
 
       <section class="grid">
@@ -50,7 +50,7 @@
         <article class="card">
           <h3 class="card-title">How do budgets work?</h3>
           <p class="card-text">
-            In Monthly Budget, set a limit by category. PFT compares current-month expenses against that limit
+            In Monthly Budget, set a limit by category. Ledgerly compares current-month expenses against that limit
             and updates each progress bar in real time.
           </p>
         </article>
@@ -58,7 +58,7 @@
         <article class="card">
           <h3 class="card-title">How do saving goals work?</h3>
           <p class="card-text">
-            Create a goal with target amount and optional deadline. Add contributions anytime; PFT tracks saved
+            Create a goal with target amount and optional deadline. Add contributions anytime; Ledgerly tracks saved
             amount and progress percentage automatically.
           </p>
         </article>
@@ -79,7 +79,7 @@
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 PFT.</p>
+      <p class="footer-text">© 2025 Ledgerly.</p>
     </footer>
   </body>
 </html>

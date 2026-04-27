@@ -44,7 +44,7 @@ class BillController extends Controller
     {
         $data = $request->validate([
             'bill_id' => 'required|exists:bills,id',
-            'month'   => ['required','string','regex:/^\d{4}-\d{2}$/'], // YYYY-MM //We used chatgpt to this function as we were having some trouble debugging
+            'month'   => ['required','string','regex:/^\d{4}-\d{2}$/'], // YYYY-MM
             'status'  => 'required|string|in:paid,due,overdue,upcoming',
         ]);
 

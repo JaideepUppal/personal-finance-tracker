@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PFT – Products</title>
+    <title>Ledgerly – Products</title>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
     <header class="site-header">
       <div class="site-header-inner">
-        <a href="{{ route('landing') }}" class="brand-logo">PFT</a>
+        <a href="{{ route('landing') }}" class="brand-logo">Ledgerly</a>
         <nav class="nav-links">
           <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
@@ -25,44 +25,44 @@
     </header>
 
     <main class="page">
-      <h1 class="page-title">Tools to master your money</h1>
-      <p class="page-subtitle">Everything you need to see, plan, and improve your finances.</p>
+      <h1 class="page-title">Ledgerly Finance Platform</h1>
+      <p class="page-subtitle">Everything students need to see, plan, and improve everyday finances.</p>
 
       <section class="grid">
         <article class="card">
           <h3 class="card-title">Smart Dashboard</h3>
-          <p class="card-tagline">See where your money goes before it mysteriously disappears again. Charts that feel like therapy… but for your wallet.</p>
+          <p class="card-tagline">See income, expenses, balance, recent activity, and bill reminders in one clear workspace.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Expense Tracking</h3>
-          <p class="card-tagline">Log spending in seconds, from ramen runs to late-night impulse buys. Future AI tagging is planned for a later release.</p>
+          <p class="card-tagline">Log spending with title, amount, category, date, and recurring bill support.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Budget Planner</h3>
-          <p class="card-tagline">Make budgets you’ll totally follow… until finals week hits. Gentle alerts, not financial jump scares.</p>
+          <p class="card-tagline">Set category limits and monitor month-to-date progress with readable usage bars.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Savings Goals</h3>
-          <p class="card-tagline">Save for trips, gadgets, or the emergency “I'm too tired to cook” meal. Watch tiny progress feel like huge wins.</p>
+          <p class="card-tagline">Create targets, add contributions, and track progress toward short-term and long-term goals.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Bill Reminders</h3>
-          <p class="card-tagline">Never forget rent or subscriptions again even when life gets chaotic. Smart reminders that understand stress naps.</p>
+          <p class="card-tagline">Turn recurring expenses into reminders and keep monthly obligations visible.</p>
         </article>
       </section>
 
       <div class="cta-row center">
-        <a href="{{ route('login') }}" class="cta cta-primary">Try PFT free</a>
+        <a href="{{ route('login') }}" class="cta cta-primary">Start free</a>
         <a href="{{ route('pricing') }}" class="cta cta-ghost">See pricing</a>
       </div>
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 PFT.</p>
+      <p class="footer-text">© 2025 Ledgerly.</p>
     </footer>
   </body>
 </html>

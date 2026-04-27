@@ -74,6 +74,72 @@ const CATEGORY_META = {
   scholarship: { icon: "🎓", tone: "scholarship", label: "Scholarship" },
 };
 
+function escapeHtml(value = "") {
+  return String(value).replace(/[&<>"']/g, (char) => {
+    return {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    }[char];
+  });
+}
+
+function parseLocalDateInput(value) {
+  const parts = String(value || "")
+    .split("-")
+    .map(Number);
+  const [year, month, day] = parts;
+  if (!year || !month || !day) return null;
+  return new Date(year, month - 1, day, 12, 0, 0, 0);
+}
+
+function dateFromAny(value) {
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? new Date() : value;
+  }
+  if (typeof value === "number") {
+    const numericDate = new Date(value);
+    return Number.isNaN(numericDate.getTime()) ? new Date() : numericDate;
+  }
+
+  const raw = String(value || "");
+  const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(raw);
+  const parsed = dateOnly ? parseLocalDateInput(raw) : new Date(raw || Date.now());
+
+  if (!parsed || Number.isNaN(parsed.getTime())) return new Date();
+  return parsed;
+}
+
+function isoFromDateInput(value) {
+  return (parseLocalDateInput(value) || new Date()).toISOString();
+}
+
+function localDateKey(value) {
+  const date = dateFromAny(value);
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
+function formatShortDate(value) {
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+  }).format(dateFromAny(value));
+}
+
+function formatLongDate(value) {
+  return new Intl.DateTimeFormat(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(dateFromAny(value));
+}
+
 function prettyCategory(category) {
   return (category || "other")
     .replace(/-/g, " ")
@@ -98,7 +164,8 @@ function getCategoryMeta(category, type = "expense") {
 
 function renderCategoryPill(category, type = "expense") {
   const meta = getCategoryMeta(category, type);
-  return `<span class="category-pill cat-${meta.tone}"><span class="category-dot" aria-hidden="true"></span>${meta.label}</span>`;
+  const tone = String(meta.tone || "custom").replace(/[^a-z0-9-]/g, "");
+  return `<span class="category-pill cat-${tone}"><span class="category-dot" aria-hidden="true"></span>${escapeHtml(meta.label)}</span>`;
 }
 
 //  Sidebar navigation logic (same as before)
@@ -207,23 +274,23 @@ if (savedSection && document.getElementById(savedSection)) {
     item.dataset.amount = amount;
 
     // Save the timestamp so charts can show real dates
-    const now = isoDateOptional ? new Date(isoDateOptional) : new Date();
+    const now = isoDateOptional ? dateFromAny(isoDateOptional) : new Date();
     item.dataset.date = now.toISOString();
 
     const meta = getCategoryMeta(category, "expense");
+    const safeTitle = escapeHtml(title || "Untitled");
+    const safeLabel = escapeHtml(meta.label);
+    const safeIcon = escapeHtml(meta.icon);
 
     // Short visible date for the row (e.g., "Sep 25")
-    const display = new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-    }).format(now);
+    const display = formatShortDate(now);
 
     item.innerHTML = `
     <div class="expense-info">
-      <div class="expense-icon">${meta.icon}</div>
+      <div class="expense-icon">${safeIcon}</div>
       <div class="expense-details">
-        <h4>${title}</h4>
-        <p>${display} · ${meta.label}</p>
+        <h4>${safeTitle}</h4>
+        <p>${display} · ${safeLabel}</p>
         ${renderCategoryPill(category, "expense")}
       </div>
     </div>
@@ -241,7 +308,7 @@ if (savedSection && document.getElementById(savedSection)) {
     const row = addItem(title, amount, category, isoDate);
     if (row) {
       if (id != null) row.dataset.id = id;
-      if (isoDate) row.dataset.date = isoDate;
+      if (isoDate) row.dataset.date = dateFromAny(isoDate).toISOString();
     }
   };
 
@@ -255,8 +322,8 @@ if (savedSection && document.getElementById(savedSection)) {
     items.sort((a, b) => {
       const amountA = Number(a.dataset.amount || 0);
       const amountB = Number(b.dataset.amount || 0);
-      const dateA = new Date(a.dataset.date || 0);
-      const dateB = new Date(b.dataset.date || 0);
+      const dateA = dateFromAny(a.dataset.date || 0);
+      const dateB = dateFromAny(b.dataset.date || 0);
       const idA = Number(a.dataset.id || 0);
       const idB = Number(b.dataset.id || 0);
 
@@ -299,9 +366,7 @@ if (savedSection && document.getElementById(savedSection)) {
     if (!amt || amt <= 0) return;
 
     // Build ISO; use expDate if provided
-    const iso = dateEl?.value
-      ? new Date(dateEl.value + "T12:00:00").toISOString()
-      : new Date().toISOString();
+    const iso = dateEl?.value ? isoFromDateInput(dateEl.value) : new Date().toISOString();
 
     try {
       // Save to backend
@@ -323,13 +388,15 @@ if (savedSection && document.getElementById(savedSection)) {
       );
       if (row) {
         row.dataset.id = saved.id;
-        row.dataset.date = saved.date || iso;
+        row.dataset.date = dateFromAny(saved.date || iso).toISOString();
       }
 
       // If checked as recurring, persist as a monthly bill “template”
       // If checked as recurring, persist as a monthly bill in the DB
       if (recurEl?.checked) {
-        const due = dateEl?.value ? new Date(dateEl.value) : new Date();
+        const due = dateEl?.value
+          ? parseLocalDateInput(dateEl.value) || new Date()
+          : new Date();
         const dueDay = due.getDate(); // monthly repeat on this day
 
         try {
@@ -369,7 +436,7 @@ if (savedSection && document.getElementById(savedSection)) {
     }
   });
 
-  // Delete (call backend if we have an id)
+  // Delete (call backend if the row has an id)
   list.addEventListener("click", async (e) => {
     if (!e.target.classList.contains("tiny-del")) return;
     const row = e.target.closest(".expense-item");
@@ -430,6 +497,8 @@ if (savedSection && document.getElementById(savedSection)) {
       ],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { labels: { color: "#e2e3e9" } } },
       scales: {
         x: { ticks: { color: "#c3c4cc" } },
@@ -441,7 +510,12 @@ if (savedSection && document.getElementById(savedSection)) {
   const pieChart = new Chart(pieEl.getContext("2d"), {
     type: "pie",
     data: { labels: [], datasets: [{ data: [], borderWidth: 0 }] },
-    options: { plugins: { legend: { labels: { color: "#e2e3e9" } } } },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      aspectRatio: 1,
+      plugins: { legend: { labels: { color: "#e2e3e9" } } },
+    },
   });
 
   function getVisibleItems() {
@@ -451,11 +525,7 @@ if (savedSection && document.getElementById(savedSection)) {
   }
   const pretty = (s) =>
     (s || "other").replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
-  const short = (iso) =>
-    new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-    }).format(new Date(iso));
+  const short = (iso) => formatShortDate(iso);
 
   function redrawCharts() {
     const items = getVisibleItems();
@@ -554,20 +624,20 @@ if (savedSection && document.getElementById(savedSection)) {
     item.className = "expense-item"; // reuse styles
     item.dataset.category = category;
     item.dataset.amount = amount;
-    item.dataset.date = isoDate;
+    item.dataset.date = dateFromAny(isoDate).toISOString();
     const meta = getCategoryMeta(category, "income");
+    const safeTitle = escapeHtml(title || "Untitled");
+    const safeLabel = escapeHtml(meta.label);
+    const safeIcon = escapeHtml(meta.icon);
 
-    const display = new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-    }).format(new Date(isoDate));
+    const display = formatShortDate(isoDate);
 
     item.innerHTML = `
       <div class="expense-info">
-        <div class="expense-icon">${meta.icon}</div>
+        <div class="expense-icon">${safeIcon}</div>
         <div class="expense-details">
-          <h4>${title}</h4>
-          <p>${display} · ${meta.label}</p>
+          <h4>${safeTitle}</h4>
+          <p>${display} · ${safeLabel}</p>
           ${renderCategoryPill(category, "income")}
         </div>
       </div>
@@ -583,7 +653,7 @@ if (savedSection && document.getElementById(savedSection)) {
     const row = document.getElementById("incomeList")?.firstElementChild;
     if (row) {
       row.dataset.id = id;
-      row.dataset.date = isoDate;
+      row.dataset.date = dateFromAny(isoDate).toISOString();
     }
   };
 
@@ -600,9 +670,7 @@ if (savedSection && document.getElementById(savedSection)) {
 
     if (!amt || amt <= 0) return;
 
-    const iso = dateEl.value
-      ? new Date(dateEl.value + "T12:00:00").toISOString()
-      : new Date().toISOString();
+    const iso = dateEl.value ? isoFromDateInput(dateEl.value) : new Date().toISOString();
 
     try {
       const saved = await postJSON("/api/transactions", {
@@ -623,7 +691,7 @@ if (savedSection && document.getElementById(savedSection)) {
       const first = list.querySelector(".expense-item");
       if (first) {
         first.dataset.id = saved.id;
-        first.dataset.date = saved.date || iso;
+        first.dataset.date = dateFromAny(saved.date || iso).toISOString();
       }
 
       // reset form
@@ -676,7 +744,7 @@ if (savedSection && document.getElementById(savedSection)) {
   }
   searchEl?.addEventListener("input", applySearch);
 
-  // Charts (Please note that we did use AI help for chart implementation)
+  // Charts
   const lineEl = document.getElementById("incLineChart");
   const pieEl = document.getElementById("incPieChart");
   if (lineEl && pieEl && typeof Chart !== "undefined") {
@@ -696,6 +764,8 @@ if (savedSection && document.getElementById(savedSection)) {
         ],
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         plugins: { legend: { labels: { color: "#e2e3e9" } } },
         scales: {
           x: { ticks: { color: "#c3c4cc" } },
@@ -708,14 +778,15 @@ if (savedSection && document.getElementById(savedSection)) {
     const pieChart = new Chart(pieEl.getContext("2d"), {
       type: "pie",
       data: { labels: [], datasets: [{ data: [], borderWidth: 0 }] },
-      options: { plugins: { legend: { labels: { color: "#e2e3e9" } } } },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        aspectRatio: 1,
+        plugins: { legend: { labels: { color: "#e2e3e9" } } },
+      },
     });
 
-    const short = (iso) =>
-      new Intl.DateTimeFormat(undefined, {
-        month: "short",
-        day: "numeric",
-      }).format(new Date(iso));
+    const short = (iso) => formatShortDate(iso);
 
     const pretty = (s) =>
       (s || "other")
@@ -910,7 +981,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return "¥" + Number(n).toLocaleString();
   }
   function currentMonthISO(iso) {
-    const d = iso ? new Date(iso) : new Date();
+    const d = iso ? dateFromAny(iso) : new Date();
     const now = new Date();
     return (
       d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
@@ -951,13 +1022,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const pct =
         limit > 0 ? Math.min(100, Math.round((used / limit) * 100)) : 0;
       const prettyCat = useCat.charAt(0).toUpperCase() + useCat.slice(1);
+      const safeCat = escapeHtml(prettyCat.replace(/-/g, " "));
+      const safeCatKey = escapeHtml(useCat);
 
       const card = document.createElement("div");
       card.className = "budget-card";
       card.innerHTML = `
         <div class="bud-top-row">
-          <div class="bud-cat-name">${prettyCat}</div>
-          <button class="tiny-del-ghost bud-remove-btn" data-del="${useCat}">
+          <div class="bud-cat-name">${safeCat}</div>
+          <button class="tiny-del-ghost bud-remove-btn" data-del="${safeCatKey}">
             Remove
           </button>
         </div>
@@ -1054,13 +1127,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     return "¥" + Number(n).toLocaleString();
   }
   function short(iso) {
-    return new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-    }).format(new Date(iso));
+    return formatShortDate(iso);
   }
   function isThisMonth(iso) {
-    const d = new Date(iso || Date.now());
+    const d = dateFromAny(iso || Date.now());
     const now = new Date();
     return (
       d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
@@ -1081,8 +1151,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     for (let i = n - 1; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // midnight today
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10); // YYYY-MM-DD
-      out.push({ key, label: short(d.toISOString()), total: 0 });
+      const key = localDateKey(d);
+      out.push({ key, label: short(d), total: 0 });
     }
     return out;
   }
@@ -1092,7 +1162,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const map = Object.fromEntries(buckets.map((b) => [b.key, b]));
     getExpenseItems().forEach((it) => {
       const iso = it.dataset.date || new Date().toISOString();
-      const key = (iso || "").slice(0, 10);
+      const key = localDateKey(iso);
       if (map[key]) map[key].total += Number(it.dataset.amount || 0);
     });
     return buckets;
@@ -1140,6 +1210,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       ],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { labels: { color: "#e2e3e9" } } },
       scales: {
         x: { ticks: { color: "#c3c4cc" } },
@@ -1162,6 +1234,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       ],
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
         x: { ticks: { color: "#c3c4cc" } },
@@ -1178,7 +1252,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const row = document.createElement("div");
       row.className = "cat-row";
       row.innerHTML = `
-        <div class="cat-name">${c}</div>
+        <div class="cat-name">${escapeHtml(c)}</div>
         <div class="cat-bar"><span style="width:${Math.round(
           (val / max) * 100
         )}%"></span></div>
@@ -1247,17 +1321,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Utils
   const yen = (n) => "¥" + Number(n || 0).toLocaleString();
   const thisMonth = (d) => {
-    const x = new Date(d || Date.now());
+    const x = dateFromAny(d || Date.now());
     const now = new Date();
     return (
       x.getFullYear() === now.getFullYear() && x.getMonth() === now.getMonth()
     );
   };
-  const fmtShort = (d) =>
-    new Intl.DateTimeFormat(undefined, {
-      month: "short",
-      day: "numeric",
-    }).format(new Date(d));
+  const fmtShort = (d) => formatShortDate(d);
 
   function getExpenseItems() {
     return [...document.querySelectorAll("#expenseList .expense-item")];
@@ -1297,7 +1367,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sumRange = (items, selector) =>
       items.reduce((acc, it) => {
         const iso = it.dataset.date || new Date().toISOString();
-        const d = new Date(iso);
+        const d = dateFromAny(iso);
         if (d >= selector.start && d <= selector.end) {
           acc += Number(it.dataset.amount || 0);
         }
@@ -1386,7 +1456,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sorted = allItems
       .map((it) => ({
         el: it,
-        date: new Date(it.dataset.date || new Date().toISOString()),
+        date: dateFromAny(it.dataset.date || new Date().toISOString()),
       }))
       .sort((a, b) => b.date - a.date)
       .slice(0, limit);
@@ -1402,12 +1472,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const row = document.createElement("div");
       row.className = "expense-item";
       row.dataset.category = cat;
+      const safeTitle = escapeHtml(title);
+      const safeLabel = escapeHtml(meta.label);
+      const safeIcon = escapeHtml(meta.icon);
       row.innerHTML = `
       <div class="expense-info">
-        <div class="expense-icon">${meta.icon}</div>
+        <div class="expense-icon">${safeIcon}</div>
         <div class="expense-details">
-          <h4>${title}</h4>
-          <p>${fmtShort(iso)} · ${meta.label}</p>
+          <h4>${safeTitle}</h4>
+          <p>${fmtShort(iso)} · ${safeLabel}</p>
           ${renderCategoryPill(cat, "expense")}
         </div>
       </div>
@@ -1468,7 +1541,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // existing expense items (so we can auto-detect Paid)
+    // existing expense items for automatic Paid detection
     const expenseItems = [
       ...document.querySelectorAll("#expenseList .expense-item"),
     ];
@@ -1482,7 +1555,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const iso = it.dataset.date;
         if (!iso) return false;
 
-        const d = new Date(iso);
+        const d = dateFromAny(iso);
         const sameMonth =
           d.getFullYear() === now.getFullYear() &&
           d.getMonth() === now.getMonth();
@@ -1507,11 +1580,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function computeStatus(bill) {
       const now = new Date();
-      const due = new Date(
+      const lastDayOfMonth = new Date(
         now.getFullYear(),
-        now.getMonth(),
-        Number(bill.due_day || 1)
+        now.getMonth() + 1,
+        0
+      ).getDate();
+      const dueDay = Math.min(
+        Math.max(Number(bill.due_day || 1), 1),
+        lastDayOfMonth
       );
+      const due = new Date(now.getFullYear(), now.getMonth(), dueDay);
 
       const manual = getManualStatus(bill);
       if (manual) return { status: manual, due };
@@ -1519,7 +1597,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const autoPaid = findAutoPaid(bill);
       if (autoPaid) return { status: "paid", due };
 
-      const daysUntil = Math.floor((due - now) / 86400000);
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const dueDateOnly = new Date(
+        due.getFullYear(),
+        due.getMonth(),
+        due.getDate()
+      );
+      const daysUntil = Math.round((dueDateOnly - today) / 86400000);
       if (daysUntil < 0) return { status: "overdue", due };
       if (daysUntil <= 3) return { status: "due", due };
 
@@ -1539,18 +1623,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    function escapeHtml(str = "") {
-      return str.replace(/[&<>"']/g, (m) => {
-        return {
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#39;",
-        }[m];
-      });
-    }
-
     function addExpenseGhostRow(title, amount, category, iso) {
       const list = document.getElementById("expenseList");
       if (!list) return;
@@ -1561,18 +1633,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.dataset.amount = String(amount);
       div.dataset.date = iso;
 
-      const display = new Intl.DateTimeFormat(undefined, {
-        month: "short",
-        day: "numeric",
-      }).format(new Date(iso));
+      const display = formatShortDate(iso);
       const meta = getCategoryMeta(category, "expense");
+      const safeTitle = escapeHtml(title || "Expense");
+      const safeLabel = escapeHtml(meta.label);
+      const safeIcon = escapeHtml(meta.icon);
 
       div.innerHTML = `
         <div class="expense-info">
-          <div class="expense-icon">${meta.icon}</div>
+          <div class="expense-icon">${safeIcon}</div>
           <div class="expense-details">
-            <h4>${title}</h4>
-            <p>${display} · ${meta.label}</p>
+            <h4>${safeTitle}</h4>
+            <p>${display} · ${safeLabel}</p>
             ${renderCategoryPill(category, "expense")}
           </div>
         </div>
@@ -1587,7 +1659,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const chip = statusChip(status);
       const dueStr = `${due.toLocaleString(undefined, {
         month: "short",
-      })} ${String(b.due_day || 1).padStart(2, "0")}`;
+      })} ${String(due.getDate()).padStart(2, "0")}`;
 
       return `
         <div class="bill-item"
@@ -1741,18 +1813,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const yen = (n) => "¥" + Number(n || 0).toLocaleString();
 
-  function escapeHtml(str = "") {
-    return str.replace(/[&<>"']/g, (m) => {
-      return {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;",
-      }[m];
-    });
-  }
-
   async function fetchGoals() {
     const res = await apiFetch("/api/saving-goals");
     if (!res.ok) throw new Error("Failed to load saving goals");
@@ -1780,13 +1840,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const pct =
         target > 0 ? Math.min(100, Math.round((saved / target) * 100)) : 0;
 
-      const deadline = g.deadline
-        ? new Intl.DateTimeFormat(undefined, {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          }).format(new Date(g.deadline))
-        : "No deadline";
+      const deadline = g.deadline ? formatLongDate(g.deadline) : "No deadline";
 
       const card = document.createElement("div");
       card.className = "savings-goal-card";

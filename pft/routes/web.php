@@ -36,7 +36,7 @@ Route::get('/help', fn() => view('layouts.landing.navbar.help'))->name('help');
 /*
 |--------------------------------------------------------------------------
 | Same-origin JSON API (SESSION AUTH)
-| These are called from dashboard.js and must stay in web.php (PLZ DO NOT MOVE TO api.php IT WILL NOT WORK)
+| These are called from dashboard.js and must stay in web.php.
 |--------------------------------------------------------------------------
 |
 | All endpoints use the /api/... prefix but live here, they use:

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login | PFT</title>
+    <title>Login | Ledgerly</title>
 
     <link rel="stylesheet" href="{{ asset('css/pages/login.css') }}">
 </head>
@@ -16,7 +16,7 @@
         <form method="POST" action="{{ route('signup') }}" aria-label="Create account form">
             @csrf
             <h1>Create Account</h1>
-            <span>Use your email for registration</span>
+            <span>Start tracking student finances with Ledgerly</span>
 
             <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" autocomplete="name" required />
             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
@@ -40,7 +40,7 @@
         <form method="POST" action="{{ route('login.submit') }}" aria-label="Sign in form">
             @csrf
             <h1>Sign In</h1>
-            <span>Use your account</span>
+            <span>Continue to your Ledgerly workspace</span>
 
             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
             <input type="password" name="password" placeholder="Password" autocomplete="current-password" required />
@@ -61,13 +61,13 @@
     <div class="overlay-container">
         <div class="overlay">
             <div class="overlay-panel overlay-left">
-                <h1>Welcome Back!</h1>
-                <p>To stay connected with us, please login with your personal info</p>
+                <h1>Welcome Back</h1>
+                <p>Sign in to continue managing spending, budgets, bills, and goals.</p>
                 <button class="ghost" id="signIn">Sign In</button>
             </div>
             <div class="overlay-panel overlay-right">
-                <h1>Hello, Friend!</h1>
-                <p>Enter your personal details and start your journey with us</p>
+                <h1>Start with Ledgerly</h1>
+                <p>Create an account for clear student finance tracking.</p>
                 <button class="ghost" id="signUp">Sign Up</button>
             </div>
         </div>

@@ -15,11 +15,11 @@
   --login-accent: #44e8ba;
   --login-accent-strong: #20c596;
   --login-danger: #ff8ca2;
-  --login-radius-sm: 14px;
-  --login-radius-md: 18px;
-  --login-radius-lg: 24px;
-  --login-shadow-soft: 0 20px 46px rgba(2, 8, 14, 0.4);
-  --login-shadow-hard: 0 34px 78px rgba(1, 8, 14, 0.56);
+  --login-radius-sm: 6px;
+  --login-radius-md: 8px;
+  --login-radius-lg: 8px;
+  --login-shadow-soft: 0 14px 34px rgba(2, 8, 14, 0.34);
+  --login-shadow-hard: 0 28px 68px rgba(1, 8, 14, 0.52);
   --login-focus-ring: 0 0 0 3px rgba(68, 232, 186, 0.28);
 }
 
@@ -48,7 +48,7 @@ h1 {
   font-family: "Space Grotesk", "Manrope", sans-serif;
   font-size: 1.7rem;
   line-height: 1.1;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 h2 {
@@ -83,7 +83,7 @@ button {
   font-family: inherit;
   font-size: 0.78rem;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0;
   text-transform: uppercase;
   padding: 0 18px;
   cursor: pointer;
@@ -126,7 +126,7 @@ form {
 input {
   width: 100%;
   height: 44px;
-  border-radius: 12px;
+  border-radius: var(--login-radius-md);
   border: 1px solid var(--login-line-soft);
   background: rgba(18, 33, 49, 0.94);
   color: var(--login-text-1);
@@ -151,7 +151,7 @@ input:focus {
   width: 100%;
   margin: 3px 0;
   padding: 10px;
-  border-radius: 12px;
+  border-radius: var(--login-radius-md);
   border: 1px solid rgba(255, 140, 162, 0.36);
   background: rgba(255, 140, 162, 0.12);
   text-align: left;
@@ -400,5 +400,16 @@ a:focus-visible {
 
   .container:not(.right-panel-active) .sign-in-container {
     display: block;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
   }
 }

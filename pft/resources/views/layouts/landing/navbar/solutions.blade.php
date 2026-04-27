@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PFT – Student Finance Solutions</title>
+    <title>Ledgerly – Student Finance Solutions</title>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
     <!-- Header -->
     <header class="site-header">
       <div class="site-header-inner">
-        <a href="{{ route('landing') }}" class="brand-logo">PFT</a>
+        <a href="{{ route('landing') }}" class="brand-logo">Ledgerly</a>
         <nav class="nav-links">
           <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
@@ -28,33 +28,33 @@
     <main class="page">
       <h1 class="page-title">Built for student finance</h1>
       <p class="page-subtitle">
-        Designed for real campus budgets: part-time income, rent reminders, and day-to-day spending decisions without spreadsheet overhead.
+        Ledgerly helps students track part-time income, rent reminders, daily spending, budgets, and saving goals without spreadsheet overhead.
       </p>
 
       <section class="grid three">
         <article class="card">
           <h3 class="card-title">Allowance & Part-time Income</h3>
-          <p class="card-tagline">Manage surprise transfers and part-time paychecks. Track income like the responsible adult you’re becoming.</p>
+          <p class="card-tagline">Record allowances, scholarships, stipends, and part-time pay so monthly totals stay clear.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Campus Essentials Budget</h3>
-          <p class="card-tagline">Budget for “real food,” emergency coffee, and that one scooter ride when the hill wins.</p>
+          <p class="card-tagline">Set monthly limits for food, travel, shopping, and other recurring student expenses.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Rent</h3>
-          <p class="card-tagline">Track payments, due dates, and avoid month-change panic attacks. Slow, steady, responsible.</p>
+          <p class="card-tagline">Track payments, due dates, and recurring rent reminders in the same finance workspace.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Tuition</h3>
-          <p class="card-tagline">Break tuition into installments, track fees and payment dates without the wallet jump scare.</p>
+          <p class="card-tagline">Plan larger education costs by logging payments, categories, and dates as they happen.</p>
         </article>
 
         <article class="card">
           <h3 class="card-title">Savings Goals</h3>
-          <p class="card-tagline">Trips, gadgets, emergency funds — small steps, big wins, less overdraft anxiety.</p>
+          <p class="card-tagline">Save toward trips, emergency funds, devices, or other goals with visible contribution progress.</p>
         </article>
       </section>
 
@@ -62,7 +62,7 @@
         <article class="card">
           <h3 class="card-title">Also useful for…</h3>
           <p class="card-tagline">
-            Useful beyond campus too, while staying focused on practical student finance workflows.
+            Ledgerly stays focused on practical workflows that are useful on campus and beyond.
           </p>
         </article>
       </section>
@@ -74,7 +74,7 @@
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 PFT.</p>
+      <p class="footer-text">© 2025 Ledgerly.</p>
     </footer>
   </body>
 </html>

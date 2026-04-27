@@ -4,14 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>PFT · Dashboard</title>
+    <title>Ledgerly · Dashboard</title>
     <link rel="stylesheet" href="{{ asset('css/pages/dashboard.css') }}?v={{ time() }}" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <!-- Header -->
     <header class="header">
-      <a href="{{ route('dashboard') }}" class="logo">PFT</a>
+      <a href="{{ route('dashboard') }}" class="logo">Ledgerly</a>
       <div class="user-section">
         <span class="user-name">Welcome, {{ Auth::user()->name }}</span>
         <div class="user-avatar">
@@ -514,7 +514,7 @@
 
     <div id="onboardingModal" class="onboarding-modal hidden" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
       <div class="onboarding-card">
-        <h2 id="onboardingTitle" class="onboarding-title">Welcome to your finance workspace</h2>
+        <h2 id="onboardingTitle" class="onboarding-title">Welcome to Ledgerly</h2>
         <p class="onboarding-sub">
           A quick tour to get started:
         </p>
@@ -527,13 +527,13 @@
         </ul>
         <div class="onboarding-actions">
           <button id="onboardingClose" class="onboarding-close" type="button">Skip</button>
-          <button id="onboardingDone" class="onboarding-done" type="button">Start Using PFT</button>
+          <button id="onboardingDone" class="onboarding-done" type="button">Start Using Ledgerly</button>
         </div>
       </div>
     </div>
 
     <script>
-      window.PFT = {
+      window.Ledgerly = {
         csrf: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
       };
     </script>
