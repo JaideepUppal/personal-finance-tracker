@@ -28,7 +28,7 @@
     <main class="page">
       <h1 class="page-title">Built for student finance</h1>
       <p class="page-subtitle">
-        Ledgerly helps students track part-time income, rent reminders, daily spending, budgets, and saving goals without spreadsheet overhead.
+        Ledgerly helps students track part-time income, rent, food, transport, recurring spending, budgets, and saving goals without spreadsheet overhead.
       </p>
 
       <section class="grid three">
@@ -56,13 +56,28 @@
           <h3 class="card-title">Savings Goals</h3>
           <p class="card-tagline">Save toward trips, emergency funds, devices, or other goals with visible contribution progress.</p>
         </article>
+
+        <article class="card">
+          <h3 class="card-title">Recurring Spending Awareness</h3>
+          <p class="card-tagline">Use AI subscription detection to review repeated payments and decide what still belongs in the budget.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Monthly Budget Reviews</h3>
+          <p class="card-tagline">Generate AI spending insights and next-month forecasts from the dashboard data you already track.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Student Finance Guidance</h3>
+          <p class="card-tagline">Ask the AI chatbot focused questions about budgeting habits, category planning, and Ledgerly workflows.</p>
+        </article>
       </section>
 
       <section class="grid" style="margin-top:22px">
         <article class="card">
           <h3 class="card-title">Also useful for…</h3>
           <p class="card-tagline">
-            Ledgerly stays focused on practical workflows that are useful on campus and beyond.
+            Ledgerly stays focused on practical workflows that are useful on campus and beyond: daily awareness, bill visibility, saving consistency, and simpler monthly reviews.
           </p>
         </article>
       </section>
@@ -74,7 +89,7 @@
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 Ledgerly.</p>
+      <p class="footer-text">© {{ date('Y') }} Ledgerly.</p>
     </footer>
   </body>
 </html>

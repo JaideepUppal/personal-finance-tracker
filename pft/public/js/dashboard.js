@@ -180,6 +180,77 @@ function renderCategoryPill(category, type = "expense") {
   return `<span class="category-pill cat-${tone}"><span class="category-dot" aria-hidden="true"></span>${escapeHtml(meta.label)}</span>`;
 }
 
+const CHART_TEXT_COLOR = "#d7e7f8";
+const CHART_MUTED_COLOR = "#9fb6cd";
+const CHART_GRID_COLOR = "rgba(141, 170, 199, 0.12)";
+const CHART_TOOLTIP_BG = "rgba(8, 18, 29, 0.96)";
+const LEDGERLY_CHART_PALETTE = [
+  "#58f0c5",
+  "#57b1ff",
+  "#ffbe76",
+  "#ff7d8f",
+  "#bfc6ff",
+  "#e3d26f",
+  "#9ae6b4",
+  "#f7c3ff",
+  "#85e3ff",
+  "#37c89b",
+];
+
+function chartYen(value) {
+  return "¥" + Number(value || 0).toLocaleString();
+}
+
+function ledgerlyChartPlugins(showLegend = true) {
+  return {
+    legend: {
+      display: showLegend,
+      labels: {
+        color: CHART_TEXT_COLOR,
+        boxWidth: 10,
+        boxHeight: 10,
+        padding: 14,
+        font: { family: "Manrope", size: 12, weight: "600" },
+      },
+    },
+    tooltip: {
+      backgroundColor: CHART_TOOLTIP_BG,
+      titleColor: "#f2fbff",
+      bodyColor: "#c7daed",
+      borderColor: "rgba(61, 228, 180, 0.28)",
+      borderWidth: 1,
+      cornerRadius: 8,
+      displayColors: true,
+      padding: 11,
+      callbacks: {
+        label(context) {
+          const label = context.dataset.label ? `${context.dataset.label}: ` : "";
+          return `${label}${chartYen(context.parsed?.y ?? context.parsed ?? 0)}`;
+        },
+      },
+    },
+  };
+}
+
+function ledgerlyChartScales() {
+  return {
+    x: {
+      grid: { color: CHART_GRID_COLOR, drawBorder: false },
+      ticks: { color: CHART_MUTED_COLOR, maxRotation: 0, font: { size: 11 } },
+    },
+    y: {
+      grid: { color: CHART_GRID_COLOR, drawBorder: false },
+      ticks: { color: CHART_MUTED_COLOR, font: { size: 11 } },
+      beginAtZero: true,
+    },
+  };
+}
+
+if (typeof Chart !== "undefined") {
+  Chart.defaults.font.family = "Manrope, Avenir Next, Segoe UI, sans-serif";
+  Chart.defaults.color = CHART_TEXT_COLOR;
+}
+
 // ============================================================================
 // Navigation
 // ============================================================================
@@ -508,8 +579,11 @@ if (savedSection && document.getElementById(savedSection)) {
         {
           label: "Recent Expenses",
           data: [],
-          borderColor: "#6fd36f",
-          backgroundColor: "rgba(111,211,111,.12)",
+          borderColor: "#58f0c5",
+          backgroundColor: "rgba(88, 240, 197, 0.12)",
+          pointBackgroundColor: "#58f0c5",
+          pointBorderColor: "#0b1826",
+          pointHoverRadius: 5,
           tension: 0.35,
           fill: true,
         },
@@ -518,11 +592,9 @@ if (savedSection && document.getElementById(savedSection)) {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: "#e2e3e9" } } },
-      scales: {
-        x: { ticks: { color: "#c3c4cc" } },
-        y: { ticks: { color: "#c3c4cc" }, beginAtZero: true },
-      },
+      interaction: { intersect: false, mode: "index" },
+      plugins: ledgerlyChartPlugins(true),
+      scales: ledgerlyChartScales(),
     },
   });
 
@@ -533,7 +605,7 @@ if (savedSection && document.getElementById(savedSection)) {
       responsive: true,
       maintainAspectRatio: true,
       aspectRatio: 1,
-      plugins: { legend: { labels: { color: "#e2e3e9" } } },
+      plugins: ledgerlyChartPlugins(true),
     },
   });
 
@@ -572,21 +644,8 @@ if (savedSection && document.getElementById(savedSection)) {
     pieChart.data.datasets[0].data = entries.map(([, v]) => v);
 
     // Give the slices colors (otherwise it looks black on dark bg)
-    const palette = [
-      "#7DF1A4",
-      "#57B1FF",
-      "#FFB27A",
-      "#FF8A8A",
-      "#BFC6FF",
-      "#E3D26F",
-      "#9AE6B4",
-      "#F7C3FF",
-      "#85E3FF",
-      "#6FD36F",
-    ];
-
     pieChart.data.datasets[0].backgroundColor = pieChart.data.labels.map(
-      (_, i) => palette[i % palette.length]
+      (_, i) => LEDGERLY_CHART_PALETTE[i % LEDGERLY_CHART_PALETTE.length]
     );
 
     pieChart.data.datasets[0].borderColor = "rgba(255,255,255,.06)";
@@ -779,8 +838,11 @@ if (savedSection && document.getElementById(savedSection)) {
           {
             label: "Recent Income",
             data: [],
-            borderColor: "#6fd36f",
-            backgroundColor: "rgba(111,211,111,.12)",
+            borderColor: "#58f0c5",
+            backgroundColor: "rgba(88, 240, 197, 0.12)",
+            pointBackgroundColor: "#58f0c5",
+            pointBorderColor: "#0b1826",
+            pointHoverRadius: 5,
             tension: 0.35,
             fill: true,
           },
@@ -789,11 +851,9 @@ if (savedSection && document.getElementById(savedSection)) {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { legend: { labels: { color: "#e2e3e9" } } },
-        scales: {
-          x: { ticks: { color: "#c3c4cc" } },
-          y: { ticks: { color: "#c3c4cc" }, beginAtZero: true },
-        },
+        interaction: { intersect: false, mode: "index" },
+        plugins: ledgerlyChartPlugins(true),
+        scales: ledgerlyChartScales(),
       },
     });
 
@@ -805,7 +865,7 @@ if (savedSection && document.getElementById(savedSection)) {
         responsive: true,
         maintainAspectRatio: true,
         aspectRatio: 1,
-        plugins: { legend: { labels: { color: "#e2e3e9" } } },
+        plugins: ledgerlyChartPlugins(true),
       },
     });
 
@@ -854,22 +914,22 @@ if (savedSection && document.getElementById(savedSection)) {
       // Base colors for standard categories
       const baseColorMap = {
         "Part-time": "#6fd36f",
-        Allowance: "#4da3ff",
-        Stipend: "#ffc857",
-        Scholarship: "#9b8cff",
-        Other: "#5dd3c3",
+        Allowance: "#57b1ff",
+        Stipend: "#ffbe76",
+        Scholarship: "#bfc6ff",
+        Other: "#58f0c5",
       };
 
       // Extra palette for any custom categories
       const extraPalette = [
-        "#FF8A8A",
-        "#BFC6FF",
-        "#E3D26F",
-        "#F7C3FF",
-        "#85E3FF",
-        "#9AE6B4",
-        "#FBB6CE",
-        "#A5F3FC",
+        "#ff7d8f",
+        "#bfc6ff",
+        "#e3d26f",
+        "#f7c3ff",
+        "#85e3ff",
+        "#9ae6b4",
+        "#fbb6ce",
+        "#a5f3fc",
       ];
 
       const colors = pieLabels.map((label, i) => {
@@ -1243,18 +1303,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: "#d7e7f8" } } },
-      scales: {
-        x: {
-          grid: { color: "rgba(141, 170, 199, 0.12)" },
-          ticks: { color: "#c7daed" },
-        },
-        y: {
-          grid: { color: "rgba(141, 170, 199, 0.12)" },
-          ticks: { color: "#c7daed" },
-          beginAtZero: true,
-        },
-      },
+      interaction: { intersect: false, mode: "index" },
+      plugins: ledgerlyChartPlugins(true),
+      scales: ledgerlyChartScales(),
     },
   });
 
@@ -1274,18 +1325,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: {
-          grid: { color: "rgba(141, 170, 199, 0.1)" },
-          ticks: { color: "#c7daed" },
-        },
-        y: {
-          grid: { color: "rgba(141, 170, 199, 0.12)" },
-          ticks: { color: "#c7daed" },
-          beginAtZero: true,
-        },
-      },
+      plugins: ledgerlyChartPlugins(false),
+      scales: ledgerlyChartScales(),
     },
   });
 
@@ -2352,6 +2393,24 @@ function collectAiFinanceSummary() {
   };
 }
 
+function collectAiChatContext() {
+  const summary = collectAiFinanceSummary();
+
+  return {
+    currency: summary.currency,
+    month: summary.month,
+    income: summary.income,
+    expenses: summary.expenses,
+    balance: summary.balance,
+    savings: summary.savings,
+    savings_rate: summary.savings_rate,
+    category_spending: summary.category_spending.slice(0, 8),
+    budgets: summary.budgets.slice(0, 8),
+    saving_goals: summary.saving_goals,
+    bills: summary.bills,
+  };
+}
+
 function renderAiCoachAdvice(output, advice) {
   output.textContent = "";
   output.classList.add("has-advice");
@@ -2374,6 +2433,7 @@ function renderAiCoachAdvice(output, advice) {
     list.appendChild(item);
   });
   output.appendChild(list);
+  resetAiOutputScroll(output);
 }
 
 function appendAiText(parent, text, className) {
@@ -2510,10 +2570,13 @@ function wireAiFinanceCoach() {
   if (!panel || !button || !output || !loading || !error) return;
 
   button.addEventListener("click", async () => {
+    const loadingMessage =
+      loading.textContent.trim() || "Analyzing your month...";
+
     button.disabled = true;
-    loading.textContent = config.loadingMessage;
+    loading.textContent = loadingMessage;
     loading.classList.add("hidden");
-    renderAiLoadingState(output, config.loadingMessage);
+    renderAiLoadingState(output, loadingMessage);
     error.classList.add("hidden");
     error.textContent = "";
 
@@ -2535,6 +2598,10 @@ function wireAiFinanceCoach() {
       error.textContent =
         err.message || "AI Finance Coach is unavailable right now.";
       error.classList.remove("hidden");
+      renderAiEmptyState(
+        output,
+        "Your AI Finance Coach summary will appear here."
+      );
     } finally {
       loading.classList.add("hidden");
       button.disabled = false;
@@ -2554,7 +2621,9 @@ function wireAiItemsPanel(config) {
 
   button.addEventListener("click", async () => {
     button.disabled = true;
-    loading.classList.remove("hidden");
+    loading.textContent = config.loadingMessage;
+    loading.classList.add("hidden");
+    renderAiLoadingState(output, config.loadingMessage);
     error.classList.add("hidden");
     error.textContent = "";
 
@@ -2577,6 +2646,114 @@ function wireAiItemsPanel(config) {
     } finally {
       loading.classList.add("hidden");
       button.disabled = false;
+    }
+  });
+}
+
+function appendAiChatMessage(messages, role, text) {
+  const bubble = document.createElement("div");
+  bubble.className = `ai-chat-message ${role}`;
+  bubble.textContent = String(text || "").trim();
+  messages.appendChild(bubble);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+function setAiChatLoading(loading, isLoading) {
+  loading.classList.toggle("hidden", !isLoading);
+}
+
+function wireAiChatbot() {
+  const panel = document.getElementById("aiChatPanel");
+  const toggle = document.getElementById("aiChatToggle");
+  const body = panel?.querySelector(".ai-chat-body");
+  const messages = document.getElementById("aiChatMessages");
+  const input = document.getElementById("aiChatInput");
+  const send = document.getElementById("aiChatSend");
+  const error = document.getElementById("aiChatError");
+  const loading = document.getElementById("aiChatLoading");
+
+  if (
+    !panel ||
+    !toggle ||
+    !body ||
+    !messages ||
+    !input ||
+    !send ||
+    !error ||
+    !loading
+  ) {
+    return;
+  }
+
+  function setChatCollapsed(collapsed, shouldFocus = false) {
+    panel.classList.toggle("is-collapsed", collapsed);
+    body.hidden = collapsed;
+    toggle.textContent = collapsed ? "Open chat" : "Collapse chat";
+    toggle.setAttribute("aria-expanded", String(!collapsed));
+    toggle.setAttribute(
+      "aria-label",
+      collapsed ? "Open chat" : "Collapse chat"
+    );
+
+    if (!collapsed) {
+      messages.scrollTop = messages.scrollHeight;
+      if (shouldFocus) input.focus();
+    }
+  }
+
+  setChatCollapsed(panel.classList.contains("is-collapsed"));
+
+  toggle.addEventListener("click", () => {
+    setChatCollapsed(!panel.classList.contains("is-collapsed"), true);
+  });
+
+  async function submitMessage() {
+    const message = input.value.trim();
+    if (!message || send.disabled) return;
+
+    error.classList.add("hidden");
+    error.textContent = "";
+    appendAiChatMessage(messages, "user", message);
+    input.value = "";
+    send.disabled = true;
+    input.disabled = true;
+    setAiChatLoading(loading, true);
+
+    try {
+      const res = await apiFetch("/api/ai/chat", {
+        method: "POST",
+        body: JSON.stringify({
+          message,
+          context: collectAiChatContext(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || data.success === false) {
+        throw new Error(data.message || "AI Chatbot is unavailable right now.");
+      }
+
+      appendAiChatMessage(
+        messages,
+        "assistant",
+        data.reply || "I could not generate a response. Please try again."
+      );
+    } catch (err) {
+      error.textContent = err.message || "AI Chatbot is unavailable right now.";
+      error.classList.remove("hidden");
+    } finally {
+      setAiChatLoading(loading, false);
+      send.disabled = false;
+      input.disabled = false;
+      if (!body.hidden) input.focus();
+    }
+  }
+
+  send.addEventListener("click", submitMessage);
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      submitMessage();
     }
   });
 }
@@ -2620,3 +2797,4 @@ document.addEventListener("DOMContentLoaded", wireFloatingQuickAdd);
 document.addEventListener("DOMContentLoaded", wireOnboarding);
 document.addEventListener("DOMContentLoaded", wireAiFinanceCoach);
 document.addEventListener("DOMContentLoaded", wireAiFeaturePanels);
+document.addEventListener("DOMContentLoaded", wireAiChatbot);

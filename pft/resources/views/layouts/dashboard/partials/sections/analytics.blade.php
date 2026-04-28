@@ -48,6 +48,52 @@
     </div>
   </div>
 
+  <div id="aiChatPanel" class="panel ai-chat-panel is-collapsed">
+    <div class="panel-header ai-chat-header">
+      <div>
+        <h2 class="panel-title">AI Student Finance Chatbot</h2>
+        <p class="ai-coach-copy">
+          Ask focused questions about budgeting, spending habits, saving goals, and how to use Ledgerly.
+        </p>
+      </div>
+      <button
+        id="aiChatToggle"
+        class="filter-btn ai-feature-button"
+        type="button"
+        aria-expanded="false"
+        aria-label="Open chat"
+      >
+        Open chat
+      </button>
+    </div>
+
+    <div class="ai-chat-body" hidden>
+      <div id="aiChatMessages" class="ai-chat-messages" aria-live="polite">
+        <div class="ai-chat-message assistant">
+          Ask a student finance question, or ask how to interpret your current Ledgerly dashboard.
+        </div>
+      </div>
+      <div id="aiChatLoading" class="ai-chat-loading hidden" aria-live="polite">
+        <span class="ai-chat-loading-dot" aria-hidden="true"></span>
+        Thinking through your Ledgerly data...
+      </div>
+      <div id="aiChatError" class="ai-coach-error hidden" role="alert" aria-live="polite"></div>
+      <div class="ai-chat-input-row">
+        <textarea
+          id="aiChatInput"
+          class="filter-input ai-chat-input"
+          rows="2"
+          maxlength="800"
+          placeholder="Ask about budgeting, spending, savings goals, or Ledgerly features"
+          aria-label="Ask the AI Student Finance Chatbot"
+        ></textarea>
+        <button id="aiChatSend" class="filter-btn ai-chat-send" type="button">
+          Send
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="analytics-grid">
     <!-- Spending trend -->
     <div class="chart-container panel">

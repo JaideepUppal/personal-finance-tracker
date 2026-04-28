@@ -27,7 +27,7 @@
     <main class="page">
       <h1 class="page-title">Help & FAQ</h1>
       <p class="page-subtitle">
-        Quick answers for everyday actions in Ledgerly.
+        Quick answers for everyday actions, dashboard analytics, and Ledgerly AI features.
       </p>
 
       <section class="grid">
@@ -70,6 +70,36 @@
             They refresh as entries are added, deleted, or filtered.
           </p>
         </article>
+
+        <article class="card">
+          <h3 class="card-title">What does AI Finance Coach do?</h3>
+          <p class="card-text">
+            AI Finance Coach summarizes the current dashboard and returns short, practical budgeting next steps based on the data already in Ledgerly.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">What can the AI chatbot answer?</h3>
+          <p class="card-text">
+            The chatbot helps with Ledgerly usage, budgeting, spending habits, saving goals, category planning, and student finance organization.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">What data is sent to AI?</h3>
+          <p class="card-text">
+            AI requests use summarized finance context such as totals, categories, budgets, bills, and goals.
+            Ledgerly does not send passwords, email, or authentication data to the AI provider.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Is the AI professional financial advice?</h3>
+          <p class="card-text">
+            No. Ledgerly AI provides practical budgeting guidance and app-specific help only. It does not provide legal,
+            tax, investment, or professional financial advice.
+          </p>
+        </article>
       </section>
 
       <div class="cta-row center">
@@ -79,7 +109,7 @@
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 Ledgerly.</p>
+      <p class="footer-text">© {{ date('Y') }} Ledgerly.</p>
     </footer>
   </body>
 </html>

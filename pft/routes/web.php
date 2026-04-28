@@ -7,6 +7,7 @@ use App\Http\Controllers\BudgetController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\SavingGoalController;
 use App\Http\Controllers\AiFinanceCoachController;
+use App\Http\Controllers\AiChatController;
 
 
 
@@ -75,4 +76,5 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::post('/api/ai/monthly-insights', [AiFinanceCoachController::class, 'monthlyInsights']);
     Route::post('/api/ai/subscription-detector', [AiFinanceCoachController::class, 'subscriptionDetector']);
     Route::post('/api/ai/budget-forecast', [AiFinanceCoachController::class, 'budgetForecast']);
+    Route::post('/api/ai/chat', AiChatController::class);
 });

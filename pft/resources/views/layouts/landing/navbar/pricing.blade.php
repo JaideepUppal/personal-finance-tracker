@@ -26,7 +26,7 @@
 
     <main class="page">
       <h1 class="page-title">Simple pricing for student finance</h1>
-      <p class="page-subtitle">Ledgerly is currently free while the core finance platform continues to improve.</p>
+      <p class="page-subtitle">Ledgerly is currently free while the student finance platform continues to improve.</p>
 
       <section class="grid plans">
         <article class="card plan highlight">
@@ -39,9 +39,10 @@
             <li>Recurring bill reminders from saved expenses</li>
             <li>Saving goals with contribution tracking</li>
             <li>Analytics for spending trends and category breakdowns</li>
+            <li>AI Finance Coach, monthly insights, subscription detection, budget forecasts, and chatbot guidance</li>
           </ul>
           <a href="{{ route('login') }}" class="cta cta-primary block">Get started free</a>
-          <p class="micro-note" style="margin-top:10px">Free while Ledgerly continues to ship core features.</p>
+          <p class="micro-note" style="margin-top:10px">Free while Ledgerly continues to improve the core experience.</p>
         </article>
 
         <article class="card plan soon">
@@ -58,7 +59,7 @@
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 Ledgerly.</p>
+      <p class="footer-text">© {{ date('Y') }} Ledgerly.</p>
     </footer>
   </body>
 </html>

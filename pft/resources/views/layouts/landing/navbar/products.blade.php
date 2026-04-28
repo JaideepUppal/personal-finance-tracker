@@ -26,7 +26,7 @@
 
     <main class="page">
       <h1 class="page-title">Ledgerly Finance Platform</h1>
-      <p class="page-subtitle">Everything students need to see, plan, and improve everyday finances.</p>
+      <p class="page-subtitle">Everything students need to see, plan, and improve everyday finances with secure tracking, analytics, and purpose-limited AI assistance.</p>
 
       <section class="grid">
         <article class="card">
@@ -53,6 +53,31 @@
           <h3 class="card-title">Bill Reminders</h3>
           <p class="card-tagline">Turn recurring expenses into reminders and keep monthly obligations visible.</p>
         </article>
+
+        <article class="card">
+          <h3 class="card-title">Analytics Dashboard</h3>
+          <p class="card-tagline">Review Chart.js trends, category breakdowns, monthly comparisons, and savings snapshots.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">AI Finance Coach</h3>
+          <p class="card-tagline">Generate short, practical next steps from your current income, expenses, budgets, bills, and goals.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">AI Spending Insights</h3>
+          <p class="card-tagline">Use monthly insights, recurring spending detection, and budget forecasts to understand patterns faster.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">AI Student Finance Chatbot</h3>
+          <p class="card-tagline">Ask focused questions about budgeting, saving goals, category planning, and Ledgerly workflows.</p>
+        </article>
+
+        <article class="card">
+          <h3 class="card-title">Secure Laravel Authentication</h3>
+          <p class="card-tagline">Keep the dashboard behind session-based authentication with CSRF-protected same-origin requests.</p>
+        </article>
       </section>
 
       <div class="cta-row center">
@@ -62,7 +87,7 @@
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 Ledgerly.</p>
+      <p class="footer-text">© {{ date('Y') }} Ledgerly.</p>
     </footer>
   </body>
 </html>

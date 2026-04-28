@@ -27,14 +27,14 @@
 
     <main class="page about">
       <section class="fun-hero">
-        <h1 class="page-title">Built by one student for clear student finance</h1>
+        <h1 class="page-title">Built by one student to make everyday budgeting clearer</h1>
         <p class="page-subtitle">
-          Ledgerly is created to make everyday budgeting simpler, with a clean workspace for tracking spending, income, budgets, bills, and saving goals.
+          Ledgerly is created to make everyday budgeting simpler, with a clean workspace for tracking spending, income, budgets, bills, saving goals, analytics, and practical AI guidance.
         </p>
         <div class="sticker-row">
           <span class="pill">No spreadsheets</span>
           <span class="pill">Rent tracking</span>
-          <span class="pill">Tuition installments</span>
+          <span class="pill">AI spending reviews</span>
         </div>
       </section>
 
@@ -42,7 +42,7 @@
         <article class="card">
           <h3 class="card-title">The spark</h3>
           <p class="card-text">
-            Ledgerly started as a class project and is now focused on practical student finance: fast entry, clear totals, and useful month-to-month context.
+            Ledgerly started as a class project and is now focused on practical student finance: fast entry, clear totals, useful month-to-month context, and safe AI assistance.
           </p>
         </article>
 
@@ -59,7 +59,7 @@
         <article class="card">
           <h3 class="card-title">How I build</h3>
           <p class="card-text">
-            Small releases, real student budget scenarios, and careful polish. The focus is a clean interface that makes money decisions easier to understand.
+            Small releases, real student budget scenarios, and careful polish. The focus is a secure Laravel application that makes money decisions easier to understand.
           </p>
         </article>
       </section>
@@ -87,7 +87,7 @@
     </main>
 
     <footer class="page-footer">
-      <p class="footer-text">© 2025 Ledgerly.</p>
+      <p class="footer-text">© {{ date('Y') }} Ledgerly.</p>
     </footer>
   </body>
 </html>

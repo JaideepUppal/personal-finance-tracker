@@ -43,10 +43,10 @@
         </h1>
 
         <p class="subtext">
-          Smart money management for students. Track spending, budgets, bills, and savings goals in one focused workspace.
+          Smart money management for students. Track income, expenses, budgets, bills, and saving goals with analytics, AI Finance Coach, monthly insights, subscription detection, budget forecasts, and an AI student finance chatbot.
         </p>
 
-        <p class="confidence-line">Created to make everyday budgeting simpler.</p>
+        <p class="confidence-line">Created to make everyday budgeting clearer with secure Laravel authentication.</p>
 
         <div class="hero-ctas">
           <a href="{{ route('login') }}" class="cta cta-primary">Start free</a>
@@ -83,7 +83,7 @@
           </div>
 
           <div class="preview-footnote">
-            Track spending. Get bill reminders. See trends.
+            Track spending. See trends. Ask Ledgerly AI for practical next steps.
           </div>
         </div>
       </section>
@@ -92,7 +92,7 @@
     <!-- FOOTER -->
     <footer class="page-footer">
       <p class="footer-text">
-        © 2025 Ledgerly. Built by one student for clear student finance.
+        © {{ date('Y') }} Ledgerly. Built by one student for clear student finance.
       </p>
     </footer>
   </body>
