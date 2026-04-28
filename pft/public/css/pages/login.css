@@ -342,6 +342,64 @@ footer i {
   color: #ff8ca2;
 }
 
+/* Premium polish pass: auth typography, controls, and panel rhythm */
+h1 {
+  font-size: clamp(1.9rem, 1.5rem + 1vw, 2.2rem);
+  line-height: 1.08;
+}
+
+p {
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+span {
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+
+button {
+  min-height: 46px;
+  padding: 0 20px;
+  font-size: 0.82rem;
+}
+
+form {
+  gap: 10px;
+  padding: 0 48px;
+}
+
+input {
+  height: 46px;
+  border-radius: var(--login-radius-md);
+  font-size: 0.94rem;
+  padding: 0 15px;
+}
+
+input::placeholder {
+  color: #8ba2ba;
+}
+
+.password-field input {
+  padding-right: 82px;
+}
+
+.password-toggle {
+  right: 8px;
+  height: 32px;
+  min-height: 32px;
+  min-width: 60px;
+}
+
+.container {
+  min-height: 590px;
+  border-radius: var(--login-radius-lg);
+}
+
+.overlay-panel {
+  padding: 0 44px;
+}
+
 button:focus-visible,
 input:focus-visible,
 a:focus-visible {

@@ -39,7 +39,7 @@
   --land-focus-ring: 0 0 0 3px rgba(68, 232, 186, 0.28);
 }
 
-/* TODO AI expansion: monthly spending insights, subscription detector, and next-month budget forecasting. */
+/* Public pages share the same dark fintech visual language as the dashboard. */
 
 * {
   margin: 0;
@@ -672,6 +672,122 @@ a {
 .footer-text {
   color: var(--text-soft);
   font-size: 0.8rem;
+}
+
+/* Premium polish pass: typography, rhythm, and public-page cards */
+.site-header-inner {
+  padding: 16px 24px;
+}
+
+.nav-links {
+  gap: 22px;
+}
+
+.nav-link {
+  font-size: 0.94rem;
+  line-height: 1.35;
+}
+
+.login-btn,
+.signup-btn,
+.cta {
+  min-height: 46px;
+  padding-left: 18px;
+  padding-right: 18px;
+  font-size: 0.86rem;
+}
+
+.hero {
+  padding: 68px 24px 84px;
+  gap: 34px;
+}
+
+.hero-left {
+  gap: 20px;
+}
+
+.headline {
+  font-size: clamp(2.5rem, 1.45rem + 3vw, 4rem);
+  line-height: 1.05;
+}
+
+.subtext {
+  max-width: 760px;
+  font-size: 1.05rem;
+  line-height: 1.68;
+}
+
+.confidence-line {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.preview-card,
+.card {
+  padding: 24px;
+}
+
+.preview-stats-grid,
+.grid,
+.about-grid,
+.about .grid.three {
+  gap: 20px;
+}
+
+.mini-card {
+  padding: 18px;
+}
+
+.mini-label,
+.pill,
+.badge-soon,
+.footer-text {
+  font-size: 0.78rem;
+}
+
+.mini-value {
+  font-size: 1.65rem;
+}
+
+.page {
+  padding: 72px 24px 104px;
+}
+
+.page-title {
+  font-size: clamp(2.35rem, 1.45rem + 2.35vw, 3.35rem);
+  line-height: 1.1;
+}
+
+.page-subtitle {
+  margin-top: 14px;
+  font-size: 1.03rem;
+  line-height: 1.68;
+}
+
+.grid,
+.about-grid {
+  margin-top: 30px;
+}
+
+.card-title {
+  font-size: 1.125rem;
+  line-height: 1.35;
+}
+
+.card-tagline,
+.card-text,
+.bullet {
+  font-size: 0.95rem;
+  line-height: 1.66;
+}
+
+.cta-row {
+  margin-top: 30px;
+  gap: 12px;
+}
+
+.page-footer {
+  padding: 24px 16px;
 }
 
 button:focus-visible,

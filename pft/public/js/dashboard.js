@@ -182,7 +182,7 @@ function renderCategoryPill(category, type = "expense") {
 
 const CHART_TEXT_COLOR = "#d7e7f8";
 const CHART_MUTED_COLOR = "#9fb6cd";
-const CHART_GRID_COLOR = "rgba(141, 170, 199, 0.12)";
+const CHART_GRID_COLOR = "rgba(141, 170, 199, 0.1)";
 const CHART_TOOLTIP_BG = "rgba(8, 18, 29, 0.96)";
 const LEDGERLY_CHART_PALETTE = [
   "#58f0c5",
@@ -210,7 +210,7 @@ function ledgerlyChartPlugins(showLegend = true) {
         boxWidth: 10,
         boxHeight: 10,
         padding: 14,
-        font: { family: "Manrope", size: 12, weight: "600" },
+        font: { family: "Manrope", size: 12, weight: "700" },
       },
     },
     tooltip: {
@@ -221,7 +221,9 @@ function ledgerlyChartPlugins(showLegend = true) {
       borderWidth: 1,
       cornerRadius: 8,
       displayColors: true,
-      padding: 11,
+      padding: 12,
+      titleFont: { family: "Manrope", size: 13, weight: "700" },
+      bodyFont: { family: "Manrope", size: 12, weight: "600" },
       callbacks: {
         label(context) {
           const label = context.dataset.label ? `${context.dataset.label}: ` : "";
@@ -236,11 +238,11 @@ function ledgerlyChartScales() {
   return {
     x: {
       grid: { color: CHART_GRID_COLOR, drawBorder: false },
-      ticks: { color: CHART_MUTED_COLOR, maxRotation: 0, font: { size: 11 } },
+      ticks: { color: CHART_MUTED_COLOR, maxRotation: 0, font: { size: 12 } },
     },
     y: {
       grid: { color: CHART_GRID_COLOR, drawBorder: false },
-      ticks: { color: CHART_MUTED_COLOR, font: { size: 11 } },
+      ticks: { color: CHART_MUTED_COLOR, font: { size: 12 } },
       beginAtZero: true,
     },
   };
