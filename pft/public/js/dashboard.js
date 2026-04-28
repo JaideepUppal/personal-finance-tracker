@@ -1,3 +1,7 @@
+// ============================================================================
+// Bootstrap, API helpers, and shared utilities
+// ============================================================================
+
 //  username/avatar from login
 (function () {
   const savedName = localStorage.getItem("pftUserName");
@@ -176,7 +180,10 @@ function renderCategoryPill(category, type = "expense") {
   return `<span class="category-pill cat-${tone}"><span class="category-dot" aria-hidden="true"></span>${escapeHtml(meta.label)}</span>`;
 }
 
-//  Sidebar navigation logic (same as before)
+// ============================================================================
+// Navigation
+// ============================================================================
+
 //  Sidebar navigation logic with tab memory
 const navItems = document.querySelectorAll(".nav-item");
 const sections = document.querySelectorAll(".content-section");
@@ -216,6 +223,10 @@ if (savedSection && document.getElementById(savedSection)) {
     activateSection(sectionId);
   }
 }
+
+// ============================================================================
+// Expense tracking
+// ============================================================================
 
 //  Expenses Tracking(add/search/delete + total + sorting)
 (function () {
@@ -588,6 +599,10 @@ if (savedSection && document.getElementById(savedSection)) {
   redrawCharts();
 })();
 
+// ============================================================================
+// Income tracking
+// ============================================================================
+
 //  Income Tracking (add/search/delete + total + charts)
 (function () {
   const list = document.getElementById("incomeList");
@@ -943,6 +958,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   loadTransactionsOnce();
 });
 
+// ============================================================================
+// Monthly budgets
+// ============================================================================
+
 (function () {
   const listEl = document.getElementById("budgetList");
   const addBtn = document.getElementById("budAddBtn");
@@ -1118,6 +1137,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   render();
 })();
 
+// ============================================================================
+// Analytics and charts
+// ============================================================================
+
 //  Analytics
 (function () {
   const spendLineEl = document.getElementById("anSpendLine");
@@ -1210,8 +1233,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         {
           label: "Daily spend",
           data: [],
-          borderColor: "#6fd36f",
-          backgroundColor: "rgba(111,211,111,.12)",
+          borderColor: "#58f0c5",
+          backgroundColor: "rgba(88, 240, 197, 0.12)",
           tension: 0.35,
           fill: true,
         },
@@ -1220,10 +1243,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: "#e2e3e9" } } },
+      plugins: { legend: { labels: { color: "#d7e7f8" } } },
       scales: {
-        x: { ticks: { color: "#c3c4cc" } },
-        y: { ticks: { color: "#c3c4cc" }, beginAtZero: true },
+        x: {
+          grid: { color: "rgba(141, 170, 199, 0.12)" },
+          ticks: { color: "#c7daed" },
+        },
+        y: {
+          grid: { color: "rgba(141, 170, 199, 0.12)" },
+          ticks: { color: "#c7daed" },
+          beginAtZero: true,
+        },
       },
     },
   });
@@ -1235,7 +1265,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       datasets: [
         {
           data: [0, 0],
-          backgroundColor: ["#6fd36f", "#ff6b6b"],
+          backgroundColor: ["#58f0c5", "#ff7d8f"],
           borderWidth: 0,
           borderRadius: 8,
         },
@@ -1246,8 +1276,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { ticks: { color: "#c3c4cc" } },
-        y: { ticks: { color: "#c3c4cc" }, beginAtZero: true },
+        x: {
+          grid: { color: "rgba(141, 170, 199, 0.1)" },
+          ticks: { color: "#c7daed" },
+        },
+        y: {
+          grid: { color: "rgba(141, 170, 199, 0.12)" },
+          ticks: { color: "#c7daed" },
+          beginAtZero: true,
+        },
       },
     },
   });
@@ -1306,7 +1343,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   redraw();
 })();
 
-//CHANGES TO THE DASHBOARD,SYNCING TO THE OTHER TABS
+// ============================================================================
+// Dashboard overview, bill reminders, and section syncing
+// ============================================================================
+
 //  Dashboard (sync with other tabs + yen)
 (function () {
   const incomeEl = document.getElementById("dashTotalIncome");
@@ -1808,6 +1848,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   redrawAll();
 })();
 
+// ============================================================================
+// Saving goals
+// ============================================================================
+
 // Saving Goals (create / list / contribute / delete)
 (function () {
   const listEl = document.getElementById("sgList");
@@ -1974,6 +2018,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   refreshGoals();
 })();
 
+// ============================================================================
+// Quick add and onboarding
+// ============================================================================
+
 //  Floating Quick Add Expense with Custom category
 function wireFloatingQuickAdd() {
   const btn = document.getElementById("floatingQuickAdd");
@@ -2138,6 +2186,10 @@ function wireOnboarding() {
   });
 }
 
+// ============================================================================
+// AI finance tools
+// ============================================================================
+
 function numberFromMoney(text = "") {
   const value = Number(String(text).replace(/[^\d.-]/g, ""));
   return Number.isFinite(value) ? Math.abs(value) : 0;
@@ -2152,6 +2204,44 @@ function readCurrentBudgets(month) {
   }
 }
 
+function roundMoney(value) {
+  const number = Number(value || 0);
+  return Number.isFinite(number) ? Math.round(number * 100) / 100 : 0;
+}
+
+function formatAiYen(value) {
+  const numeric = Number(String(value || "").replace(/[^\d.-]/g, ""));
+  if (!Number.isFinite(numeric) || numeric <= 0) return "";
+  return "¥" + Math.round(numeric).toLocaleString();
+}
+
+function normalizeAiBadge(value) {
+  const raw = String(value || "").trim().toLowerCase();
+  if (!raw) return "";
+  if (raw.includes("likely")) return "Likely";
+  if (raw.includes("possible")) return "Possible";
+  if (raw.includes("medium")) return "Medium";
+  if (raw.includes("high")) return "High";
+  if (raw.includes("low")) return "Low";
+  return "";
+}
+
+function transactionSummaryFromItem(item, type) {
+  const title =
+    item.querySelector(".expense-details h4")?.textContent?.trim() ||
+    (type === "income" ? "Income" : "Expense");
+
+  return {
+    type,
+    title: title.slice(0, 80),
+    category: String(item.dataset.category || "other")
+      .toLowerCase()
+      .slice(0, 48),
+    amount: roundMoney(item.dataset.amount || 0),
+    date: localDateKey(item.dataset.date || new Date()),
+  };
+}
+
 function collectAiFinanceSummary() {
   const now = new Date();
   const month = localDateKey(now).slice(0, 7);
@@ -2162,7 +2252,13 @@ function collectAiFinanceSummary() {
 
   const categoryTotals = {};
   let expenses = 0;
+  const transactions = [];
+  const currentMonthExpenses = [];
+
   expenseItems.forEach((item) => {
+    const tx = transactionSummaryFromItem(item, "expense");
+    transactions.push(tx);
+
     if (!isSameLocalMonth(item.dataset.date, now)) return;
     const amount = Number(item.dataset.amount || 0);
     const category = (item.dataset.category || "other")
@@ -2170,10 +2266,14 @@ function collectAiFinanceSummary() {
       .slice(0, 48);
     expenses += amount;
     categoryTotals[category] = (categoryTotals[category] || 0) + amount;
+    currentMonthExpenses.push(tx);
   });
 
   let income = 0;
   incomeItems.forEach((item) => {
+    const tx = transactionSummaryFromItem(item, "income");
+    transactions.push(tx);
+
     if (!isSameLocalMonth(item.dataset.date, now)) return;
     income += Number(item.dataset.amount || 0);
   });
@@ -2192,8 +2292,8 @@ function collectAiFinanceSummary() {
       const key = String(category).toLowerCase().slice(0, 48);
       return {
         category: key,
-        limit: Number(limit || 0),
-        spent: Math.round(Number(categoryTotals[key] || 0) * 100) / 100,
+        limit: roundMoney(limit || 0),
+        spent: roundMoney(categoryTotals[key] || 0),
       };
     });
 
@@ -2223,22 +2323,32 @@ function collectAiFinanceSummary() {
   });
 
   const balance = income - expenses;
+  const savings = Math.max(0, balance);
+  const savingsRate = income > 0 ? Math.round((savings / income) * 100) : 0;
+  const largestRecentTransactions = currentMonthExpenses
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 8);
 
   return {
     currency: "JPY",
     month,
-    income: Math.round(income * 100) / 100,
-    expenses: Math.round(expenses * 100) / 100,
-    balance: Math.round(balance * 100) / 100,
-    savings: Math.round(Math.max(0, balance) * 100) / 100,
+    income: roundMoney(income),
+    expenses: roundMoney(expenses),
+    balance: roundMoney(balance),
+    savings: roundMoney(savings),
+    savings_rate: savingsRate,
     category_spending: categorySpending,
     budgets,
     saving_goals: {
       count: savingGoals.count,
-      target_total: Math.round(savingGoals.target_total * 100) / 100,
-      saved_total: Math.round(savingGoals.saved_total * 100) / 100,
+      target_total: roundMoney(savingGoals.target_total),
+      saved_total: roundMoney(savingGoals.saved_total),
     },
     bills,
+    largest_recent_transactions: largestRecentTransactions,
+    transactions: transactions
+      .sort((a, b) => dateFromAny(b.date) - dateFromAny(a.date))
+      .slice(0, 100),
   };
 }
 
@@ -2266,6 +2376,130 @@ function renderAiCoachAdvice(output, advice) {
   output.appendChild(list);
 }
 
+function appendAiText(parent, text, className) {
+  if (!text) return;
+  const el = document.createElement("div");
+  el.className = className;
+  el.textContent = text;
+  parent.appendChild(el);
+}
+
+function appendAiMeta(parent, label, value, asBadge = false) {
+  if (!value) return;
+
+  const row = document.createElement("div");
+  row.className = "ai-output-meta-row";
+
+  const labelEl = document.createElement("span");
+  labelEl.className = "ai-output-meta-label";
+  labelEl.textContent = label;
+  row.appendChild(labelEl);
+
+  const valueEl = document.createElement("span");
+  valueEl.className = asBadge ? "ai-output-badge" : "ai-output-meta-value";
+  valueEl.textContent = value;
+  row.appendChild(valueEl);
+
+  parent.appendChild(row);
+}
+
+function resetAiOutputScroll(output) {
+  output.scrollTop = 0;
+}
+
+function renderAiEmptyState(output, message) {
+  output.textContent = "";
+  output.classList.remove("has-advice");
+  output.classList.remove("ai-output-loading");
+  output.classList.add("ai-output-empty");
+
+  const card = document.createElement("div");
+  card.className = "ai-output-item ai-output-empty-card";
+  appendAiText(card, message, "ai-output-detail");
+
+  output.appendChild(card);
+  resetAiOutputScroll(output);
+}
+
+function renderAiLoadingState(output, message) {
+  output.textContent = "";
+  output.classList.remove("has-advice", "ai-output-empty");
+  output.classList.add("ai-output-loading");
+
+  const card = document.createElement("div");
+  card.className = "ai-loading-card";
+
+  const header = document.createElement("div");
+  header.className = "ai-loading-header";
+
+  const dots = document.createElement("span");
+  dots.className = "ai-loading-dots";
+  for (let i = 0; i < 3; i += 1) {
+    const dot = document.createElement("span");
+    dots.appendChild(dot);
+  }
+
+  const label = document.createElement("span");
+  label.textContent = message;
+
+  header.appendChild(dots);
+  header.appendChild(label);
+  card.appendChild(header);
+
+  for (let i = 0; i < 3; i += 1) {
+    const skeleton = document.createElement("div");
+    skeleton.className = "ai-loading-skeleton";
+    card.appendChild(skeleton);
+  }
+
+  output.appendChild(card);
+  resetAiOutputScroll(output);
+}
+
+function renderAiItems(output, items, emptyMessage) {
+  output.textContent = "";
+  output.classList.remove("ai-output-empty", "ai-output-loading");
+  output.classList.add("has-advice");
+
+  if (!Array.isArray(items) || !items.length) {
+    renderAiEmptyState(output, emptyMessage);
+    return;
+  }
+
+  const list = document.createElement("div");
+  list.className = "ai-output-list";
+
+  items.slice(0, 5).forEach((item) => {
+    const card = document.createElement("div");
+    card.className = "ai-output-item";
+
+    if (typeof item === "string") {
+      appendAiText(card, item, "ai-output-title");
+      list.appendChild(card);
+      return;
+    }
+
+    const title = item.title || item.category || "Insight";
+    const amount = formatAiYen(item.amount);
+    const priority = normalizeAiBadge(item.priority);
+    const confidence = normalizeAiBadge(item.confidence);
+    const description = item.description || item.detail || item.reason || "";
+    const action = item.action ? `Action: ${item.action}` : "";
+
+    appendAiText(card, title, "ai-output-title");
+    appendAiMeta(card, "Estimated amount:", amount);
+    appendAiMeta(card, "Priority:", priority, true);
+    appendAiMeta(card, "Confidence:", confidence, true);
+    appendAiText(card, description, "ai-output-detail");
+    appendAiText(card, action, "ai-output-action");
+
+    list.appendChild(card);
+  });
+
+  output.appendChild(list);
+  resetAiOutputScroll(output);
+}
+
 function wireAiFinanceCoach() {
   const panel = document.getElementById("aiCoachPanel");
   const button = document.getElementById("aiCoachButton");
@@ -2277,7 +2511,9 @@ function wireAiFinanceCoach() {
 
   button.addEventListener("click", async () => {
     button.disabled = true;
-    loading.classList.remove("hidden");
+    loading.textContent = config.loadingMessage;
+    loading.classList.add("hidden");
+    renderAiLoadingState(output, config.loadingMessage);
     error.classList.add("hidden");
     error.textContent = "";
 
@@ -2306,6 +2542,81 @@ function wireAiFinanceCoach() {
   });
 }
 
+function wireAiItemsPanel(config) {
+  const button = document.getElementById(config.buttonId);
+  const output = document.getElementById(config.outputId);
+  const loading = document.getElementById(config.loadingId);
+  const error = document.getElementById(config.errorId);
+
+  if (!button || !output || !loading || !error) return;
+
+  renderAiEmptyState(output, output.textContent.trim() || config.emptyMessage);
+
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    loading.classList.remove("hidden");
+    error.classList.add("hidden");
+    error.textContent = "";
+
+    try {
+      const res = await apiFetch(config.endpoint, {
+        method: "POST",
+        body: JSON.stringify({ summary: collectAiFinanceSummary() }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || data.success === false) {
+        throw new Error(data.message || config.errorMessage);
+      }
+
+      renderAiItems(output, data.items || [], config.emptyMessage);
+    } catch (err) {
+      error.textContent = err.message || config.errorMessage;
+      error.classList.remove("hidden");
+      renderAiEmptyState(output, config.emptyMessage);
+    } finally {
+      loading.classList.add("hidden");
+      button.disabled = false;
+    }
+  });
+}
+
+function wireAiFeaturePanels() {
+  [
+    {
+      buttonId: "aiMonthlyInsightsButton",
+      outputId: "aiMonthlyInsightsOutput",
+      loadingId: "aiMonthlyInsightsLoading",
+      errorId: "aiMonthlyInsightsError",
+      endpoint: "/api/ai/monthly-insights",
+      loadingMessage: "Analyzing spending patterns...",
+      emptyMessage: "No monthly insights returned. Please try again.",
+      errorMessage: "AI Monthly Spending Insights is unavailable right now.",
+    },
+    {
+      buttonId: "aiSubscriptionButton",
+      outputId: "aiSubscriptionOutput",
+      loadingId: "aiSubscriptionLoading",
+      errorId: "aiSubscriptionError",
+      endpoint: "/api/ai/subscription-detector",
+      loadingMessage: "Reviewing recurring transactions...",
+      emptyMessage: "No recurring spending patterns returned.",
+      errorMessage: "AI Subscription Detector is unavailable right now.",
+    },
+    {
+      buttonId: "aiForecastButton",
+      outputId: "aiForecastOutput",
+      loadingId: "aiForecastLoading",
+      errorId: "aiForecastError",
+      endpoint: "/api/ai/budget-forecast",
+      loadingMessage: "Forecasting next month...",
+      emptyMessage: "No forecast suggestions returned. Please try again.",
+      errorMessage: "AI Budget Forecast is unavailable right now.",
+    },
+  ].forEach(wireAiItemsPanel);
+}
+
 document.addEventListener("DOMContentLoaded", wireFloatingQuickAdd);
 document.addEventListener("DOMContentLoaded", wireOnboarding);
 document.addEventListener("DOMContentLoaded", wireAiFinanceCoach);
+document.addEventListener("DOMContentLoaded", wireAiFeaturePanels);

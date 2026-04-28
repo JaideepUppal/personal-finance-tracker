@@ -1,0 +1,92 @@
+<section id="analytics" class="content-section">
+  <h1 class="section-title">Analytics</h1>
+
+  <div class="ai-tools-grid">
+    <div id="aiMonthlyInsightsPanel" class="panel ai-feature-panel">
+      <div class="panel-header ai-feature-header">
+        <div>
+          <h2 class="panel-title">AI Monthly Spending Insights</h2>
+          <p class="ai-coach-copy">Spot patterns in this month's income, spending, savings rate, and largest recent expenses.</p>
+        </div>
+        <button id="aiMonthlyInsightsButton" class="filter-btn ai-feature-button" type="button">
+          Generate insights
+        </button>
+      </div>
+      <div id="aiMonthlyInsightsLoading" class="ai-coach-loading hidden" aria-live="polite">Generating insights...</div>
+      <div id="aiMonthlyInsightsError" class="ai-coach-error hidden" role="alert" aria-live="polite"></div>
+      <div id="aiMonthlyInsightsOutput" class="ai-coach-output" aria-live="polite">Generate insights after adding income and expenses.</div>
+    </div>
+
+    <div id="aiSubscriptionPanel" class="panel ai-feature-panel">
+      <div class="panel-header ai-feature-header">
+        <div>
+          <h2 class="panel-title">AI Subscription Detector</h2>
+          <p class="ai-coach-copy">Review transaction history for recurring or subscription-like spending patterns.</p>
+        </div>
+        <button id="aiSubscriptionButton" class="filter-btn ai-feature-button" type="button">
+          Detect recurring spending
+        </button>
+      </div>
+      <div id="aiSubscriptionLoading" class="ai-coach-loading hidden" aria-live="polite">Checking recurring patterns...</div>
+      <div id="aiSubscriptionError" class="ai-coach-error hidden" role="alert" aria-live="polite"></div>
+      <div id="aiSubscriptionOutput" class="ai-coach-output" aria-live="polite">Recurring patterns will appear here.</div>
+    </div>
+
+    <div id="aiForecastPanel" class="panel ai-feature-panel">
+      <div class="panel-header ai-feature-header">
+        <div>
+          <h2 class="panel-title">AI Budget Forecast</h2>
+          <p class="ai-coach-copy">Estimate next month's pressure areas and practical budget adjustments.</p>
+        </div>
+        <button id="aiForecastButton" class="filter-btn ai-feature-button" type="button">
+          Forecast next month
+        </button>
+      </div>
+      <div id="aiForecastLoading" class="ai-coach-loading hidden" aria-live="polite">Forecasting next month...</div>
+      <div id="aiForecastError" class="ai-coach-error hidden" role="alert" aria-live="polite"></div>
+      <div id="aiForecastOutput" class="ai-coach-output" aria-live="polite">Forecast suggestions will appear here.</div>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <!-- Spending trend -->
+    <div class="chart-container panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Spending Trends (Last 14 days)</h2>
+      </div>
+      <canvas id="anSpendLine"></canvas>
+    </div>
+
+    <!-- Category breakdown -->
+    <div class="chart-container panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Category Breakdown (This month)</h2>
+      </div>
+      <div id="anCatBars" class="cat-bars"></div>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <!-- Monthly comparison -->
+    <div class="chart-container panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Monthly Comparison</h2>
+      </div>
+      <canvas id="anMonthBar"></canvas>
+    </div>
+
+    <!-- Savings rate -->
+    <div class="chart-container panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Savings Snapshot</h2>
+      </div>
+      <div class="savings-card">
+        <div>
+          <div class="savings-big" id="anSavingsPct">0%</div>
+          <div class="savings-sub" id="anSavingsText">No data yet</div>
+        </div>
+        <div class="savings-pill" id="anSavingsPill">Savings rate</div>
+      </div>
+    </div>
+  </div>
+</section>

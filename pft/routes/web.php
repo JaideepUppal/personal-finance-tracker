@@ -72,4 +72,7 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::delete('/api/saving-goals/{savingGoal}', [SavingGoalController::class, 'destroy']);
 
     Route::post('/api/ai/finance-coach', AiFinanceCoachController::class);
+    Route::post('/api/ai/monthly-insights', [AiFinanceCoachController::class, 'monthlyInsights']);
+    Route::post('/api/ai/subscription-detector', [AiFinanceCoachController::class, 'subscriptionDetector']);
+    Route::post('/api/ai/budget-forecast', [AiFinanceCoachController::class, 'budgetForecast']);
 });
