@@ -20,8 +20,18 @@
 
             <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" autocomplete="name" required />
             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
-            <input type="password" name="password" placeholder="Password" autocomplete="new-password" required />
-            <input type="password" name="password_confirmation" placeholder="Confirm Password" autocomplete="new-password" required />
+            <div class="password-field">
+                <input id="signupPassword" type="password" name="password" placeholder="Password" autocomplete="new-password" required />
+                <button class="password-toggle" type="button" aria-label="Show password">
+                    <span aria-hidden="true">Show</span>
+                </button>
+            </div>
+            <div class="password-field">
+                <input id="signupPasswordConfirmation" type="password" name="password_confirmation" placeholder="Confirm Password" autocomplete="new-password" required />
+                <button class="password-toggle" type="button" aria-label="Show password">
+                    <span aria-hidden="true">Show</span>
+                </button>
+            </div>
 
             @if ($errors->any() && session('form') === 'signup')
                 <div class="error" role="alert" aria-live="polite">
@@ -43,7 +53,12 @@
             <span>Continue to your Ledgerly workspace</span>
 
             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
-            <input type="password" name="password" placeholder="Password" autocomplete="current-password" required />
+            <div class="password-field">
+                <input id="loginPassword" type="password" name="password" placeholder="Password" autocomplete="current-password" required />
+                <button class="password-toggle" type="button" aria-label="Show password">
+                    <span aria-hidden="true">Show</span>
+                </button>
+            </div>
 
             @if ($errors->any() && session('form') === 'signin')
                 <div class="error" role="alert" aria-live="polite">

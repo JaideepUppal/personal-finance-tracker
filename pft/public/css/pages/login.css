@@ -15,7 +15,7 @@
   --login-accent: #44e8ba;
   --login-accent-strong: #20c596;
   --login-danger: #ff8ca2;
-  --login-radius-sm: 6px;
+  --login-radius-sm: 8px;
   --login-radius-md: 8px;
   --login-radius-lg: 8px;
   --login-shadow-soft: 0 14px 34px rgba(2, 8, 14, 0.34);
@@ -40,6 +40,7 @@ body {
     radial-gradient(circle at 12% -14%, #1b3955 0%, rgba(27, 57, 85, 0) 44%),
     radial-gradient(circle at 98% 0%, #174848 0%, rgba(23, 72, 72, 0) 36%),
     linear-gradient(150deg, var(--login-bg-0) 0%, var(--login-bg-1) 56%, var(--login-bg-2) 100%);
+  line-height: 1.5;
 }
 
 h1 {
@@ -87,7 +88,11 @@ button {
   text-transform: uppercase;
   padding: 0 18px;
   cursor: pointer;
-  transition: transform 0.16s ease, filter 0.16s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 12px 26px rgba(25, 158, 123, 0.22);
+  transition: transform 0.16s ease, filter 0.16s ease, box-shadow 0.16s ease,
+    border-color 0.16s ease, background-color 0.16s ease;
 }
 
 button:hover {
@@ -107,6 +112,7 @@ button.ghost {
   border-color: var(--login-line-strong);
   background: rgba(122, 149, 176, 0.15);
   color: var(--login-text-0);
+  box-shadow: none;
 }
 
 form {
@@ -145,6 +151,47 @@ input::placeholder {
 input:focus {
   border-color: rgba(68, 232, 186, 0.58);
   box-shadow: var(--login-focus-ring);
+}
+
+.password-field {
+  position: relative;
+  width: 100%;
+}
+
+.password-field input {
+  padding-right: 76px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 7px;
+  top: 50%;
+  min-height: 30px;
+  height: 30px;
+  min-width: 56px;
+  border-radius: var(--login-radius-sm);
+  border-color: rgba(146, 172, 198, 0.32);
+  background: rgba(122, 149, 176, 0.14);
+  color: var(--login-text-1);
+  font-size: 0.68rem;
+  padding: 0 8px;
+  text-transform: none;
+  transform: translateY(-50%);
+  box-shadow: none;
+}
+
+.password-toggle span {
+  margin-top: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+.password-toggle:hover {
+  color: #f2fffb;
+  border-color: rgba(68, 232, 186, 0.44);
+  background: rgba(68, 232, 186, 0.14);
+  transform: translateY(-50%);
+  filter: none;
 }
 
 .error {
