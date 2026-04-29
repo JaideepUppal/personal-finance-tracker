@@ -1,122 +1,232 @@
-# Personal Finance Tracker (PFT)
+# Ledgerly
 
-Personal Finance Tracker (PFT) is a full-stack web application designed to help students and young adults understand their spending habits and build healthier financial behavior. The application focuses on clarity, ease of use, and meaningful insights rather than complex budgeting workflows.
+**AI-Powered Personal Finance Platform for Students and Young Professionals**
 
-PFT allows users to track income and expenses, set monthly budgets, visualize financial trends, receive budget-based reminders, and monitor long-term saving goals — all through a single, responsive dashboard.
+Ledgerly is a modern full-stack finance web application built to make money management simpler, smarter, and more actionable. It helps users track income, expenses, budgets, savings goals, and financial habits through a clean dashboard enhanced with AI-powered insights.
+
+Designed and developed as a portfolio-grade software engineering project using Laravel, MySQL, JavaScript, and Chart.js.
 
 ---
 
-## Features
+## Live Project Vision
 
-### Landing & Marketing Pages
-- Public landing page explaining the purpose of PFT
-- Product, Solutions, Pricing, and About pages
-- Clean, student-focused UI built with Blade and custom CSS
+Ledgerly is built for users who want clarity over their finances without using overly complex banking apps or spreadsheets.
 
-### Authentication
-- Secure user registration and login
-- Session-based authentication with CSRF protection
-- Logout and route protection using Laravel middleware
+Whether you are a student managing monthly expenses, someone saving toward goals, or trying to understand spending habits, Ledgerly helps turn raw numbers into useful decisions.
 
-### Dashboard Overview
-- Monthly summary cards:
-  - Total income
-  - Total expenses
-  - Balance
-  - Savings
-- Recent expenses list
-- Budget-based bill reminder panel
-- Analytics previews
+---
+
+## Core Features
+
+### Authentication & Security
+
+- Secure user registration and login system
+- Password hashing using Laravel authentication standards
+- Session-based authentication
+- Protected dashboard routes
+- CSRF protection enabled
+- Server-side validation
 
 ### Expense Tracking
-- Add, view, and delete expenses
-- Categories (predefined or custom)
-- Search and real-time filtering
-- Expense trend and category breakdown charts
-- Recurring expense flag support
+
+- Add daily expenses quickly
+- Categorize spending (Food, Rent, Transport, Shopping, etc.)
+- Custom categories supported
+- Search and filter expenses
+- Expense history list
+- Spending trend charts
 
 ### Income Tracking
-- Add income entries (salary, allowance, part-time work, etc.)
-- Income trend and source breakdown charts
-- Stored in the same transaction model as expenses for simpler analytics
 
-### Monthly Budgeting
-- Set monthly spending limits per category
-- Automatically highlights categories close to or exceeding limits
-- Budget warnings displayed directly on the dashboard
+- Track salary, allowance, freelance income, scholarships, and more
+- Categorized income entries
+- Monthly summaries
+- Income history list
+- Income charts
 
-### Analytics
-- Spending trends (last 14 days)
-- Category breakdown for the current month
+### Budget Management
+
+- Set monthly budgets by category
+- View remaining budget instantly
+- Progress bars for each category
+- Overspending alerts
+- Smart visual indicators
+
+### Savings Goals
+
+- Create savings goals
+- Set target amount and deadline
+- Add contributions over time
+- Progress tracking
+- Goal completion visibility
+
+### Analytics Dashboard
+
+- Spending trends over time
+- Income trends
 - Monthly comparisons
-- Savings snapshot (income vs expenses)
-
-Charts are rendered using Chart.js and updated dynamically without page reloads.
-
-### Saving Goals
-- Create long-term financial goals (e.g. travel, emergency fund)
-- Track progress with visual progress bars
-- Add contributions to goals
-- Delete completed or unused goals
-- Goals are private and user-specific
-
-### Quick Add Expense
-- Floating “+” button on the dashboard
-- Quickly record expenses without leaving the page
-- Automatically updates totals, lists, and charts
+- Expense category breakdowns
+- Savings percentage snapshot
+- Financial overview cards
 
 ---
 
-## Technology Stack
+## AI Features
+
+### AI Finance Coach
+
+Provides suggestions based on income, expenses, budgets, goals, and trends.
+
+### AI Monthly Spending Insights
+
+Detects patterns such as rising categories, spikes, and concentration of spending.
+
+### AI Subscription Detector
+
+Identifies repeated charges and possible recurring subscriptions.
+
+### AI Budget Forecast
+
+Predicts next month’s spending from recent activity.
+
+### AI Finance Chatbot
+
+Interactive assistant for budgeting, savings, expenses, and Ledgerly usage help.
+
+---
+
+## Tech Stack
 
 ### Backend
-- Laravel (PHP)
-- Eloquent ORM
-- REST-style JSON endpoints
 
-### Database
-- MySQL
+- Laravel (PHP)
+- MVC Architecture
+- Protected Routes
+- Server-side Validation
 
 ### Frontend
-- Blade templates
-- HTML / CSS / Vanilla JavaScript
-- Chart.js (via CDN)
+
+- HTML
+- CSS
+- JavaScript
+
+### Database
+
+- MySQL
+
+### Charts
+
+- Chart.js
+
+### AI Integration
+
+- Groq API (server-side only)
+
+### Tooling
+
+- Vite
 
 ---
 
-## Setup & Run Instructions
+## Project Structure
 
-### Prerequisites
-- PHP
-- Composer
-- MySQL
-- Google Chrome (recommended)
-
-### Installation
-
-```bash
-git clone https://github.com/your-username/personal-finance-tracker.git
-cd personal-finance-tracker/pft
-composer install
-copy .env.example .env
-php artisan key:generate
-php artisan migrate
-php artisan serve
+```text
+pft/
+├── app/
+├── public/
+│   ├── css/
+│   └── js/
+├── resources/
+│   └── views/
+├── routes/
+├── database/
+└── README.md
 ```
 
-Open:
-http://127.0.0.1:8000
+---
+
+## Security Notes
+
+- API keys stored in `.env`
+- No secrets exposed client-side
+- AI requests handled server-side
+- Input validation enabled
+- Protected AI routes
+- Safe chatbot rendering
+
+---
+
+## Installation
+
+### Clone Repository
+
+```bash
+git clone https://github.com/JaideepUppal/personal-finance-tracker.git
+cd personal-finance-tracker/pft
+```
+
+### Install Dependencies
+
+```bash
+composer install
+npm install
+```
+
+### Configure Environment
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+Update `.env`:
+
+```env
+DB_DATABASE=your_db
+DB_USERNAME=your_user
+DB_PASSWORD=your_pass
+
+GROQ_API_KEY=your_key
+GROQ_MODEL=llama-3.3-70b-versatile
+```
+
+### Run Database
+
+```bash
+php artisan migrate
+```
+
+### Start App
+
+```bash
+php artisan serve
+npm run dev
+```
 
 ---
 
 ## Future Improvements
+
+- CSV imports
+- Recurring bill reminders
+- PDF reports
+- Email summaries
+- Dark/light themes
+- PWA support
 - Multi-currency support
-- Advanced recurring transactions
-- Export data (CSV / Excel)
-- Email-based bill reminders
-- Improved mobile responsiveness
 
 ---
 
-## Attribution
-Built using Laravel and Chart.js. OpenAI ChatGPT was used as a coding assistant for debugging and improvements.
+## Author
+
+**Jaideep Uppal**
+
+Temple University Japan
+
+GitHub: https://github.com/JaideepUppal
+
+---
+
+## License
+
+Portfolio / Educational Use
