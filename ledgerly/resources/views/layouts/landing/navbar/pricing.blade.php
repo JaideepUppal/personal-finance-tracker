@@ -24,7 +24,7 @@
             <span class="theme-toggle-text">Dark</span>
           </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
-          <a href="{{ route('login') }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
+          <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
         </div>
       </div>
     </header>
@@ -46,7 +46,7 @@
             <li>Analytics for spending trends and category breakdowns</li>
             <li>AI Finance Coach, monthly insights, subscription detection, budget forecasts, and chatbot guidance</li>
           </ul>
-          <a href="{{ route('login') }}" class="cta cta-primary block">Get started free</a>
+          <a href="{{ route('login', ['mode' => 'signup']) }}" class="cta cta-primary block">Get started free</a>
           <p class="micro-note" style="margin-top:10px">Free while Ledgerly continues to improve the core experience.</p>
         </article>
 
@@ -58,7 +58,7 @@
       </section>
 
       <div class="cta-row center">
-        <a href="{{ route('login') }}" class="cta cta-primary">Start free</a>
+        <a href="{{ route('login', ['mode' => 'signup']) }}" class="cta cta-primary">Start free</a>
         <a href="{{ route('products') }}" class="cta cta-ghost">See features</a>
       </div>
     </main>

@@ -25,7 +25,7 @@
             <span class="theme-toggle-text">Dark</span>
           </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
-          <a href="{{ route('login') }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
+          <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
         </div>
       </div>
     </header>
@@ -85,7 +85,7 @@
       </section>
 
       <div class="cta-row center about-cta">
-        <a href="{{ route('login') }}" class="cta cta-primary">Start free</a>
+        <a href="{{ route('login', ['mode' => 'signup']) }}" class="cta cta-primary">Start free</a>
         <a href="{{ route('products') }}" class="cta cta-ghost">See what it does</a>
       </div>
 

@@ -2,13 +2,23 @@ const signUpButton = document.getElementById("signUp");
 const signInButton = document.getElementById("signIn");
 const container = document.getElementById("container");
 
-signUpButton?.addEventListener("click", () => {
+function showSignupPanel() {
   container?.classList.add("right-panel-active");
-});
+}
 
-signInButton?.addEventListener("click", () => {
+function showLoginPanel() {
   container?.classList.remove("right-panel-active");
-});
+}
+
+signUpButton?.addEventListener("click", showSignupPanel);
+
+signInButton?.addEventListener("click", showLoginPanel);
+
+const initialMode = new URLSearchParams(window.location.search).get("mode");
+
+if (initialMode === "signup") {
+  showSignupPanel();
+}
 
 document.querySelectorAll(".password-toggle").forEach((button) => {
   const field = button.closest(".password-field");

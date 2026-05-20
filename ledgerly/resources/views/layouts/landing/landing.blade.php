@@ -36,7 +36,7 @@
             <button class="login-btn">Log in</button>
           </a>
 
-          <a href="{{route('login')}}" class="signup-btn-link">
+          <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link">
             <button class="signup-btn">Sign up</button>
           </a>
         </div>
