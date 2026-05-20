@@ -66,6 +66,108 @@ async function deleteJSON(url) {
   return res.json();
 }
 
+function currentMonthKey(date = new Date()) {
+  const d = dateFromAny(date);
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+}
+
+function normalizeBudgetRecord(record = {}) {
+  const category = String(record.category || "other").toLowerCase();
+  const limit = Number(record.limit_amount ?? record.limit ?? 0);
+
+  return {
+    ...record,
+    id: record.id,
+    category,
+    limit_amount: Number.isFinite(limit) ? limit : 0,
+    month: record.month || currentMonthKey(),
+  };
+}
+
+const currentBudgetSnapshot = {
+  month: currentMonthKey(),
+  budgets: [],
+  loaded: false,
+  loading: false,
+  error: null,
+  promise: null,
+};
+
+window.currentBudgetSnapshot = currentBudgetSnapshot;
+
+function getCurrentBudgetRecords(month = currentMonthKey()) {
+  if (currentBudgetSnapshot.month !== month) return [];
+  return currentBudgetSnapshot.budgets;
+}
+
+function getCurrentBudgetMap(month = currentMonthKey()) {
+  return getCurrentBudgetRecords(month).reduce((acc, budget) => {
+    acc[budget.category] = Number(budget.limit_amount || 0);
+    return acc;
+  }, {});
+}
+
+async function fetchBudgetSnapshot(month = currentMonthKey()) {
+  if (
+    currentBudgetSnapshot.loading &&
+    currentBudgetSnapshot.promise &&
+    currentBudgetSnapshot.month === month
+  ) {
+    return currentBudgetSnapshot.promise;
+  }
+
+  currentBudgetSnapshot.month = month;
+  currentBudgetSnapshot.loading = true;
+  currentBudgetSnapshot.error = null;
+
+  currentBudgetSnapshot.promise = (async () => {
+    try {
+      const res = await apiFetch(
+        `/api/budgets?month=${encodeURIComponent(month)}`
+      );
+      if (!res.ok) {
+        throw new Error(`GET /api/budgets failed ${res.status}`);
+      }
+
+      const data = await res.json();
+      const budgets = Array.isArray(data.budgets)
+        ? data.budgets.map(normalizeBudgetRecord)
+        : [];
+
+      currentBudgetSnapshot.month = data.month || month;
+      currentBudgetSnapshot.budgets = budgets;
+      currentBudgetSnapshot.loaded = true;
+      currentBudgetSnapshot.error = null;
+      document.dispatchEvent(
+        new CustomEvent("budgets:changed", {
+          detail: {
+            month: currentBudgetSnapshot.month,
+            budgets,
+          },
+        })
+      );
+      return budgets;
+    } catch (error) {
+      currentBudgetSnapshot.budgets = [];
+      currentBudgetSnapshot.loaded = false;
+      currentBudgetSnapshot.error = error;
+      throw error;
+    } finally {
+      currentBudgetSnapshot.loading = false;
+      currentBudgetSnapshot.promise = null;
+    }
+  })();
+
+  return currentBudgetSnapshot.promise;
+}
+
+async function ensureBudgetSnapshotLoaded(month = currentMonthKey()) {
+  if (currentBudgetSnapshot.loaded && currentBudgetSnapshot.month === month) {
+    return currentBudgetSnapshot.budgets;
+  }
+  return fetchBudgetSnapshot(month);
+}
+
 const CATEGORY_META = {
   food: { icon: "FD", tone: "food", label: "Food" },
   rent: { icon: "RT", tone: "rent", label: "Rent" },
@@ -1346,23 +1448,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Storage keys are per-month (YYYY-MM)
-  const monthKey = () => {
-    const d = new Date();
-    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
-  };
-  const LS_KEY = (mk = monthKey()) => "pft_budgets_" + mk;
-
-  function loadBudgets() {
-    try {
-      return JSON.parse(localStorage.getItem(LS_KEY()) || "{}");
-    } catch {
-      return {};
-    }
-  }
-  function saveBudgets(b) {
-    localStorage.setItem(LS_KEY(), JSON.stringify(b || {}));
-  }
+  const monthKey = () => currentMonthKey();
+  let budgetsLoading = false;
+  let budgetLoadError = "";
 
   function yen(n) {
     return "¥" + Number(n).toLocaleString();
@@ -1389,17 +1477,61 @@ document.addEventListener("DOMContentLoaded", async () => {
     return out;
   }
 
+  function setTotals(limit = 0, spent = 0) {
+    if (totalLim) totalLim.textContent = "Budget: " + yen(limit);
+    if (totalSpd) totalSpd.textContent = "Spent: -" + yen(spent);
+    if (totalRem) totalRem.textContent = "Left: " + yen(Math.max(limit - spent, 0));
+  }
+
+  function renderBudgetMessage(title, detail = "") {
+    setTotals();
+    listEl.innerHTML = "";
+    const card = document.createElement("div");
+    card.className = "budget-card";
+    card.innerHTML = `
+      <div class="bud-top-row">
+        <div>
+          <div class="bud-cat-name">${escapeHtml(title)}</div>
+          ${
+            detail
+              ? `<div class="bud-percent-text">${escapeHtml(detail)}</div>`
+              : ""
+          }
+        </div>
+      </div>
+    `;
+    listEl.appendChild(card);
+  }
+
   function render() {
-    const budgets = loadBudgets();
+    if (budgetsLoading) {
+      renderBudgetMessage("Loading budgets...");
+      return;
+    }
+
+    if (budgetLoadError) {
+      renderBudgetMessage(budgetLoadError);
+      return;
+    }
+
+    const budgets = getCurrentBudgetRecords(monthKey());
     const spent = spentByCategory();
 
     listEl.innerHTML = "";
     let tLimit = 0,
       tSpent = 0;
 
-    Object.keys(budgets).forEach((cat) => {
-      const limit = Number(budgets[cat] || 0);
-      const useCat = cat.toLowerCase();
+    if (!budgets.length) {
+      renderBudgetMessage(
+        "No budgets yet",
+        "Set a category limit to start tracking this month."
+      );
+      return;
+    }
+
+    budgets.forEach((budget) => {
+      const limit = Number(budget.limit_amount || 0);
+      const useCat = String(budget.category || "other").toLowerCase();
       const used = Number(spent[useCat] || 0);
       const remain = Math.max(limit - used, 0);
 
@@ -1411,13 +1543,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       const prettyCat = useCat.charAt(0).toUpperCase() + useCat.slice(1);
       const safeCat = escapeHtml(prettyCat.replace(/-/g, " "));
       const safeCatKey = escapeHtml(useCat);
+      const safeBudgetId = escapeHtml(String(budget.id || ""));
 
       const card = document.createElement("div");
       card.className = "budget-card";
       card.innerHTML = `
         <div class="bud-top-row">
           <div class="bud-cat-name">${safeCat}</div>
-          <button class="tiny-del-ghost bud-remove-btn" data-del="${safeCatKey}">
+          <button class="tiny-del-ghost bud-remove-btn" data-budget-id="${safeBudgetId}" data-budget-category="${safeCatKey}">
             Remove
           </button>
         </div>
@@ -1440,13 +1573,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       listEl.appendChild(card);
     });
 
-    totalLim.textContent = "Budget: " + yen(tLimit);
-    totalSpd.textContent = "Spent: -" + yen(tSpent);
-    totalRem.textContent = "Left: " + yen(Math.max(tLimit - tSpent, 0));
+    setTotals(tLimit, tSpent);
+  }
+
+  async function refreshBudgets() {
+    budgetsLoading = true;
+    budgetLoadError = "";
+    render();
+
+    try {
+      await fetchBudgetSnapshot(monthKey());
+    } catch (err) {
+      console.error("Failed to load budgets:", err);
+      budgetLoadError = "Could not load budgets. Please refresh.";
+    } finally {
+      budgetsLoading = false;
+      render();
+    }
   }
 
   // Add / update limit (supports Custom...)
-  addBtn.addEventListener("click", () => {
+  addBtn.addEventListener("click", async () => {
     let cat = (catEl.value || "other").toLowerCase();
     const amt = Number(amtEl.value);
     if (!amt || amt <= 0) return;
@@ -1462,39 +1609,62 @@ document.addEventListener("DOMContentLoaded", async () => {
       month: monthKey(), // 'YYYY-MM'
     };
 
-    apiFetch("/api/budgets", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    })
-      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
-      .catch((err) => console.warn("Budget save (server) failed:", err))
-      .finally(() => {
-        const data = loadBudgets();
-        data[cat] = amt; // add or update
-        saveBudgets(data);
-        amtEl.value = "";
-        catEl.value = "food";
-        if (catCustomEl) {
-          catCustomEl.value = "";
-          catCustomEl.style.display = "none";
-        }
-        render();
+    addBtn.disabled = true;
+    budgetLoadError = "";
+
+    try {
+      const res = await apiFetch("/api/budgets", {
+        method: "POST",
+        body: JSON.stringify(payload),
       });
+
+      if (!res.ok) {
+        throw new Error(`POST /api/budgets failed ${res.status}`);
+      }
+
+      await res.json().catch(() => ({}));
+      amtEl.value = "";
+      catEl.value = "food";
+      if (catCustomEl) {
+        catCustomEl.value = "";
+        catCustomEl.style.display = "none";
+      }
+      await refreshBudgets();
+    } catch (err) {
+      console.error("Failed to save budget:", err);
+      budgetLoadError = "Could not save budget. Please try again.";
+      render();
+    } finally {
+      addBtn.disabled = false;
+    }
   });
 
-  // Remove a category
-  document.addEventListener("click", (e) => {
-    if (e.target.matches(".tiny-del-ghost")) {
-      const cat = e.target.getAttribute("data-del");
-      const data = loadBudgets();
-      delete data[cat];
-      saveBudgets(data);
+  // Remove a category budget from the database
+  listEl.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".bud-remove-btn");
+    if (!btn) return;
+
+    const budgetId = btn.getAttribute("data-budget-id");
+    if (!budgetId) return;
+
+    btn.disabled = true;
+    budgetLoadError = "";
+
+    try {
+      await deleteJSON(`/api/budgets/${encodeURIComponent(budgetId)}`);
+      await refreshBudgets();
+    } catch (err) {
+      console.error("Failed to delete budget:", err);
+      budgetLoadError = "Could not remove budget. Please try again.";
       render();
+    } finally {
+      btn.disabled = false;
     }
   });
 
   document.addEventListener("expenses:changed", render);
-  render();
+  document.addEventListener("budgets:changed", render);
+  refreshBudgets();
 })();
 
 // ============================================================================
@@ -2167,15 +2337,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Loading Monthly Budget limits to build “reminders”
   function loadBudgetsForCurrentMonth() {
-    const now = new Date();
-    const key = `pft_budgets_${now.getFullYear()}-${String(
-      now.getMonth() + 1
-    ).padStart(2, "0")}`;
-    try {
-      return JSON.parse(localStorage.getItem(key) || "{}");
-    } catch {
-      return {};
-    }
+    return getCurrentBudgetMap(currentMonthKey());
   }
 
   async function renderBills() {
@@ -2457,6 +2619,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // React to changes from other tabs
   document.addEventListener("expenses:changed", redrawAll);
   document.addEventListener("incomes:changed", redrawAll);
+  document.addEventListener("budgets:changed", renderSummary);
 
   // Make "View All" links switch sections
   document.querySelectorAll("#dashboard .view-all").forEach((a) => {
@@ -2829,12 +2992,7 @@ function numberFromMoney(text = "") {
 }
 
 function readCurrentBudgets(month) {
-  try {
-    const raw = localStorage.getItem(`pft_budgets_${month}`);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
+  return getCurrentBudgetMap(month);
 }
 
 function roundMoney(value) {
@@ -3173,6 +3331,7 @@ function wireAiFinanceCoach() {
     error.textContent = "";
 
     try {
+      await ensureBudgetSnapshotLoaded();
       const res = await apiFetch("/api/ai/finance-coach", {
         method: "POST",
         body: JSON.stringify({ summary: collectAiFinanceSummary() }),
@@ -3220,6 +3379,7 @@ function wireAiItemsPanel(config) {
     error.textContent = "";
 
     try {
+      await ensureBudgetSnapshotLoaded();
       const res = await apiFetch(config.endpoint, {
         method: "POST",
         body: JSON.stringify({ summary: collectAiFinanceSummary() }),
@@ -3312,6 +3472,7 @@ function wireAiChatbot() {
     setAiChatLoading(loading, true);
 
     try {
+      await ensureBudgetSnapshotLoaded();
       const res = await apiFetch("/api/ai/chat", {
         method: "POST",
         body: JSON.stringify({
