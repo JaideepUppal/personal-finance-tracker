@@ -10,7 +10,7 @@
     //  "Welcome, name"
     const userNameSpan = document.querySelector(".user-name");
     if (userNameSpan) {
-      userNameSpan.textContent = "Welcome, " + savedName;
+      userNameSpan.textContent = savedName;
     }
 
     const avatarDiv = document.querySelector(".user-avatar");
@@ -67,15 +67,15 @@ async function deleteJSON(url) {
 }
 
 const CATEGORY_META = {
-  food: { icon: "🍜", tone: "food", label: "Food" },
-  rent: { icon: "🏠", tone: "rent", label: "Rent" },
-  travel: { icon: "🚗", tone: "travel", label: "Travel" },
-  shopping: { icon: "🛍️", tone: "shopping", label: "Shopping" },
-  other: { icon: "💳", tone: "other", label: "Other" },
-  "part-time": { icon: "💼", tone: "part-time", label: "Part-time" },
-  allowance: { icon: "🎁", tone: "allowance", label: "Allowance" },
-  stipend: { icon: "🏫", tone: "stipend", label: "Stipend" },
-  scholarship: { icon: "🎓", tone: "scholarship", label: "Scholarship" },
+  food: { icon: "FD", tone: "food", label: "Food" },
+  rent: { icon: "RT", tone: "rent", label: "Rent" },
+  travel: { icon: "TR", tone: "travel", label: "Travel" },
+  shopping: { icon: "SH", tone: "shopping", label: "Shopping" },
+  other: { icon: "OT", tone: "other", label: "Other" },
+  "part-time": { icon: "PT", tone: "part-time", label: "Part-time" },
+  allowance: { icon: "AL", tone: "allowance", label: "Allowance" },
+  stipend: { icon: "ST", tone: "stipend", label: "Stipend" },
+  scholarship: { icon: "SC", tone: "scholarship", label: "Scholarship" },
 };
 
 function escapeHtml(value = "") {
@@ -163,12 +163,12 @@ function getCategoryMeta(category, type = "expense") {
   const meta = CATEGORY_META[normalized];
   if (meta) {
     if (type === "income" && normalized === "other") {
-      return { ...meta, icon: "💰" };
+      return { ...meta, icon: "IN" };
     }
     return meta;
   }
   return {
-    icon: type === "income" ? "💰" : "💳",
+    icon: type === "income" ? "IN" : "TX",
     tone: "custom",
     label: prettyCategory(normalized),
   };
@@ -180,54 +180,246 @@ function renderCategoryPill(category, type = "expense") {
   return `<span class="category-pill cat-${tone}"><span class="category-dot" aria-hidden="true"></span>${escapeHtml(meta.label)}</span>`;
 }
 
-const CHART_TEXT_COLOR = "#d7e7f8";
-const CHART_MUTED_COLOR = "#9fb6cd";
-const CHART_GRID_COLOR = "rgba(141, 170, 199, 0.1)";
-const CHART_TOOLTIP_BG = "rgba(8, 18, 29, 0.96)";
-const LEDGERLY_CHART_PALETTE = [
-  "#58f0c5",
-  "#57b1ff",
-  "#ffbe76",
-  "#ff7d8f",
-  "#bfc6ff",
-  "#e3d26f",
-  "#9ae6b4",
-  "#f7c3ff",
-  "#85e3ff",
-  "#37c89b",
-];
+const CHART_THEME_FALLBACKS = {
+  light: {
+    text: "#111827",
+    muted: "#64748B",
+    soft: "#94A3B8",
+    border: "#E2E8F0",
+    panel: "#FFFFFF",
+    primary: "#2563EB",
+    money: "#16A34A",
+    danger: "#DC2626",
+    warning: "#F59E0B",
+    accent: "#0D9488",
+  },
+  dark: {
+    text: "#F8FAFC",
+    muted: "#CBD5E1",
+    soft: "#94A3B8",
+    border: "#263449",
+    panel: "#111827",
+    primary: "#60A5FA",
+    money: "#34D399",
+    danger: "#FB7185",
+    warning: "#FBBF24",
+    accent: "#2DD4BF",
+  },
+};
 
-function chartYen(value) {
-  return "¥" + Number(value || 0).toLocaleString();
+function activeThemeName() {
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
 
-function ledgerlyChartPlugins(showLegend = true) {
+function cssVar(name, fallback) {
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue(name)
+    .trim();
+  return value || fallback;
+}
+
+function colorAlpha(color, alpha) {
+  const value = String(color || "").trim();
+  const hex = value.replace("#", "");
+
+  if (/^[0-9a-f]{3}$/i.test(hex)) {
+    const expanded = hex
+      .split("")
+      .map((char) => char + char)
+      .join("");
+    return colorAlpha(`#${expanded}`, alpha);
+  }
+
+  if (/^[0-9a-f]{6}$/i.test(hex)) {
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  return value || `rgba(37, 99, 235, ${alpha})`;
+}
+
+function getLedgerlyChartTheme() {
+  const mode = activeThemeName();
+  const fallback = CHART_THEME_FALLBACKS[mode];
+  const primary = cssVar("--primary", fallback.primary);
+  const money = cssVar("--money", fallback.money);
+  const danger = cssVar("--danger", fallback.danger);
+  const warning = cssVar("--warning", fallback.warning);
+  const accent = cssVar("--accent", fallback.accent);
+  const soft = cssVar("--text-soft", fallback.soft);
+
+  return {
+    mode,
+    text: cssVar("--text-main", fallback.text),
+    muted: cssVar("--text-muted", fallback.muted),
+    soft,
+    border: cssVar("--border", fallback.border),
+    panel: cssVar("--surface", fallback.panel),
+    tooltipBg: mode === "dark" ? "rgba(15, 23, 42, 0.98)" : "rgba(255, 255, 255, 0.98)",
+    tooltipTitle: fallback.text,
+    tooltipBody: fallback.muted,
+    tooltipBorder: cssVar("--border-strong", fallback.border),
+    grid: mode === "dark" ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.16)",
+    primary,
+    money,
+    danger,
+    warning,
+    accent,
+    palette: [primary, money, accent, warning, danger, soft, "#475569", "#64748B"],
+  };
+}
+
+let ledgerlyChartTheme = getLedgerlyChartTheme();
+
+function syncLedgerlyChartTheme() {
+  ledgerlyChartTheme = getLedgerlyChartTheme();
+
+  if (typeof Chart !== "undefined") {
+    Chart.defaults.color = ledgerlyChartTheme.text;
+  }
+}
+
+function lineColors(tone = "primary") {
+  const theme = ledgerlyChartTheme;
+  const color =
+    tone === "income" || tone === "money"
+      ? theme.money
+      : tone === "expense" || tone === "danger"
+      ? theme.danger
+      : tone === "accent"
+      ? theme.accent
+      : theme.primary;
+
+  return {
+    border: color,
+    fillTop: colorAlpha(color, theme.mode === "dark" ? 0.24 : 0.18),
+    fillBottom: colorAlpha(color, 0.02),
+  };
+}
+
+function chartCategoryColor(label = "", index = 0, type = "expense") {
+  const theme = ledgerlyChartTheme;
+  const normalized = String(label).toLowerCase();
+  const expenseColors = {
+    food: theme.money,
+    rent: theme.warning,
+    travel: theme.primary,
+    shopping: theme.accent,
+    other: theme.soft,
+  };
+  const incomeColors = {
+    "part-time": theme.money,
+    "part time": theme.money,
+    allowance: theme.primary,
+    stipend: theme.warning,
+    scholarship: theme.accent,
+    other: theme.soft,
+  };
+  const map = type === "income" ? incomeColors : expenseColors;
+  return map[normalized] || theme.palette[index % theme.palette.length];
+}
+
+function chartYen(value) {
+  return "¥" + Math.round(Number(value || 0)).toLocaleString();
+}
+
+function parsedChartValue(context) {
+  const parsed = context.parsed;
+  if (parsed && typeof parsed === "object") {
+    return parsed.y ?? parsed.r ?? 0;
+  }
+  return parsed ?? 0;
+}
+
+function chartVerticalGradient(context, topColor, bottomColor) {
+  const chart = context.chart;
+  const area = chart.chartArea;
+  if (!area) return topColor;
+
+  const gradient = chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
+  gradient.addColorStop(0, topColor);
+  gradient.addColorStop(1, bottomColor);
+  return gradient;
+}
+
+function ledgerlyLineDataset(label, tone = "primary") {
+  const colors = lineColors(tone);
+
+  return {
+    label,
+    ledgerlyTone: tone,
+    data: [],
+    borderColor: colors.border,
+    backgroundColor: (context) =>
+      chartVerticalGradient(
+        context,
+        lineColors(tone).fillTop,
+        lineColors(tone).fillBottom
+      ),
+    pointBackgroundColor: ledgerlyChartTheme.panel,
+    pointBorderColor: colors.border,
+    pointBorderWidth: 2,
+    pointHoverBackgroundColor: colors.border,
+    pointHoverBorderColor: ledgerlyChartTheme.panel,
+    pointHoverBorderWidth: 2,
+    pointHoverRadius: 3.5,
+    pointRadius: 0,
+    pointHitRadius: 12,
+    borderWidth: 1.6,
+    cubicInterpolationMode: "monotone",
+    tension: 0.35,
+    fill: true,
+  };
+}
+
+function ledgerlyChartPlugins(showLegend = true, settings = {}) {
+  const showPercent = Boolean(settings.showPercent);
+  const legendPosition = settings.legendPosition || "bottom";
+
   return {
     legend: {
       display: showLegend,
+      position: legendPosition,
       labels: {
-        color: CHART_TEXT_COLOR,
-        boxWidth: 10,
-        boxHeight: 10,
-        padding: 14,
-        font: { family: "Manrope", size: 12, weight: "700" },
+        color: ledgerlyChartTheme.text,
+        usePointStyle: true,
+        pointStyle: "circle",
+        boxWidth: 6,
+        boxHeight: 6,
+        padding: 10,
+        font: { family: "Manrope", size: 10.5, weight: "500" },
       },
     },
     tooltip: {
-      backgroundColor: CHART_TOOLTIP_BG,
-      titleColor: "#f2fbff",
-      bodyColor: "#c7daed",
-      borderColor: "rgba(61, 228, 180, 0.28)",
+      backgroundColor: ledgerlyChartTheme.tooltipBg,
+      titleColor: ledgerlyChartTheme.tooltipTitle,
+      bodyColor: ledgerlyChartTheme.tooltipBody,
+      borderColor: ledgerlyChartTheme.tooltipBorder,
       borderWidth: 1,
       cornerRadius: 8,
       displayColors: true,
-      padding: 12,
-      titleFont: { family: "Manrope", size: 13, weight: "700" },
-      bodyFont: { family: "Manrope", size: 12, weight: "600" },
+      boxPadding: 4,
+      padding: 9,
+      titleFont: { family: "Manrope", size: 11.5, weight: "700" },
+      bodyFont: { family: "Manrope", size: 11.5, weight: "500" },
       callbacks: {
         label(context) {
           const label = context.dataset.label ? `${context.dataset.label}: ` : "";
-          return `${label}${chartYen(context.parsed?.y ?? context.parsed ?? 0)}`;
+          const value = parsedChartValue(context);
+
+          if (showPercent) {
+            const total = (context.dataset.data || []).reduce(
+              (sum, next) => sum + Number(next || 0),
+              0
+            );
+            const percent = total ? Math.round((Number(value || 0) / total) * 100) : 0;
+            const itemLabel = context.label ? `${context.label}: ` : label;
+            return `${itemLabel}${chartYen(value)} (${percent}%)`;
+          }
+
+          return `${label}${chartYen(value)}`;
         },
       },
     },
@@ -237,21 +429,142 @@ function ledgerlyChartPlugins(showLegend = true) {
 function ledgerlyChartScales() {
   return {
     x: {
-      grid: { color: CHART_GRID_COLOR, drawBorder: false },
-      ticks: { color: CHART_MUTED_COLOR, maxRotation: 0, font: { size: 12 } },
+      border: { display: false },
+      grid: { display: false, drawBorder: false, tickLength: 0 },
+      ticks: {
+        color: ledgerlyChartTheme.muted,
+        autoSkip: true,
+        maxTicksLimit: 7,
+        maxRotation: 0,
+        padding: 7,
+        font: { family: "Manrope", size: 10.5, weight: "500" },
+      },
     },
     y: {
-      grid: { color: CHART_GRID_COLOR, drawBorder: false },
-      ticks: { color: CHART_MUTED_COLOR, font: { size: 12 } },
+      border: { display: false },
+      grid: { color: ledgerlyChartTheme.grid, drawBorder: false },
+      ticks: {
+        color: ledgerlyChartTheme.muted,
+        maxTicksLimit: 5,
+        padding: 7,
+        precision: 0,
+        font: { family: "Manrope", size: 10.5, weight: "500" },
+        callback(value) {
+          return chartYen(value);
+        },
+      },
       beginAtZero: true,
+      grace: "12%",
     },
   };
 }
 
+function ledgerlyDoughnutOptions() {
+  return {
+    responsive: true,
+    maintainAspectRatio: true,
+    aspectRatio: 1,
+    cutout: "72%",
+    layout: { padding: 8 },
+    plugins: ledgerlyChartPlugins(true, { showPercent: true }),
+    animation: { duration: 720, easing: "easeOutQuart" },
+  };
+}
+
+const ledgerlyDoughnutCenterPlugin = {
+  id: "ledgerlyDoughnutCenter",
+  afterDraw(chart) {
+    if (chart.config.type !== "doughnut") return;
+    const dataset = chart.data.datasets?.[0];
+    const total = (dataset?.data || []).reduce(
+      (sum, next) => sum + Number(next || 0),
+      0
+    );
+    if (!total) return;
+
+    const meta = chart.getDatasetMeta(0);
+    const center = meta.data?.[0];
+    if (!center) return;
+
+    const { ctx } = chart;
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = ledgerlyChartTheme.muted;
+    ctx.font = "600 10.5px Manrope, sans-serif";
+    ctx.fillText("Total", center.x, center.y - 10);
+    ctx.fillStyle = ledgerlyChartTheme.text;
+    ctx.font = "700 16px Manrope, Avenir Next, sans-serif";
+    ctx.fillText(chartYen(total), center.x, center.y + 10);
+    ctx.restore();
+  },
+};
+
 if (typeof Chart !== "undefined") {
   Chart.defaults.font.family = "Manrope, Avenir Next, Segoe UI, sans-serif";
-  Chart.defaults.color = CHART_TEXT_COLOR;
+  Chart.defaults.color = ledgerlyChartTheme.text;
+  Chart.defaults.elements.arc.borderJoinStyle = "round";
 }
+
+function applyLedgerlyChartTheme(chart) {
+  const theme = ledgerlyChartTheme;
+  const plugins = chart.options?.plugins;
+
+  if (plugins?.legend?.labels) {
+    plugins.legend.labels.color = theme.text;
+  }
+
+  if (plugins?.tooltip) {
+    plugins.tooltip.backgroundColor = theme.tooltipBg;
+    plugins.tooltip.titleColor = theme.tooltipTitle;
+    plugins.tooltip.bodyColor = theme.tooltipBody;
+    plugins.tooltip.borderColor = theme.tooltipBorder;
+  }
+
+  ["x", "y"].forEach((axis) => {
+    const scale = chart.options?.scales?.[axis];
+    if (!scale) return;
+    if (scale.ticks) scale.ticks.color = theme.muted;
+    if (axis === "y" && scale.grid) scale.grid.color = theme.grid;
+  });
+
+  (chart.data?.datasets || []).forEach((dataset) => {
+    if (dataset.ledgerlyTone) {
+      const colors = lineColors(dataset.ledgerlyTone);
+      dataset.borderColor = colors.border;
+      dataset.pointBackgroundColor = theme.panel;
+      dataset.pointBorderColor = colors.border;
+      dataset.pointHoverBackgroundColor = colors.border;
+      dataset.pointHoverBorderColor = theme.panel;
+    }
+
+    if (dataset.ledgerlyPaletteType) {
+      dataset.backgroundColor = (chart.data.labels || []).map((label, index) =>
+        chartCategoryColor(label, index, dataset.ledgerlyPaletteType)
+      );
+      dataset.borderColor = theme.panel;
+      dataset.hoverBorderColor = theme.panel;
+    }
+
+    if (dataset.ledgerlyCashflowBars) {
+      dataset.borderColor = [colorAlpha(theme.money, 0.44), colorAlpha(theme.danger, 0.44)];
+    }
+  });
+}
+
+function refreshLedgerlyCharts() {
+  syncLedgerlyChartTheme();
+
+  if (typeof Chart === "undefined" || !Chart.instances) return;
+
+  Object.values(Chart.instances).forEach((chart) => {
+    applyLedgerlyChartTheme(chart);
+    chart.resize();
+    chart.update("none");
+  });
+}
+
+window.addEventListener("ledgerly:themechange", refreshLedgerlyCharts);
 
 // ============================================================================
 // Navigation
@@ -272,6 +585,10 @@ function activateSection(sectionId) {
   // update content panels
   sections.forEach((sec) => {
     sec.classList.toggle("active", sec.id === sectionId);
+  });
+
+  window.requestAnimationFrame(() => {
+    refreshLedgerlyCharts();
   });
 }
 
@@ -386,8 +703,10 @@ if (savedSection && document.getElementById(savedSection)) {
         ${renderCategoryPill(category, "expense")}
       </div>
     </div>
-    <div class="expense-amount negative">-${yen(amount)}</div>
-    <button class="tiny-del" aria-label="delete">×</button>
+    <div class="transaction-actions">
+      <div class="expense-amount negative">-${yen(amount)}</div>
+      <button class="tiny-del" aria-label="delete">×</button>
+    </div>
   `;
 
     // UX: newest added row appears on top
@@ -578,37 +897,37 @@ if (savedSection && document.getElementById(savedSection)) {
     data: {
       labels: [],
       datasets: [
-        {
-          label: "Recent Expenses",
-          data: [],
-          borderColor: "#58f0c5",
-          backgroundColor: "rgba(88, 240, 197, 0.12)",
-          pointBackgroundColor: "#58f0c5",
-          pointBorderColor: "#0b1826",
-          pointHoverRadius: 5,
-          tension: 0.35,
-          fill: true,
-        },
+        ledgerlyLineDataset("Recent Expenses", "expense"),
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { intersect: false, mode: "index" },
-      plugins: ledgerlyChartPlugins(true),
+      layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
+      plugins: ledgerlyChartPlugins(false),
       scales: ledgerlyChartScales(),
     },
   });
 
   const pieChart = new Chart(pieEl.getContext("2d"), {
-    type: "pie",
-    data: { labels: [], datasets: [{ data: [], borderWidth: 0 }] },
-    options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      aspectRatio: 1,
-      plugins: ledgerlyChartPlugins(true),
+    type: "doughnut",
+    data: {
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          ledgerlyPaletteType: "expense",
+          borderColor: ledgerlyChartTheme.panel,
+          borderWidth: 2,
+          hoverBorderColor: ledgerlyChartTheme.panel,
+          hoverOffset: 6,
+          spacing: 2,
+        },
+      ],
     },
+    plugins: [ledgerlyDoughnutCenterPlugin],
+    options: ledgerlyDoughnutOptions(),
   });
 
   function getVisibleItems() {
@@ -647,10 +966,10 @@ if (savedSection && document.getElementById(savedSection)) {
 
     // Give the slices colors (otherwise it looks black on dark bg)
     pieChart.data.datasets[0].backgroundColor = pieChart.data.labels.map(
-      (_, i) => LEDGERLY_CHART_PALETTE[i % LEDGERLY_CHART_PALETTE.length]
+      (label, i) => chartCategoryColor(label, i, "expense")
     );
 
-    pieChart.data.datasets[0].borderColor = "rgba(255,255,255,.06)";
+    pieChart.data.datasets[0].borderColor = ledgerlyChartTheme.panel;
     pieChart.data.datasets[0].borderWidth = 2;
 
     pieChart.update();
@@ -725,8 +1044,10 @@ if (savedSection && document.getElementById(savedSection)) {
           ${renderCategoryPill(category, "income")}
         </div>
       </div>
-      <div class="income-amount positive">+${yen(amount)}</div>
-      <button class="tiny-del" aria-label="delete">×</button>
+      <div class="transaction-actions">
+        <div class="income-amount positive">+${yen(amount)}</div>
+        <button class="tiny-del" aria-label="delete">×</button>
+      </div>
     `;
     list.prepend(item);
     return item;
@@ -837,38 +1158,38 @@ if (savedSection && document.getElementById(savedSection)) {
       data: {
         labels: [],
         datasets: [
-          {
-            label: "Recent Income",
-            data: [],
-            borderColor: "#58f0c5",
-            backgroundColor: "rgba(88, 240, 197, 0.12)",
-            pointBackgroundColor: "#58f0c5",
-            pointBorderColor: "#0b1826",
-            pointHoverRadius: 5,
-            tension: 0.35,
-            fill: true,
-          },
+          ledgerlyLineDataset("Recent Income", "income"),
         ],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
         interaction: { intersect: false, mode: "index" },
-        plugins: ledgerlyChartPlugins(true),
+        layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
+        plugins: ledgerlyChartPlugins(false),
         scales: ledgerlyChartScales(),
       },
     });
 
     // Pie chart with dynamic categories (custom gets its own color)
     const pieChart = new Chart(pieEl.getContext("2d"), {
-      type: "pie",
-      data: { labels: [], datasets: [{ data: [], borderWidth: 0 }] },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        aspectRatio: 1,
-        plugins: ledgerlyChartPlugins(true),
+      type: "doughnut",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            data: [],
+            ledgerlyPaletteType: "income",
+            borderColor: ledgerlyChartTheme.panel,
+            borderWidth: 2,
+            hoverBorderColor: ledgerlyChartTheme.panel,
+            hoverOffset: 6,
+            spacing: 2,
+          },
+        ],
       },
+      plugins: [ledgerlyDoughnutCenterPlugin],
+      options: ledgerlyDoughnutOptions(),
     });
 
     const short = (iso) => formatShortDate(iso);
@@ -913,37 +1234,14 @@ if (savedSection && document.getElementById(savedSection)) {
       const pieLabels = entries.map(([k]) => pretty(k));
       const pieData = entries.map(([, v]) => v);
 
-      // Base colors for standard categories
-      const baseColorMap = {
-        "Part-time": "#6fd36f",
-        Allowance: "#57b1ff",
-        Stipend: "#ffbe76",
-        Scholarship: "#bfc6ff",
-        Other: "#58f0c5",
-      };
-
-      // Extra palette for any custom categories
-      const extraPalette = [
-        "#ff7d8f",
-        "#bfc6ff",
-        "#e3d26f",
-        "#f7c3ff",
-        "#85e3ff",
-        "#9ae6b4",
-        "#fbb6ce",
-        "#a5f3fc",
-      ];
-
       const colors = pieLabels.map((label, i) => {
-        if (baseColorMap[label]) return baseColorMap[label];
-        // custom category → take from extraPalette
-        return extraPalette[i % extraPalette.length];
+        return chartCategoryColor(label, i, "income");
       });
 
       pieChart.data.labels = pieLabels;
       pieChart.data.datasets[0].data = pieData;
       pieChart.data.datasets[0].backgroundColor = colors;
-      pieChart.data.datasets[0].borderColor = "rgba(255,255,255,.06)";
+      pieChart.data.datasets[0].borderColor = ledgerlyChartTheme.panel;
       pieChart.data.datasets[0].borderWidth = 2;
       pieChart.update();
     }
@@ -1292,21 +1590,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     data: {
       labels: [],
       datasets: [
-        {
-          label: "Daily spend",
-          data: [],
-          borderColor: "#58f0c5",
-          backgroundColor: "rgba(88, 240, 197, 0.12)",
-          tension: 0.35,
-          fill: true,
-        },
+        ledgerlyLineDataset("Daily spend", "expense"),
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       interaction: { intersect: false, mode: "index" },
-      plugins: ledgerlyChartPlugins(true),
+      layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
+      plugins: ledgerlyChartPlugins(false),
       scales: ledgerlyChartScales(),
     },
   });
@@ -1318,15 +1610,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       datasets: [
         {
           data: [0, 0],
-          backgroundColor: ["#58f0c5", "#ff7d8f"],
+          ledgerlyCashflowBars: true,
+          backgroundColor(context) {
+            const income = context.dataIndex === 0;
+            return chartVerticalGradient(
+              context,
+              colorAlpha(income ? ledgerlyChartTheme.money : ledgerlyChartTheme.danger, 0.88),
+              colorAlpha(income ? ledgerlyChartTheme.money : ledgerlyChartTheme.danger, 0.42)
+            );
+          },
+          borderColor: [
+            colorAlpha(ledgerlyChartTheme.money, 0.44),
+            colorAlpha(ledgerlyChartTheme.danger, 0.44),
+          ],
           borderWidth: 0,
-          borderRadius: 8,
+          borderRadius: 6,
+          borderSkipped: false,
+          barPercentage: 0.58,
+          categoryPercentage: 0.62,
         },
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
+      layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
       plugins: ledgerlyChartPlugins(false),
       scales: ledgerlyChartScales(),
     },
@@ -1335,10 +1643,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   function drawCatBars(totals) {
     catBarsEl.innerHTML = "";
     const max = Math.max(1, ...cats.map((c) => totals[c] || 0));
+    const barAccents = {
+      food: [ledgerlyChartTheme.money, colorAlpha(ledgerlyChartTheme.money, 0.72)],
+      rent: [ledgerlyChartTheme.warning, colorAlpha(ledgerlyChartTheme.warning, 0.72)],
+      travel: [ledgerlyChartTheme.primary, colorAlpha(ledgerlyChartTheme.primary, 0.72)],
+      shopping: [ledgerlyChartTheme.accent, colorAlpha(ledgerlyChartTheme.accent, 0.72)],
+      other: [ledgerlyChartTheme.soft, colorAlpha(ledgerlyChartTheme.soft, 0.72)],
+    };
+
     cats.forEach((c) => {
       const val = totals[c] || 0;
       const row = document.createElement("div");
       row.className = "cat-row";
+      row.style.setProperty("--row-accent", barAccents[c][0]);
+      row.style.setProperty("--row-accent-2", barAccents[c][1]);
       row.innerHTML = `
         <div class="cat-name">${escapeHtml(c)}</div>
         <div class="cat-bar"><span style="width:${Math.round(
@@ -1403,6 +1721,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const recentWrap = document.getElementById("dashRecentExpenses");
   const billWrap = document.getElementById("dashBillList");
+  const heroMonthEl = document.getElementById("dashHeroMonth");
+  const healthScoreEl = document.getElementById("dashHealthScore");
+  const healthLabelEl = document.getElementById("dashHealthLabel");
+  const heroNarrativeEl = document.getElementById("dashHeroNarrative");
+  const savingsRateEl = document.getElementById("dashSavingsRate");
+  const cashFlowEl = document.getElementById("dashCashFlow");
+  const spendPaceEl = document.getElementById("dashSpendPace");
+  const topCategoryEl = document.getElementById("dashTopCategory");
+  const budgetPressureEl = document.getElementById("dashBudgetPressure");
+  const billSignalEl = document.getElementById("dashBillSignal");
+  const recommendationEl = document.getElementById("dashRecommendation");
+  const cashFlowBarsEl = document.getElementById("dashCashFlowBars");
+  const pulseSummaryEl = document.getElementById("dashPulseSummary");
 
   if (!incomeEl || !recentWrap || !billWrap) return;
 
@@ -1425,6 +1756,265 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   function getIncomeItems() {
     return [...document.querySelectorAll("#incomeList .expense-item")];
+  }
+
+  function setText(el, value) {
+    if (el) el.textContent = value;
+  }
+
+  function signedYen(value) {
+    const amount = Math.abs(Number(value || 0));
+    if (Number(value || 0) < 0) return "-" + yen(amount);
+    if (Number(value || 0) > 0) return "+" + yen(amount);
+    return yen(0);
+  }
+
+  function clamp(number, min, max) {
+    return Math.min(max, Math.max(min, number));
+  }
+
+  function currentMonthTotals() {
+    const expensesByCategory = {};
+    let income = 0;
+    let expenses = 0;
+
+    getIncomeItems().forEach((it) => {
+      const iso = it.dataset.date;
+      if (!thisMonth(iso)) return;
+      income += Number(it.dataset.amount || 0);
+    });
+
+    getExpenseItems().forEach((it) => {
+      const iso = it.dataset.date;
+      if (!thisMonth(iso)) return;
+      const amount = Number(it.dataset.amount || 0);
+      const category = (it.dataset.category || "other").toLowerCase();
+      expenses += amount;
+      expensesByCategory[category] = (expensesByCategory[category] || 0) + amount;
+    });
+
+    const balance = income - expenses;
+    const savings = Math.max(0, balance);
+    const savingsRate = income > 0 ? Math.round((savings / income) * 100) : 0;
+    const topCategory = Object.entries(expensesByCategory).sort(
+      (a, b) => b[1] - a[1]
+    )[0];
+
+    return {
+      income,
+      expenses,
+      balance,
+      savings,
+      savingsRate,
+      expensesByCategory,
+      topCategory,
+    };
+  }
+
+  function getBudgetPressure(expensesByCategory) {
+    const budgets = loadBudgetsForCurrentMonth();
+    const entries = Object.entries(budgets)
+      .map(([category, limit]) => {
+        const cleanCategory = String(category || "other").toLowerCase();
+        const numericLimit = Number(limit || 0);
+        const spent = Number(expensesByCategory[cleanCategory] || 0);
+        const pct = numericLimit > 0 ? Math.round((spent / numericLimit) * 100) : 0;
+        return { category: cleanCategory, limit: numericLimit, spent, pct };
+      })
+      .filter((entry) => entry.limit > 0)
+      .sort((a, b) => b.pct - a.pct);
+
+    return entries[0] || null;
+  }
+
+  function getBillSignal() {
+    const counts = { paid: 0, due: 0, overdue: 0, upcoming: 0 };
+
+    billWrap.querySelectorAll(".bill-chip").forEach((chip) => {
+      if (chip.classList.contains("chip-paid")) counts.paid += 1;
+      if (chip.classList.contains("chip-due")) counts.due += 1;
+      if (chip.classList.contains("chip-overdue")) counts.overdue += 1;
+      if (chip.classList.contains("chip-upcoming")) counts.upcoming += 1;
+    });
+
+    return counts;
+  }
+
+  function renderCashFlowPulse() {
+    if (!cashFlowBarsEl) {
+      return { income: 0, expenses: 0, net: 0, hasData: false };
+    }
+
+    const now = new Date();
+    const days = [];
+
+    for (let i = 6; i >= 0; i -= 1) {
+      const day = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      day.setDate(day.getDate() - i);
+      days.push({
+        key: localDateKey(day),
+        label: fmtShort(day),
+        income: 0,
+        expenses: 0,
+      });
+    }
+
+    const dayMap = Object.fromEntries(days.map((day) => [day.key, day]));
+
+    getIncomeItems().forEach((it) => {
+      const key = localDateKey(it.dataset.date || new Date());
+      if (dayMap[key]) dayMap[key].income += Number(it.dataset.amount || 0);
+    });
+
+    getExpenseItems().forEach((it) => {
+      const key = localDateKey(it.dataset.date || new Date());
+      if (dayMap[key]) dayMap[key].expenses += Number(it.dataset.amount || 0);
+    });
+
+    const max = Math.max(
+      1,
+      ...days.flatMap((day) => [day.income, day.expenses])
+    );
+    const totals = days.reduce(
+      (sum, day) => {
+        sum.income += day.income;
+        sum.expenses += day.expenses;
+        return sum;
+      },
+      { income: 0, expenses: 0 }
+    );
+    const net = totals.income - totals.expenses;
+    const hasData = totals.income > 0 || totals.expenses > 0;
+
+    cashFlowBarsEl.innerHTML = days
+      .map((day) => {
+        const incomeHeight = day.income ? clamp(Math.round((day.income / max) * 100), 8, 100) : 4;
+        const expenseHeight = day.expenses ? clamp(Math.round((day.expenses / max) * 100), 8, 100) : 4;
+        const isEmpty = !day.income && !day.expenses;
+        const title = `${day.label}: income ${yen(day.income)}, spending ${yen(day.expenses)}`;
+
+        return `
+          <div class="cashflow-day${isEmpty ? " is-empty" : ""}" title="${escapeHtml(title)}">
+            <div class="cashflow-day-bars">
+              <span class="cashflow-bar income" style="height:${incomeHeight}%"></span>
+              <span class="cashflow-bar expense" style="height:${expenseHeight}%"></span>
+            </div>
+            <span class="cashflow-date">${escapeHtml(day.label)}</span>
+          </div>
+        `;
+      })
+      .join("");
+
+    setText(
+      pulseSummaryEl,
+      hasData ? `${signedYen(net)} net this week` : "No recent activity"
+    );
+
+    return { ...totals, net, hasData };
+  }
+
+  function updateDashboardIntelligence(snapshot = currentMonthTotals()) {
+    const now = new Date();
+    const monthName = new Intl.DateTimeFormat(undefined, {
+      month: "long",
+      year: "numeric",
+    }).format(now);
+    const budgetPressure = getBudgetPressure(snapshot.expensesByCategory);
+    const bills = getBillSignal();
+    const hasData = snapshot.income > 0 || snapshot.expenses > 0;
+    const sevenDayPulse = renderCashFlowPulse();
+    const topCategoryLabel = snapshot.topCategory
+      ? `${prettyCategory(snapshot.topCategory[0])} · ${yen(snapshot.topCategory[1])}`
+      : "No spend yet";
+
+    let healthScore = null;
+    if (hasData) {
+      const budgetPenalty = budgetPressure
+        ? budgetPressure.pct >= 100
+          ? 18
+          : budgetPressure.pct >= 90
+          ? 12
+          : budgetPressure.pct >= 75
+          ? 6
+          : 0
+        : 0;
+      const billPenalty = bills.overdue * 12 + bills.due * 6;
+      const negativeCashPenalty = snapshot.balance < 0 ? 22 : 0;
+      healthScore = Math.round(
+        clamp(70 + snapshot.savingsRate * 0.32 - budgetPenalty - billPenalty - negativeCashPenalty, 35, 96)
+      );
+    }
+
+    let healthLabel = "Waiting for data";
+    let healthTone = "";
+    if (healthScore !== null) {
+      if (healthScore >= 82) {
+        healthLabel = "Strong month";
+      } else if (healthScore >= 65) {
+        healthLabel = "Stable month";
+      } else if (healthScore >= 50) {
+        healthLabel = "Watch pressure";
+        healthTone = "warning";
+      } else {
+        healthLabel = "Needs attention";
+        healthTone = "danger";
+      }
+    }
+
+    let narrative = "Add income, expenses, budgets, bills, and saving goals to build a clear monthly finance picture.";
+    if (hasData && snapshot.balance >= 0) {
+      narrative = snapshot.topCategory
+        ? `You are keeping ${snapshot.savingsRate}% of income unspent this month, with ${topCategoryLabel.toLowerCase()} as the largest spending signal.`
+        : `You are keeping ${snapshot.savingsRate}% of income unspent this month. Add expenses to reveal category pressure and spending trends.`;
+    }
+    if (hasData && snapshot.balance < 0) {
+      narrative = `Spending is ahead of income by ${yen(Math.abs(snapshot.balance))}. Use the budget pressure and top category signals to decide where to tighten next.`;
+    }
+
+    let recommendation = "Add your first transaction";
+    if (snapshot.balance < 0 && snapshot.topCategory) {
+      recommendation = `Reduce ${prettyCategory(snapshot.topCategory[0])} by ${yen(Math.ceil(Math.abs(snapshot.balance) * 0.25))}`;
+    } else if (budgetPressure && budgetPressure.pct >= 90) {
+      recommendation = `Review ${prettyCategory(budgetPressure.category)} before it crosses the limit`;
+    } else if (snapshot.savings > 0) {
+      recommendation = `Move ${yen(Math.max(1000, Math.round(snapshot.savings * 0.25)))} toward a saving goal`;
+    } else if (snapshot.expenses > 0) {
+      recommendation = "Add income to unlock a clearer savings forecast";
+    }
+
+    setText(heroMonthEl, monthName);
+    setText(healthScoreEl, healthScore === null ? "--" : String(healthScore));
+    setText(healthLabelEl, healthLabel);
+    setText(heroNarrativeEl, narrative);
+    setText(savingsRateEl, `${snapshot.savingsRate}%`);
+    setText(cashFlowEl, signedYen(snapshot.balance));
+    setText(
+      spendPaceEl,
+      sevenDayPulse.hasData ? signedYen(sevenDayPulse.net) : "No 7-day data"
+    );
+    setText(topCategoryEl, topCategoryLabel);
+    setText(
+      budgetPressureEl,
+      budgetPressure
+        ? `${prettyCategory(budgetPressure.category)} at ${budgetPressure.pct}%`
+        : "No budgets set"
+    );
+    setText(
+      billSignalEl,
+      bills.overdue
+        ? `${bills.overdue} overdue`
+        : bills.due
+        ? `${bills.due} due soon`
+        : bills.upcoming
+        ? `${bills.upcoming} upcoming`
+        : "No recurring bills"
+    );
+    setText(recommendationEl, recommendation);
+
+    cashFlowEl?.classList.toggle("negative", snapshot.balance < 0);
+    cashFlowEl?.classList.toggle("positive", snapshot.balance >= 0);
+    healthLabelEl?.classList.remove("warning", "danger");
+    if (healthTone) healthLabelEl?.classList.add(healthTone);
   }
 
   // Simple month-to-date vs last-month-to-date % change helper
@@ -1480,24 +2070,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function renderSummary() {
-    // income/expense month totals
-    const income = getIncomeItems().reduce((s, it) => {
-      const iso = it.dataset.date;
-      return thisMonth(iso) ? s + Number(it.dataset.amount || 0) : s;
-    }, 0);
-
-    const expenses = getExpenseItems().reduce((s, it) => {
-      const iso = it.dataset.date;
-      return thisMonth(iso) ? s + Number(it.dataset.amount || 0) : s;
-    }, 0);
-
-    const balance = Math.max(0, income - expenses);
-    const savings = balance; // here savings == month balance
+    const snapshot = currentMonthTotals();
+    const { income, expenses, balance, savings, savingsRate } = snapshot;
 
     incomeEl.textContent = yen(income);
     expenseEl.textContent = "-" + yen(expenses);
-    balanceEl.textContent = yen(balance);
+    balanceEl.textContent = signedYen(balance);
     savingsEl.textContent = yen(savings);
+    balanceEl.classList.toggle("negative", balance < 0);
+    balanceEl.classList.toggle("positive", balance >= 0);
 
     // % change badges
     const incMTD = monthToDateTotals(getIncomeItems);
@@ -1511,15 +2092,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       expMTD.cur,
       expMTD.prev
     );
-    balChangeEl.querySelector("span:nth-child(2)").textContent = incMTD.prev
-      ? `↑ ${Math.round(
-          ((income - expenses) / Math.max(1, incMTD.prev)) * 100
-        )}% of last MTD income`
-      : "—";
+    balChangeEl.querySelector("span:nth-child(2)").textContent =
+      balance >= 0 ? "Positive cash flow" : "Spending ahead";
+    balChangeEl.classList.toggle("negative", balance < 0);
+    balChangeEl.classList.toggle("positive", balance >= 0);
     savNoteEl.querySelector("span:nth-child(2)").textContent =
-      income > 0
-        ? `${Math.round((savings / income) * 100)}% saved this month`
-        : "—";
+      income > 0 ? `${savingsRate}% saved this month` : "—";
+
+    updateDashboardIntelligence(snapshot);
   }
 
   function renderRecentExpenses(limit = 4) {
@@ -1532,13 +2112,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       <div class="expense-item">
         <div class="expense-info">
           <div class="expense-icon">💳</div>
-          <div class="expense-details">
-            <h4>No expenses yet</h4>
-            <p>Add some in Expense Tracking</p>
-            ${renderCategoryPill("other", "expense")}
-          </div>
+        <div class="expense-details">
+          <h4>No expenses yet</h4>
+          <p>Add some in Expense Tracking</p>
+          ${renderCategoryPill("other", "expense")}
         </div>
-        <div class="expense-amount negative">-¥0</div>
+      </div>
+        <div class="transaction-actions">
+          <div class="expense-amount negative">-¥0</div>
+        </div>
       </div>`;
       return;
     }
@@ -1575,7 +2157,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${renderCategoryPill(cat, "expense")}
         </div>
       </div>
-      <div class="expense-amount negative">-${yen(amount)}</div>
+      <div class="transaction-actions">
+        <div class="expense-amount negative">-${yen(amount)}</div>
+      </div>
     `;
       recentWrap.appendChild(row);
     });
@@ -1617,6 +2201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p style="opacity:.75">Please try again later.</p>
           </div>
         </div>`;
+      updateDashboardIntelligence();
       return;
     }
 
@@ -1629,6 +2214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <p style="opacity:.75">Mark an expense as “Recurring” in Expense Tracking to see it here.</p>
           </div>
         </div>`;
+      updateDashboardIntelligence();
       return;
     }
 
@@ -1733,14 +2319,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       div.innerHTML = `
         <div class="expense-info">
           <div class="expense-icon">${safeIcon}</div>
-          <div class="expense-details">
-            <h4>${safeTitle}</h4>
-            <p>${display} · ${safeLabel}</p>
-            ${renderCategoryPill(category, "expense")}
-          </div>
+        <div class="expense-details">
+          <h4>${safeTitle}</h4>
+          <p>${display} · ${safeLabel}</p>
+          ${renderCategoryPill(category, "expense")}
         </div>
-        <div class="expense-amount negative">-¥${amount.toLocaleString()}</div>
-        <button class="tiny-del" aria-label="delete">×</button>
+      </div>
+        <div class="transaction-actions">
+          <div class="expense-amount negative">-¥${amount.toLocaleString()}</div>
+          <button class="tiny-del" aria-label="delete">×</button>
+        </div>
       `;
       list.prepend(div);
     }
@@ -1856,6 +2444,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       });
     });
+
+    updateDashboardIntelligence();
   }
 
   function redrawAll() {

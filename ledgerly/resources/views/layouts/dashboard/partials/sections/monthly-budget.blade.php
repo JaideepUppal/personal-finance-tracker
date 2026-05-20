@@ -1,5 +1,8 @@
 <section id="monthly-budget" class="content-section">
-  <h1 class="section-title">Monthly Budget</h1>
+  <div class="section-heading">
+    <p class="section-kicker">Planning controls</p>
+    <h1 class="section-title">Monthly Budget</h1>
+  </div>
 
   <div class="filters-bar">
     <span id="budTotalLimit" class="total-pill">Budget: ¥0</span>
@@ -9,7 +12,10 @@
 
   <div class="panel">
     <div class="panel-header">
+      <div>
+        <p class="panel-kicker">Category limit</p>
       <h2 class="panel-title">Set category limit</h2>
+      </div>
     </div>
     <div class="add-row">
       <select id="budCategory" class="filter-select">
@@ -40,7 +46,8 @@
 
   <div class="panel">
     <div class="budget-wrapper">
-      <h2 class="section-title">Your Categories</h2>
+      <p class="panel-kicker">Budget cockpit</p>
+      <h2 class="panel-title">Your Categories</h2>
     </div>
 
       <div id="budgetList"></div>

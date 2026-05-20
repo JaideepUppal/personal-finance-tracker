@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ledgerly – Student Finance Solutions</title>
+    <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
@@ -19,6 +20,10 @@
           <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+            <span class="theme-toggle-icon" aria-hidden="true"></span>
+            <span class="theme-toggle-text">Dark</span>
+          </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
           <a href="{{ route('login') }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
         </div>
@@ -28,7 +33,7 @@
     <main class="page">
       <h1 class="page-title">Built for student finance</h1>
       <p class="page-subtitle">
-        Ledgerly helps students track part-time income, rent, food, transport, recurring spending, budgets, and saving goals without spreadsheet overhead.
+        Ledgerly helps students track part-time income, rent, food, transport, recurring spending, budgets, and saving goals without spreadsheet cleanup.
       </p>
 
       <section class="grid three">
@@ -44,7 +49,7 @@
 
         <article class="card">
           <h3 class="card-title">Rent</h3>
-          <p class="card-tagline">Track payments, due dates, and recurring rent reminders in the same finance workspace.</p>
+          <p class="card-tagline">Track payments, due dates, and recurring rent reminders alongside the rest of your monthly money.</p>
         </article>
 
         <article class="card">
@@ -64,7 +69,7 @@
 
         <article class="card">
           <h3 class="card-title">Monthly Budget Reviews</h3>
-          <p class="card-tagline">Generate AI spending insights and next-month forecasts from the dashboard data you already track.</p>
+          <p class="card-tagline">Generate spending insights and next-month forecasts from the money data you already track.</p>
         </article>
 
         <article class="card">
@@ -77,7 +82,7 @@
         <article class="card">
           <h3 class="card-title">Also useful for…</h3>
           <p class="card-tagline">
-            Ledgerly stays focused on practical workflows that are useful on campus and beyond: daily awareness, bill visibility, saving consistency, and simpler monthly reviews.
+            Ledgerly stays focused on daily awareness, bill visibility, saving consistency, and simpler monthly reviews.
           </p>
         </article>
       </section>

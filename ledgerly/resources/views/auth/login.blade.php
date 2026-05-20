@@ -5,9 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login | Ledgerly</title>
 
+    <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset('css/pages/login.css') }}">
 </head>
 <body>
+
+<button class="theme-toggle auth-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+    <span class="theme-toggle-icon" aria-hidden="true"></span>
+    <span class="theme-toggle-text">Dark</span>
+</button>
 
 <div class="container" id="container">
 
@@ -16,7 +22,7 @@
         <form method="POST" action="{{ route('signup') }}" aria-label="Create account form">
             @csrf
             <h1>Create Account</h1>
-            <span>Start tracking student finances with Ledgerly</span>
+            <span>Start tracking spending, budgets, and savings</span>
 
             <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" autocomplete="name" required />
             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
@@ -50,7 +56,7 @@
         <form method="POST" action="{{ route('login.submit') }}" aria-label="Sign in form">
             @csrf
             <h1>Sign In</h1>
-            <span>Continue to your Ledgerly workspace</span>
+            <span>Continue to your finance dashboard</span>
 
             <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
             <div class="password-field">
@@ -82,7 +88,7 @@
             </div>
             <div class="overlay-panel overlay-right">
                 <h1>Start with Ledgerly</h1>
-                <p>Create an account for clear student finance tracking.</p>
+                <p>Create an account for AI-assisted cash flow, budgets, bills, and goals.</p>
                 <button class="ghost" id="signUp">Sign Up</button>
             </div>
         </div>

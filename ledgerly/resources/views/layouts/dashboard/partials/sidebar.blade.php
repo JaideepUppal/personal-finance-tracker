@@ -1,22 +1,36 @@
 <aside class="sidebar">
+  <div class="sidebar-product">
+    <span class="sidebar-product-mark" aria-hidden="true">L</span>
+    <div>
+      <strong>Ledgerly</strong>
+      <span>Student finance</span>
+    </div>
+  </div>
+
   <nav class="nav-menu" aria-label="Dashboard navigation">
     <a class="nav-item active" data-section="dashboard">
+      <span class="nav-icon nav-icon-dashboard" aria-hidden="true"></span>
       <span>Dashboard</span>
     </a>
     <a class="nav-item" data-section="expense-tracking">
-      <span>Expense Tracking</span>
+      <span class="nav-icon nav-icon-expense" aria-hidden="true"></span>
+      <span>Expenses</span>
     </a>
     <a class="nav-item" data-section="income-tracking">
-      <span>Income Tracking</span>
+      <span class="nav-icon nav-icon-income" aria-hidden="true"></span>
+      <span>Income</span>
     </a>
     <a class="nav-item" data-section="monthly-budget">
-      <span>Monthly Budget</span>
+      <span class="nav-icon nav-icon-budget" aria-hidden="true"></span>
+      <span>Budgets</span>
     </a>
     <a class="nav-item" data-section="analytics">
+      <span class="nav-icon nav-icon-analytics" aria-hidden="true"></span>
       <span>Analytics</span>
     </a>
     <a class="nav-item" data-section="saving-goals">
-      <span>Saving Goals</span>
+      <span class="nav-icon nav-icon-goals" aria-hidden="true"></span>
+      <span>Goals</span>
     </a>
 
     <div class="sidebar-logout">

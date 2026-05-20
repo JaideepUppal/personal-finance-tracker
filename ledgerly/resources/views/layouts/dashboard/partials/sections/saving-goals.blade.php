@@ -1,10 +1,16 @@
 <section id="saving-goals" class="content-section">
-  <h1 class="section-title">Saving Goals</h1>
+  <div class="section-heading">
+    <p class="section-kicker">Longer-term capital</p>
+    <h1 class="section-title">Saving Goals</h1>
+  </div>
 
   <!-- Add New Goal -->
   <div class="panel">
     <div class="panel-header">
+      <div>
+        <p class="panel-kicker">New objective</p>
       <h3 class="panel-title">Create a new goal</h3>
+      </div>
     </div>
     <div class="add-row">
       <input
@@ -34,7 +40,10 @@
   <!-- Goals List -->
   <div class="panel">
     <div class="panel-header">
+      <div>
+        <p class="panel-kicker">Progress tracking</p>
       <h3 class="panel-title">Your goals</h3>
+      </div>
     </div>
     <div id="sgList" class="savings-goals-list">
       <!-- Filled by dashboard.js -->

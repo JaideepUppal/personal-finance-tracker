@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ledgerly – Help</title>
+    <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
@@ -18,6 +19,10 @@
           <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+            <span class="theme-toggle-icon" aria-hidden="true"></span>
+            <span class="theme-toggle-text">Dark</span>
+          </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
           <a href="{{ route('login') }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
         </div>

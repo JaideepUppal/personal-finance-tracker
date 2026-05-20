@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ledgerly – Products</title>
+    <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
@@ -18,6 +19,10 @@
           <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+            <span class="theme-toggle-icon" aria-hidden="true"></span>
+            <span class="theme-toggle-text">Dark</span>
+          </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
           <a href="{{ route('login') }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
         </div>
@@ -25,13 +30,13 @@
     </header>
 
     <main class="page">
-      <h1 class="page-title">Ledgerly Finance Platform</h1>
-      <p class="page-subtitle">Everything students need to see, plan, and improve everyday finances with secure tracking, analytics, and purpose-limited AI assistance.</p>
+      <h1 class="page-title">Features for everyday student money</h1>
+      <p class="page-subtitle">Track what came in, what went out, what is due, and what to adjust next.</p>
 
       <section class="grid">
         <article class="card">
           <h3 class="card-title">Smart Dashboard</h3>
-          <p class="card-tagline">See income, expenses, balance, recent activity, and bill reminders in one clear workspace.</p>
+          <p class="card-tagline">See income, expenses, balance, recent activity, and bill reminders without digging.</p>
         </article>
 
         <article class="card">
@@ -56,7 +61,7 @@
 
         <article class="card">
           <h3 class="card-title">Analytics Dashboard</h3>
-          <p class="card-tagline">Review Chart.js trends, category breakdowns, monthly comparisons, and savings snapshots.</p>
+          <p class="card-tagline">Review spending trends, category breakdowns, monthly comparisons, and savings snapshots.</p>
         </article>
 
         <article class="card">
@@ -66,7 +71,7 @@
 
         <article class="card">
           <h3 class="card-title">AI Spending Insights</h3>
-          <p class="card-tagline">Use monthly insights, recurring spending detection, and budget forecasts to understand patterns faster.</p>
+          <p class="card-tagline">Use monthly insights, recurring spending detection, and forecasts to spot patterns faster.</p>
         </article>
 
         <article class="card">

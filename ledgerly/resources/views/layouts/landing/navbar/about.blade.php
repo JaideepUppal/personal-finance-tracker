@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ledgerly – About</title>
+    <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
@@ -19,6 +20,10 @@
           <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+            <span class="theme-toggle-icon" aria-hidden="true"></span>
+            <span class="theme-toggle-text">Dark</span>
+          </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
           <a href="{{ route('login') }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
         </div>
@@ -29,7 +34,7 @@
       <section class="fun-hero">
         <h1 class="page-title">Built by one student to make everyday budgeting clearer</h1>
         <p class="page-subtitle">
-          Ledgerly is created to make everyday budgeting simpler, with a clean workspace for tracking spending, income, budgets, bills, saving goals, analytics, and practical AI guidance.
+          Ledgerly makes everyday budgeting easier to read, with a clear dashboard for spending, income, budgets, bills, saving goals, analytics, and practical AI guidance.
         </p>
         <div class="sticker-row">
           <span class="pill">No spreadsheets</span>
@@ -59,7 +64,7 @@
         <article class="card">
           <h3 class="card-title">How I build</h3>
           <p class="card-text">
-            Small releases, real student budget scenarios, and careful polish. The focus is a secure Laravel application that makes money decisions easier to understand.
+            Small releases, real student budget scenarios, and careful polish. The focus is a secure Laravel app that makes everyday money easier to understand.
           </p>
         </article>
       </section>
@@ -75,7 +80,7 @@
         </article>
         <article class="card stat">
           <div class="stat-num">100%</div>
-          <div class="stat-label">finance-first focus</div>
+          <div class="stat-label">money clarity focus</div>
         </article>
       </section>
 

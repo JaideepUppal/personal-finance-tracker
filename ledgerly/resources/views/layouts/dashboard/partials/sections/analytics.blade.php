@@ -1,10 +1,14 @@
 <section id="analytics" class="content-section">
-  <h1 class="section-title">Analytics</h1>
+  <div class="section-heading">
+    <p class="section-kicker">AI analytics suite</p>
+    <h1 class="section-title">Analytics</h1>
+  </div>
 
   <div class="ai-tools-grid">
     <div id="aiMonthlyInsightsPanel" class="panel ai-feature-panel">
       <div class="panel-header ai-feature-header">
         <div>
+          <p class="panel-kicker">Monthly narrative</p>
           <h2 class="panel-title">AI Monthly Spending Insights</h2>
           <p class="ai-coach-copy">Spot patterns in this month's income, spending, savings rate, and largest recent expenses.</p>
         </div>
@@ -20,6 +24,7 @@
     <div id="aiSubscriptionPanel" class="panel ai-feature-panel">
       <div class="panel-header ai-feature-header">
         <div>
+          <p class="panel-kicker">Recurring detection</p>
           <h2 class="panel-title">AI Subscription Detector</h2>
           <p class="ai-coach-copy">Review transaction history for recurring or subscription-like spending patterns.</p>
         </div>
@@ -35,6 +40,7 @@
     <div id="aiForecastPanel" class="panel ai-feature-panel">
       <div class="panel-header ai-feature-header">
         <div>
+          <p class="panel-kicker">Forward view</p>
           <h2 class="panel-title">AI Budget Forecast</h2>
           <p class="ai-coach-copy">Estimate next month's pressure areas and practical budget adjustments.</p>
         </div>
@@ -51,7 +57,8 @@
   <div id="aiChatPanel" class="panel ai-chat-panel is-collapsed">
     <div class="panel-header ai-chat-header">
       <div>
-        <h2 class="panel-title">AI Student Finance Chatbot</h2>
+        <p class="panel-kicker">Contextual assistant</p>
+        <h2 class="panel-title">AI Finance Chatbot</h2>
         <p class="ai-coach-copy">
           Ask focused questions about budgeting, spending habits, saving goals, and how to use Ledgerly.
         </p>
@@ -70,7 +77,7 @@
     <div class="ai-chat-body" hidden>
       <div id="aiChatMessages" class="ai-chat-messages" aria-live="polite">
         <div class="ai-chat-message assistant">
-          Ask a student finance question, or ask how to interpret your current Ledgerly dashboard.
+          Ask a finance question, or ask how to interpret your current Ledgerly dashboard.
         </div>
       </div>
       <div id="aiChatLoading" class="ai-chat-loading hidden" aria-live="polite">
@@ -85,7 +92,7 @@
           rows="2"
           maxlength="800"
           placeholder="Ask about budgeting, spending, savings goals, or Ledgerly features"
-          aria-label="Ask the AI Student Finance Chatbot"
+          aria-label="Ask the AI Finance Chatbot"
         ></textarea>
         <button id="aiChatSend" class="filter-btn ai-chat-send" type="button">
           Send

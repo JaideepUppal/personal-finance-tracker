@@ -1,5 +1,8 @@
 <section id="income-tracking" class="content-section">
-  <h1 class="section-title">Income Tracking</h1>
+  <div class="section-heading">
+    <p class="section-kicker">Cash inflows</p>
+    <h1 class="section-title">Income Tracking</h1>
+  </div>
 
   <div class="filters-bar">
     <input
@@ -13,7 +16,10 @@
 
   <div class="panel">
     <div class="panel-header">
+      <div>
+        <p class="panel-kicker">Capture income</p>
       <h2 class="panel-title">Add Income</h2>
+      </div>
     </div>
     <div class="add-row">
       <input
@@ -59,14 +65,20 @@
   <div class="analytics-grid">
     <div class="chart-container panel">
       <div class="panel-header">
+        <div>
+          <p class="panel-kicker">Trend view</p>
         <h2 class="panel-title">Income Trend (Last 7 entries)</h2>
+        </div>
       </div>
       <canvas id="incLineChart"></canvas>
     </div>
 
     <div class="chart-container panel">
       <div class="panel-header">
+        <div>
+          <p class="panel-kicker">Source mix</p>
         <h2 class="panel-title">Source Breakdown</h2>
+        </div>
       </div>
       <canvas id="incPieChart"></canvas>
     </div>
@@ -74,7 +86,10 @@
 
   <div class="panel">
     <div class="panel-header">
+      <div>
+        <p class="panel-kicker">Ledger feed</p>
       <h2 class="panel-title">Recent Income</h2>
+      </div>
     </div>
     <div class="expense-list" id="incomeList">
     </div>

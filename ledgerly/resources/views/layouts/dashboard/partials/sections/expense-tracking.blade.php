@@ -1,5 +1,8 @@
 <section id="expense-tracking" class="content-section">
-  <h1 class="section-title">Expense Tracking</h1>
+  <div class="section-heading">
+    <p class="section-kicker">Transaction operations</p>
+    <h1 class="section-title">Expense Tracking</h1>
+  </div>
 
   <!-- Top bar -->
   <div class="filters-bar">
@@ -15,7 +18,10 @@
   <!-- Add expense -->
   <div class="panel">
     <div class="panel-header">
+      <div>
+        <p class="panel-kicker">Capture spend</p>
       <h2 class="panel-title">Add Expense</h2>
+      </div>
     </div>
 
     <div class="add-row">
@@ -71,14 +77,20 @@
   <div class="analytics-grid">
     <div class="chart-container panel">
       <div class="panel-header">
+        <div>
+          <p class="panel-kicker">Trend view</p>
         <h2 class="panel-title">Expense Trend (Last 7 entries)</h2>
+        </div>
       </div>
       <canvas id="expLineChart"></canvas>
     </div>
 
     <div class="chart-container panel">
       <div class="panel-header">
+        <div>
+          <p class="panel-kicker">Allocation</p>
         <h2 class="panel-title">Category Breakdown</h2>
+        </div>
       </div>
       <canvas id="expPieChart"></canvas>
     </div>
@@ -87,7 +99,10 @@
   <!-- List -->
   <div class="panel">
     <div class="panel-header">
+      <div>
+        <p class="panel-kicker">Ledger feed</p>
       <h2 class="panel-title">Recent Expenses</h2>
+      </div>
 
        <!--  Sort dropdown just for Expense Tracking -->
       <select id="expSort" class="filter-select">

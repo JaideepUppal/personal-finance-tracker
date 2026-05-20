@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ledgerly – Pricing</title>
+    <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
@@ -18,6 +19,10 @@
           <a class="nav-link" href="{{ route('help') }}">Help</a>
         </nav>
         <div class="auth-actions">
+          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
+            <span class="theme-toggle-icon" aria-hidden="true"></span>
+            <span class="theme-toggle-text">Dark</span>
+          </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
           <a href="{{ route('login') }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
         </div>
@@ -26,7 +31,7 @@
 
     <main class="page">
       <h1 class="page-title">Simple pricing for student finance</h1>
-      <p class="page-subtitle">Ledgerly is currently free while the student finance platform continues to improve.</p>
+      <p class="page-subtitle">Ledgerly is currently free while the core student finance experience continues to improve.</p>
 
       <section class="grid plans">
         <article class="card plan highlight">
