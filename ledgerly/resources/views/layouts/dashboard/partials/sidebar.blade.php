@@ -34,9 +34,10 @@
     </a>
 
     <div class="sidebar-logout">
-      <a href="{{ route('logout') }}" class="logout-btn"
+      <a href="{{ route('logout') }}" class="logout-btn" aria-label="Log out of Ledgerly" title="Log out"
         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-        Logout
+        <span class="logout-icon" aria-hidden="true"></span>
+        <span>Log out</span>
       </a>
       <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display:none;">
         @csrf

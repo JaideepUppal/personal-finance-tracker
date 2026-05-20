@@ -335,6 +335,9 @@ select:disabled {
 }
 
 .sidebar {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-h));
   min-height: 0;
   padding: var(--space-6) var(--space-4);
   background: var(--sidebar-bg);
@@ -368,7 +371,8 @@ select:disabled {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  height: calc(100vh - var(--header-h) - 48px);
+  flex: 1;
+  min-height: 0;
 }
 
 .nav-item {
@@ -497,30 +501,71 @@ select:disabled {
 }
 
 .sidebar-logout {
+  flex: 0 0 auto;
   margin-top: auto;
-  padding-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
 }
 
 .logout-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-height: 40px;
-  border: 1px solid var(--border);
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-sm);
-  color: var(--muted);
+  background: var(--surface-elevated);
+  color: var(--text-muted);
   font-size: 13px;
   font-weight: 700;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.04);
   transition:
     background 160ms ease,
     color 160ms ease,
-    border-color 160ms ease;
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+
+.logout-icon {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: currentColor;
+}
+
+.logout-icon::before,
+.logout-icon::after {
+  position: absolute;
+  content: "";
+  border-color: currentColor;
+}
+
+.logout-icon::before {
+  inset: 2px 6px 2px 1px;
+  border: 1.5px solid currentColor;
+  border-right: 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.logout-icon::after {
+  top: 4px;
+  right: 1px;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid currentColor;
+  border-right: 1.5px solid currentColor;
+  transform: rotate(45deg);
 }
 
 .logout-btn:hover {
   background: var(--negative-soft);
-  border-color: var(--negative-soft);
+  border-color: var(--negative);
   color: var(--negative);
+  box-shadow: none;
 }
 
 .content-area {
@@ -1979,6 +2024,8 @@ select:disabled {
   }
 
   .sidebar {
+    display: block;
+    height: auto;
     position: sticky;
     top: 68px;
     z-index: 25;
@@ -2008,13 +2055,20 @@ select:disabled {
   }
 
   .sidebar-logout {
+    flex: 0 0 auto;
     margin-top: 0;
     padding-top: 0;
+    padding-left: var(--space-2);
+    border-top: 0;
+    border-left: 1px solid var(--border);
   }
 
   .logout-btn {
+    justify-content: center;
+    min-width: 108px;
     min-height: 38px;
     padding: 0 var(--space-3);
+    box-shadow: none;
   }
 
   .content-area {
