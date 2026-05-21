@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <title>Ledgerly — AI Finance Dashboard for Students</title>
     <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ asset('css/pages/landing.css') }}" /> 
@@ -10,6 +11,7 @@
   </head>
 
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <!-- HEADER / NAV -->
     <header class="site-header">
       <div class="site-header-inner">
@@ -44,11 +46,11 @@
     </header>
 
     <!-- HERO -->
-    <main class="hero">
+    <main id="main-content" class="hero" tabindex="-1">
       <section class="hero-left">
         <p class="hero-eyebrow">AI-powered finance dashboard for students</p>
         <h1 class="headline">
-          Ledgerly
+          Track every yen. Spend with clarity.
         </h1>
 
         <p class="subtext">

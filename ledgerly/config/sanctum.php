@@ -2,6 +2,12 @@
 
 use Laravel\Sanctum\Sanctum;
 
+$appUrl = env('APP_URL', '');
+$appHost = parse_url($appUrl, PHP_URL_HOST);
+$appPort = parse_url($appUrl, PHP_URL_PORT);
+$appHostWithPort = $appHost ? $appHost . ($appPort ? ':' . $appPort : '') : null;
+$sanctumAppHost = ltrim(Sanctum::currentApplicationUrlWithPort(), ',');
+
 return [
 
     /*
@@ -15,12 +21,17 @@ return [
     |
     */
 
-    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', sprintf(
-        '%s%s',
-        'localhost,localhost:3000,127.0.0.1,127.0.0.1:8081,::1',
-        Sanctum::currentApplicationUrlWithPort(),
-        // Sanctum::currentRequestHost(),
-    ))),
+    'stateful' => explode(',', env('SANCTUM_STATEFUL_DOMAINS', implode(',', array_filter(array_unique([
+        'ledgerly.test',
+        'localhost',
+        'localhost:3000',
+        '127.0.0.1',
+        '127.0.0.1:8000',
+        '127.0.0.1:8081',
+        '::1',
+        $appHostWithPort,
+        $sanctumAppHost,
+    ]))))),
 
     /*
     |--------------------------------------------------------------------------
@@ -74,10 +85,6 @@ return [
     | request. You may change the middleware listed below as required.
     |
     */
-    'stateful' => [
-        'ledgerly.test', 'localhost', '127.0.0.1',
-    ],
-
     'middleware' => [
         'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
         'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,

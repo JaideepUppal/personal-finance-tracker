@@ -70,7 +70,7 @@
         <h2 class="panel-title">Income Trend (Last 7 entries)</h2>
         </div>
       </div>
-      <canvas id="incLineChart"></canvas>
+      <canvas id="incLineChart" role="img" aria-label="Income trend chart for recent income"></canvas>
     </div>
 
     <div class="chart-container panel">
@@ -80,7 +80,7 @@
         <h2 class="panel-title">Source Breakdown</h2>
         </div>
       </div>
-      <canvas id="incPieChart"></canvas>
+      <canvas id="incPieChart" role="img" aria-label="Income source breakdown chart"></canvas>
     </div>
   </div>
 

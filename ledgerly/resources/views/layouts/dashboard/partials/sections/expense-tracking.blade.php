@@ -82,7 +82,7 @@
         <h2 class="panel-title">Expense Trend (Last 7 entries)</h2>
         </div>
       </div>
-      <canvas id="expLineChart"></canvas>
+      <canvas id="expLineChart" role="img" aria-label="Expense trend chart for recent expenses"></canvas>
     </div>
 
     <div class="chart-container panel">
@@ -92,7 +92,7 @@
         <h2 class="panel-title">Category Breakdown</h2>
         </div>
       </div>
-      <canvas id="expPieChart"></canvas>
+      <canvas id="expPieChart" role="img" aria-label="Expense category breakdown chart"></canvas>
     </div>
   </div>
 

@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => null,
+        ],
     ],
 
     /*
@@ -98,19 +103,6 @@ return [
             'throttle' => 60,
         ],
     ],
-    'guards' => [
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
-        ],
-    
-        // ⬇️ add this block
-        'sanctum' => [
-            'driver' => 'sanctum',
-            'provider' => null,
-        ],
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | Password Confirmation Timeout

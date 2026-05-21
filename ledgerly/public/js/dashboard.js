@@ -770,9 +770,6 @@ if (savedSection && document.getElementById(savedSection)) {
   const catEl = document.getElementById("expCategory");
   const searchEl = document.getElementById("expSearch");
   const sortEl = document.getElementById("expSort");
-  const errorEl = document.getElementById("amountError");
-
-  const incAmount = document.getElementById("incAmount");
 
   amtEl.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
@@ -1584,13 +1581,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       const safeCat = escapeHtml(prettyCat.replace(/-/g, " "));
       const safeCatKey = escapeHtml(useCat);
       const safeBudgetId = escapeHtml(String(budget.id || ""));
+      const safeRemoveLabel = escapeHtml(`Remove ${prettyCat.replace(/-/g, " ")} budget`);
 
       const card = document.createElement("div");
       card.className = "budget-card";
       card.innerHTML = `
         <div class="bud-top-row">
           <div class="bud-cat-name">${safeCat}</div>
-          <button class="tiny-del-ghost bud-remove-btn" data-budget-id="${safeBudgetId}" data-budget-category="${safeCatKey}">
+          <button class="tiny-del-ghost bud-remove-btn" data-budget-id="${safeBudgetId}" data-budget-category="${safeCatKey}" aria-label="${safeRemoveLabel}">
             Remove
           </button>
         </div>
@@ -1721,7 +1719,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const savePillEl = document.getElementById("anSavingsPill");
   if (!spendLineEl || !monthBarEl || !catBarsEl) return;
 
-  const DAY_MS = 86400000;
   const cats = ["food", "rent", "travel", "shopping", "other"];
 
   function yen(n) {
@@ -1948,8 +1945,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!incomeEl || !recentWrap || !billWrap) return;
 
   const cats = ["food", "rent", "travel", "shopping", "other"];
-  const DAY_MS = 86400000;
-
   // Utils
   const yen = (n) => "¥" + Number(n || 0).toLocaleString();
   const thisMonth = (d) => {
@@ -2729,6 +2724,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         target > 0 ? Math.min(100, Math.round((saved / target) * 100)) : 0;
 
       const deadline = g.deadline ? formatLongDate(g.deadline) : "No deadline";
+      const progressClass =
+        pct >= 80 ? "is-success" : pct >= 40 ? "is-warning" : "is-primary";
 
       const card = document.createElement("div");
       card.className = "savings-goal-card";
@@ -2748,7 +2745,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <span class="sg-target">Target: ${yen(target)}</span>
         </div>
 
-        <div class="sg-progress">
+        <div class="sg-progress ${progressClass}">
           <span style="width:${pct}%;"></span>
         </div>
         <div class="sg-percent">${pct}% of goal</div>

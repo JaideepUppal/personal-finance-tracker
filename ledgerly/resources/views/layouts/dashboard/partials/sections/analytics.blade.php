@@ -107,7 +107,7 @@
       <div class="panel-header">
         <h2 class="panel-title">Spending Trends (Last 14 days)</h2>
       </div>
-      <canvas id="anSpendLine"></canvas>
+      <canvas id="anSpendLine" role="img" aria-label="Spending trend chart for the last 14 days"></canvas>
     </div>
 
     <!-- Category breakdown -->
@@ -125,7 +125,7 @@
       <div class="panel-header">
         <h2 class="panel-title">Monthly Comparison</h2>
       </div>
-      <canvas id="anMonthBar"></canvas>
+      <canvas id="anMonthBar" role="img" aria-label="Monthly income and expense comparison chart"></canvas>
     </div>
 
     <!-- Savings rate -->

@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <title>Ledgerly – About</title>
     <script src="{{ asset('js/theme.js') }}?v={{ filemtime(public_path('js/theme.js')) }}"></script>
     <link rel="stylesheet" href="{{ asset('css/pages/landing.css') }}" />
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
     <!-- Header  -->
     <header class="site-header">
       <div class="site-header-inner">
@@ -30,7 +32,7 @@
       </div>
     </header>
 
-    <main class="page about">
+    <main id="main-content" class="page about" tabindex="-1">
       <section class="fun-hero">
         <h1 class="page-title">Built by one student to make everyday budgeting clearer</h1>
         <p class="page-subtitle">
