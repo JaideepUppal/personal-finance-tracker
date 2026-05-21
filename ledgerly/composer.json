@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "jaideepuppal/ledgerly-ai-finance-platform",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "AI-powered personal finance platform built with Laravel.",
+    "keywords": ["ledgerly", "laravel", "finance", "ai"],
     "license": "MIT",
     "require": {
         "php": "^8.2",

@@ -2,12 +2,45 @@
 // Bootstrap, API helpers, and shared utilities
 // ============================================================================
 
-//  username/avatar from login
+const STORAGE_KEYS = Object.freeze({
+  userName: "ledgerlyUserName",
+  activeSection: "ledgerlyActiveSection",
+  onboarded: "ledgerlyOnboarded",
+});
+
+// Keep old browser-storage keys readable so existing sessions retain preferences.
+const LEGACY_STORAGE_KEYS = Object.freeze({
+  userName: "pftUserName",
+  activeSection: "pftActiveSection",
+  onboarded: "pft_onboarded",
+});
+
+function getStoredValue(key, legacyKey) {
+  const value = localStorage.getItem(key);
+  if (value !== null) return value;
+
+  const legacyValue = legacyKey ? localStorage.getItem(legacyKey) : null;
+  if (legacyValue !== null) {
+    localStorage.setItem(key, legacyValue);
+    return legacyValue;
+  }
+
+  return null;
+}
+
+function setStoredValue(key, value, legacyKey) {
+  localStorage.setItem(key, value);
+  if (legacyKey) localStorage.removeItem(legacyKey);
+}
+
+// Restore username/avatar from browser storage when available.
 (function () {
-  const savedName = localStorage.getItem("pftUserName");
+  const savedName = getStoredValue(
+    STORAGE_KEYS.userName,
+    LEGACY_STORAGE_KEYS.userName
+  );
 
   if (savedName) {
-    //  "Welcome, name"
     const userNameSpan = document.querySelector(".user-name");
     if (userNameSpan) {
       userNameSpan.textContent = savedName;
@@ -698,13 +731,20 @@ function activateSection(sectionId) {
 navItems.forEach((item) => {
   item.addEventListener("click", function () {
     const sectionId = this.getAttribute("data-section");
-    localStorage.setItem("pftActiveSection", sectionId);
+    setStoredValue(
+      STORAGE_KEYS.activeSection,
+      sectionId,
+      LEGACY_STORAGE_KEYS.activeSection
+    );
     activateSection(sectionId);
   });
 });
 
 // on page load: restore last active tab (fallback = dashboard)
-const savedSection = localStorage.getItem("pftActiveSection");
+const savedSection = getStoredValue(
+  STORAGE_KEYS.activeSection,
+  LEGACY_STORAGE_KEYS.activeSection
+);
 if (savedSection && document.getElementById(savedSection)) {
   activateSection(savedSection);
 } else {
@@ -2961,13 +3001,20 @@ function wireOnboarding() {
   const modal = document.getElementById("onboardingModal");
   const closeBtn = document.getElementById("onboardingClose");
   const doneBtn = document.getElementById("onboardingDone");
-  const key = "pft_onboarded";
+  const hasSeenOnboarding = getStoredValue(
+    STORAGE_KEYS.onboarded,
+    LEGACY_STORAGE_KEYS.onboarded
+  );
 
-  if (!modal || localStorage.getItem(key) === "1") return;
+  if (!modal || hasSeenOnboarding === "1") return;
 
   const close = () => {
     modal.classList.add("hidden");
-    localStorage.setItem(key, "1");
+    setStoredValue(
+      STORAGE_KEYS.onboarded,
+      "1",
+      LEGACY_STORAGE_KEYS.onboarded
+    );
   };
 
   modal.classList.remove("hidden");

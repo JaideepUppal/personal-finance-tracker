@@ -75,7 +75,7 @@ return [
     |
     */
     'stateful' => [
-        'pftnew.test', 'localhost', '127.0.0.1',
+        'ledgerly.test', 'localhost', '127.0.0.1',
     ],
 
     'middleware' => [

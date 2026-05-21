@@ -1,5 +1,6 @@
 {
     "$schema": "https://json.schemastore.org/package.json",
+    "name": "ledgerly-ai-finance-platform",
     "private": true,
     "type": "module",
     "scripts": {
