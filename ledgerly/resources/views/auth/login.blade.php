@@ -16,86 +16,155 @@
     <span class="theme-toggle-text">Dark</span>
 </button>
 
-<div class="container" id="container">
+<main class="auth-shell">
+    <section class="auth-brand-panel" aria-label="Ledgerly overview">
+        <a href="{{ route('landing') }}" class="auth-brand">
+            <span class="brand-mark" aria-hidden="true">L</span>
+            <span>Ledgerly</span>
+        </a>
 
-    <!-- Sign Up Form -->
-    <div class="form-container sign-up-container">
-        <form method="POST" action="{{ route('signup') }}" aria-label="Create account form">
-            @csrf
-            <h1>Create Account</h1>
-            <span>Start tracking spending, budgets, and savings</span>
+        <div class="auth-brand-copy">
+            <p class="auth-eyebrow">Student finance cockpit</p>
+            <h1>Your finances, finally clear.</h1>
+            <p>
+                Track money in, money out, budgets, bills, goals, and AI guidance from one calm dashboard.
+            </p>
+        </div>
 
-            <input type="text" name="name" placeholder="Name" value="{{ old('name') }}" autocomplete="name" required />
-            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
-            <div class="password-field">
-                <input id="signupPassword" type="password" name="password" placeholder="Password" autocomplete="new-password" required />
-                <button class="password-toggle" type="button" aria-label="Show password">
-                    <span aria-hidden="true">Show</span>
-                </button>
-            </div>
-            <div class="password-field">
-                <input id="signupPasswordConfirmation" type="password" name="password_confirmation" placeholder="Confirm Password" autocomplete="new-password" required />
-                <button class="password-toggle" type="button" aria-label="Show password">
-                    <span aria-hidden="true">Show</span>
-                </button>
-            </div>
-
-            @if ($errors->any() && session('form') === 'signup')
-                <div class="error" role="alert" aria-live="polite">
-                    @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
+        <div class="auth-value-list" aria-label="Ledgerly product value">
+            <div class="auth-value-item">
+                <span aria-hidden="true">01</span>
+                <div>
+                    <strong>See the whole month</strong>
+                    <p>Income, expenses, cashflow, and savings stay visible.</p>
                 </div>
-            @endif
-
-            <button type="submit">Sign Up</button>
-        </form>
-    </div>
-
-    <!-- Sign In Form -->
-    <div class="form-container sign-in-container">
-        <form method="POST" action="{{ route('login.submit') }}" aria-label="Sign in form">
-            @csrf
-            <h1>Sign In</h1>
-            <span>Continue to your finance dashboard</span>
-
-            <input type="email" name="email" placeholder="Email" value="{{ old('email') }}" autocomplete="email" required />
-            <div class="password-field">
-                <input id="loginPassword" type="password" name="password" placeholder="Password" autocomplete="current-password" required />
-                <button class="password-toggle" type="button" aria-label="Show password">
-                    <span aria-hidden="true">Show</span>
-                </button>
             </div>
-
-            @if ($errors->any() && session('form') === 'signin')
-                <div class="error" role="alert" aria-live="polite">
-                    @foreach ($errors->all() as $error)
-                        <p>{{ $error }}</p>
-                    @endforeach
+            <div class="auth-value-item">
+                <span aria-hidden="true">02</span>
+                <div>
+                    <strong>Catch budget pressure early</strong>
+                    <p>Category limits and bills show what needs attention.</p>
                 </div>
-            @endif
-
-            <button type="submit">Sign In</button>
-        </form>
-    </div>
-
-    <!-- Overlay -->
-    <div class="overlay-container">
-        <div class="overlay">
-            <div class="overlay-panel overlay-left">
-                <h1>Welcome Back</h1>
-                <p>Sign in to continue managing spending, budgets, bills, and goals.</p>
-                <button class="ghost" id="signIn">Sign In</button>
             </div>
-            <div class="overlay-panel overlay-right">
-                <h1>Start with Ledgerly</h1>
-                <p>Create an account for AI-assisted cash flow, budgets, bills, and goals.</p>
-                <button class="ghost" id="signUp">Sign Up</button>
+            <div class="auth-value-item">
+                <span aria-hidden="true">03</span>
+                <div>
+                    <strong>Turn data into next steps</strong>
+                    <p>Ledgerly AI summarizes patterns and practical moves.</p>
+                </div>
             </div>
         </div>
-    </div>
 
-</div>
+        <div class="auth-brand-metric" aria-label="Example monthly snapshot">
+            <span>Monthly clarity score</span>
+            <strong>86</strong>
+        </div>
+    </section>
+
+    <section class="auth-panel" aria-label="Authentication">
+        <div class="container" id="container">
+            <div class="auth-card-intro">
+                <p class="auth-eyebrow">Secure access</p>
+                <h2>Sign in to Ledgerly</h2>
+                <p>Welcome back. Continue tracking your month with clear budgets, goals, and AI insights.</p>
+            </div>
+
+            <div class="auth-switch" role="group" aria-label="Choose authentication mode">
+                <button class="auth-switch-btn auth-switch-signin" id="signIn" type="button">Sign in</button>
+                <button class="auth-switch-btn auth-switch-signup" id="signUp" type="button">Create account</button>
+            </div>
+
+            <div class="auth-forms">
+                <!-- Sign In Form -->
+                <div class="form-container sign-in-container">
+                    <form method="POST" action="{{ route('login.submit') }}" aria-label="Sign in form">
+                        @csrf
+                        <div class="form-heading">
+                            <h3>Sign in</h3>
+                            <span>Use your Ledgerly account to open the finance dashboard.</span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="loginEmail">Email address</label>
+                            <input id="loginEmail" type="email" name="email" placeholder="you@example.com" value="{{ old('email') }}" autocomplete="email" required />
+                        </div>
+
+                        <div class="form-field">
+                            <label for="loginPassword">Password</label>
+                            <div class="password-field">
+                                <input id="loginPassword" type="password" name="password" placeholder="Enter your password" autocomplete="current-password" required />
+                                <button class="password-toggle" type="button" aria-label="Show password">
+                                    <span aria-hidden="true">Show</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        @if ($errors->any() && session('form') === 'signin')
+                            <div class="error" role="alert" aria-live="polite">
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <button type="submit">Sign in</button>
+                    </form>
+                </div>
+
+                <!-- Sign Up Form -->
+                <div class="form-container sign-up-container">
+                    <form method="POST" action="{{ route('signup') }}" aria-label="Create account form">
+                        @csrf
+                        <div class="form-heading">
+                            <h3>Create account</h3>
+                            <span>Start tracking spending, budgets, bills, savings, and AI guidance.</span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="signupName">Name</label>
+                            <input id="signupName" type="text" name="name" placeholder="Your name" value="{{ old('name') }}" autocomplete="name" required />
+                        </div>
+
+                        <div class="form-field">
+                            <label for="signupEmail">Email address</label>
+                            <input id="signupEmail" type="email" name="email" placeholder="you@example.com" value="{{ old('email') }}" autocomplete="email" required />
+                        </div>
+
+                        <div class="form-field">
+                            <label for="signupPassword">Password</label>
+                            <div class="password-field">
+                                <input id="signupPassword" type="password" name="password" placeholder="Create a password" autocomplete="new-password" required />
+                                <button class="password-toggle" type="button" aria-label="Show password">
+                                    <span aria-hidden="true">Show</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="signupPasswordConfirmation">Confirm password</label>
+                            <div class="password-field">
+                                <input id="signupPasswordConfirmation" type="password" name="password_confirmation" placeholder="Confirm your password" autocomplete="new-password" required />
+                                <button class="password-toggle" type="button" aria-label="Show password">
+                                    <span aria-hidden="true">Show</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        @if ($errors->any() && session('form') === 'signup')
+                            <div class="error" role="alert" aria-live="polite">
+                                @foreach ($errors->all() as $error)
+                                    <p>{{ $error }}</p>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <button type="submit">Create account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
 
 <script src="{{ asset('js/login.js') }}"></script>
 
