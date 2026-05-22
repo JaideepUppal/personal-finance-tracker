@@ -223,16 +223,16 @@ input:focus-visible {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 40px;
-  padding: 0 var(--space-3);
-  border: 1px solid var(--border);
+  min-height: 42px;
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--text-muted);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   line-height: 1;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-xs);
   transition:
     background 160ms ease,
     border-color 160ms ease,
@@ -242,8 +242,8 @@ input:focus-visible {
 
 .theme-toggle:hover {
   border-color: var(--border-strong);
-  background: var(--surface-muted);
-  color: var(--text-main);
+  background: var(--primary-soft);
+  color: var(--primary);
 }
 
 .theme-toggle:active {
@@ -286,7 +286,7 @@ input:focus-visible {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-lg);
 }
 
 .form-container {
@@ -350,18 +350,19 @@ form > span {
 
 input {
   width: 100%;
-  min-height: 46px;
-  border: 1px solid var(--border);
+  min-height: 42px;
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
-  background: var(--surface-soft);
+  background: var(--surface-muted);
   color: var(--text);
   outline: none;
-  padding: 0 var(--space-4);
+  padding: 0 14px;
   font-size: 13px;
   font-weight: 600;
   transition:
     background 160ms ease,
-    border-color 160ms ease;
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 input::placeholder {
@@ -369,8 +370,13 @@ input::placeholder {
 }
 
 input:focus {
-  border-color: var(--focus-ring);
+  border-color: var(--primary);
   background: var(--surface);
+  box-shadow: 0 0 0 4px var(--focus-ring);
+}
+
+input:hover {
+  border-color: var(--border-strong);
 }
 
 .password-field {
@@ -391,7 +397,7 @@ input:focus {
   justify-content: center;
   min-height: 32px;
   padding: 0 var(--space-3);
-  border: 1px solid var(--border);
+  border: 1.5px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--muted);
@@ -401,8 +407,9 @@ input:focus {
 }
 
 .password-toggle:hover {
-  border-color: var(--border-strong);
-  color: var(--text-soft);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
 }
 
 form > button,
@@ -410,16 +417,18 @@ form > button,
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
+  min-height: 42px;
   margin-top: var(--space-2);
-  padding: 0 var(--space-4);
+  padding: 0 20px;
   border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 700;
   line-height: 1;
+  box-shadow: var(--shadow-sm);
   transition:
     background 160ms ease,
     border-color 160ms ease,
+    box-shadow 160ms ease,
     color 160ms ease,
     transform 160ms ease;
 }
@@ -432,21 +441,27 @@ form > button {
 
 form > button:hover {
   background: var(--primary-hover);
+  box-shadow: var(--shadow);
 }
 
 .ghost {
-  border: 1px solid var(--border-strong);
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--border-strong);
   background: transparent;
-  color: var(--text);
+  color: var(--muted);
 }
 
 .ghost:hover {
-  background: var(--surface-muted);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
 }
 
 form > button:active,
 .ghost:active {
   transform: translateY(1px);
+  box-shadow: var(--shadow-xs);
 }
 
 .error {
