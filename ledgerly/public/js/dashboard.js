@@ -317,28 +317,50 @@ function renderCategoryPill(category, type = "expense") {
 
 const CHART_THEME_FALLBACKS = {
   light: {
-    text: "#111827",
-    muted: "#64748B",
-    soft: "#94A3B8",
-    border: "#E2E8F0",
+    text: "#0B1428",
+    muted: "#445069",
+    soft: "#677491",
+    border: "#D8DEF0",
+    borderStrong: "#B8C2DC",
     panel: "#FFFFFF",
-    primary: "#2563EB",
+    primary: "#4F46E5",
     money: "#16A34A",
-    danger: "#DC2626",
-    warning: "#F59E0B",
-    accent: "#0D9488",
+    danger: "#C91D1D",
+    warning: "#B45309",
+    accent: "#6D28D9",
+    chart: [
+      "#4F46E5",
+      "#16A34A",
+      "#B45309",
+      "#0369A1",
+      "#6D28D9",
+      "#BE185D",
+      "#0F766E",
+      "#677491",
+    ],
   },
   dark: {
-    text: "#F8FAFC",
-    muted: "#CBD5E1",
-    soft: "#94A3B8",
-    border: "#263449",
-    panel: "#111827",
-    primary: "#60A5FA",
+    text: "#EDF2FF",
+    muted: "#9BACCB",
+    soft: "#637A9E",
+    border: "#1E3158",
+    borderStrong: "#2C4272",
+    panel: "#0F1E38",
+    primary: "#818CF8",
     money: "#34D399",
-    danger: "#FB7185",
-    warning: "#FBBF24",
-    accent: "#2DD4BF",
+    danger: "#FC8181",
+    warning: "#FCD34D",
+    accent: "#A78BFA",
+    chart: [
+      "#818CF8",
+      "#34D399",
+      "#FCD34D",
+      "#38BDF8",
+      "#A78BFA",
+      "#F472B6",
+      "#2DD4BF",
+      "#94A3B8",
+    ],
   },
 };
 
@@ -372,7 +394,7 @@ function colorAlpha(color, alpha) {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
-  return value || `rgba(37, 99, 235, ${alpha})`;
+  return value || `rgba(79, 70, 229, ${alpha})`;
 }
 
 function getLedgerlyChartTheme() {
@@ -384,6 +406,17 @@ function getLedgerlyChartTheme() {
   const warning = cssVar("--warning", fallback.warning);
   const accent = cssVar("--accent", fallback.accent);
   const soft = cssVar("--text-soft", fallback.soft);
+  const chart = fallback.chart.map((color, index) =>
+    cssVar(`--chart-${index + 1}`, color)
+  );
+  const sans = cssVar(
+    "--font-sans",
+    "Manrope, Inter, Avenir Next, Segoe UI, system-ui, -apple-system, sans-serif"
+  );
+  const mono = cssVar(
+    "--font-mono",
+    "JetBrains Mono, Fira Code, SF Mono, Consolas, monospace"
+  );
 
   return {
     mode,
@@ -392,17 +425,40 @@ function getLedgerlyChartTheme() {
     soft,
     border: cssVar("--border", fallback.border),
     panel: cssVar("--surface", fallback.panel),
-    tooltipBg: mode === "dark" ? "rgba(15, 23, 42, 0.98)" : "rgba(255, 255, 255, 0.98)",
-    tooltipTitle: fallback.text,
-    tooltipBody: fallback.muted,
-    tooltipBorder: cssVar("--border-strong", fallback.border),
-    grid: mode === "dark" ? "rgba(148, 163, 184, 0.12)" : "rgba(100, 116, 139, 0.16)",
+    tooltipBg: mode === "dark" ? "rgba(15, 30, 56, 0.98)" : "rgba(255, 255, 255, 0.98)",
+    tooltipTitle: cssVar("--text-main", fallback.text),
+    tooltipBody: cssVar("--text-muted", fallback.muted),
+    tooltipBorder: cssVar("--border-strong", fallback.borderStrong),
+    grid: colorAlpha(
+      cssVar("--border-strong", fallback.borderStrong),
+      mode === "dark" ? 0.34 : 0.44
+    ),
     primary,
     money,
     danger,
     warning,
     accent,
-    palette: [primary, money, accent, warning, danger, soft, "#475569", "#64748B"],
+    chart1: chart[0],
+    chart2: chart[1],
+    chart3: chart[2],
+    chart4: chart[3],
+    chart5: chart[4],
+    chart6: chart[5],
+    chart7: chart[6],
+    chart8: chart[7],
+    palette: chart,
+    customPalette: [
+      chart[5],
+      chart[6],
+      chart[0],
+      chart[1],
+      chart[2],
+      chart[3],
+      chart[4],
+      chart[7],
+    ],
+    sans,
+    mono,
   };
 }
 
@@ -413,6 +469,7 @@ function syncLedgerlyChartTheme() {
 
   if (typeof Chart !== "undefined") {
     Chart.defaults.color = ledgerlyChartTheme.text;
+    Chart.defaults.font.family = ledgerlyChartTheme.sans;
   }
 }
 
@@ -438,22 +495,22 @@ function chartCategoryColor(label = "", index = 0, type = "expense") {
   const theme = ledgerlyChartTheme;
   const normalized = String(label).toLowerCase();
   const expenseColors = {
-    food: theme.money,
-    rent: theme.warning,
-    travel: theme.primary,
-    shopping: theme.accent,
-    other: theme.soft,
+    food: theme.chart2,
+    rent: theme.chart3,
+    travel: theme.chart1,
+    shopping: theme.chart4,
+    other: theme.chart8,
   };
   const incomeColors = {
-    "part-time": theme.money,
-    "part time": theme.money,
-    allowance: theme.primary,
-    stipend: theme.warning,
-    scholarship: theme.accent,
-    other: theme.soft,
+    "part-time": theme.chart2,
+    "part time": theme.chart2,
+    allowance: theme.chart1,
+    stipend: theme.chart3,
+    scholarship: theme.chart5,
+    other: theme.chart8,
   };
   const map = type === "income" ? incomeColors : expenseColors;
-  return map[normalized] || theme.palette[index % theme.palette.length];
+  return map[normalized] || theme.customPalette[index % theme.customPalette.length];
 }
 
 function chartYen(value) {
@@ -524,7 +581,7 @@ function ledgerlyChartPlugins(showLegend = true, settings = {}) {
         boxWidth: 6,
         boxHeight: 6,
         padding: 10,
-        font: { family: "Manrope", size: 10.5, weight: "500" },
+        font: { family: ledgerlyChartTheme.sans, size: 10.5, weight: "500" },
       },
     },
     tooltip: {
@@ -537,8 +594,8 @@ function ledgerlyChartPlugins(showLegend = true, settings = {}) {
       displayColors: true,
       boxPadding: 4,
       padding: 9,
-      titleFont: { family: "Manrope", size: 11.5, weight: "700" },
-      bodyFont: { family: "Manrope", size: 11.5, weight: "500" },
+      titleFont: { family: ledgerlyChartTheme.sans, size: 11.5, weight: "700" },
+      bodyFont: { family: ledgerlyChartTheme.mono, size: 11.5, weight: "500" },
       callbacks: {
         label(context) {
           const label = context.dataset.label ? `${context.dataset.label}: ` : "";
@@ -572,7 +629,7 @@ function ledgerlyChartScales() {
         maxTicksLimit: 7,
         maxRotation: 0,
         padding: 7,
-        font: { family: "Manrope", size: 10.5, weight: "500" },
+        font: { family: ledgerlyChartTheme.sans, size: 10.5, weight: "500" },
       },
     },
     y: {
@@ -583,7 +640,7 @@ function ledgerlyChartScales() {
         maxTicksLimit: 5,
         padding: 7,
         precision: 0,
-        font: { family: "Manrope", size: 10.5, weight: "500" },
+        font: { family: ledgerlyChartTheme.sans, size: 10.5, weight: "500" },
         callback(value) {
           return chartYen(value);
         },
@@ -626,17 +683,17 @@ const ledgerlyDoughnutCenterPlugin = {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = ledgerlyChartTheme.muted;
-    ctx.font = "600 10.5px Manrope, sans-serif";
+    ctx.font = `600 10.5px ${ledgerlyChartTheme.sans}`;
     ctx.fillText("Total", center.x, center.y - 10);
     ctx.fillStyle = ledgerlyChartTheme.text;
-    ctx.font = "700 16px Manrope, Avenir Next, sans-serif";
+    ctx.font = `700 16px ${ledgerlyChartTheme.mono}`;
     ctx.fillText(chartYen(total), center.x, center.y + 10);
     ctx.restore();
   },
 };
 
 if (typeof Chart !== "undefined") {
-  Chart.defaults.font.family = "Manrope, Avenir Next, Segoe UI, sans-serif";
+  Chart.defaults.font.family = ledgerlyChartTheme.sans;
   Chart.defaults.color = ledgerlyChartTheme.text;
   Chart.defaults.elements.arc.borderJoinStyle = "round";
 }
@@ -647,6 +704,7 @@ function applyLedgerlyChartTheme(chart) {
 
   if (plugins?.legend?.labels) {
     plugins.legend.labels.color = theme.text;
+    if (plugins.legend.labels.font) plugins.legend.labels.font.family = theme.sans;
   }
 
   if (plugins?.tooltip) {
@@ -654,12 +712,15 @@ function applyLedgerlyChartTheme(chart) {
     plugins.tooltip.titleColor = theme.tooltipTitle;
     plugins.tooltip.bodyColor = theme.tooltipBody;
     plugins.tooltip.borderColor = theme.tooltipBorder;
+    if (plugins.tooltip.titleFont) plugins.tooltip.titleFont.family = theme.sans;
+    if (plugins.tooltip.bodyFont) plugins.tooltip.bodyFont.family = theme.mono;
   }
 
   ["x", "y"].forEach((axis) => {
     const scale = chart.options?.scales?.[axis];
     if (!scale) return;
     if (scale.ticks) scale.ticks.color = theme.muted;
+    if (scale.ticks?.font) scale.ticks.font.family = theme.sans;
     if (axis === "y" && scale.grid) scale.grid.color = theme.grid;
   });
 
@@ -1851,11 +1912,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     catBarsEl.innerHTML = "";
     const max = Math.max(1, ...cats.map((c) => totals[c] || 0));
     const barAccents = {
-      food: [ledgerlyChartTheme.money, colorAlpha(ledgerlyChartTheme.money, 0.72)],
-      rent: [ledgerlyChartTheme.warning, colorAlpha(ledgerlyChartTheme.warning, 0.72)],
-      travel: [ledgerlyChartTheme.primary, colorAlpha(ledgerlyChartTheme.primary, 0.72)],
-      shopping: [ledgerlyChartTheme.accent, colorAlpha(ledgerlyChartTheme.accent, 0.72)],
-      other: [ledgerlyChartTheme.soft, colorAlpha(ledgerlyChartTheme.soft, 0.72)],
+      food: [ledgerlyChartTheme.chart2, colorAlpha(ledgerlyChartTheme.chart2, 0.72)],
+      rent: [ledgerlyChartTheme.chart3, colorAlpha(ledgerlyChartTheme.chart3, 0.72)],
+      travel: [ledgerlyChartTheme.chart1, colorAlpha(ledgerlyChartTheme.chart1, 0.72)],
+      shopping: [ledgerlyChartTheme.chart4, colorAlpha(ledgerlyChartTheme.chart4, 0.72)],
+      other: [ledgerlyChartTheme.chart8, colorAlpha(ledgerlyChartTheme.chart8, 0.72)],
     };
 
     cats.forEach((c) => {
@@ -1906,6 +1967,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Redraw when data changes
   document.addEventListener("expenses:changed", redraw);
   document.addEventListener("incomes:changed", redraw);
+  window.addEventListener("ledgerly:themechange", redraw);
 
   // Initial
   redraw();
