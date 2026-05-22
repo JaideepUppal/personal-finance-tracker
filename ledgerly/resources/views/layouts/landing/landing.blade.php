@@ -39,7 +39,7 @@
           </a>
 
           <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link">
-            <button class="signup-btn">Sign up</button>
+            <button class="signup-btn">Start free</button>
           </a>
         </div>
       </div>
@@ -60,15 +60,15 @@
         <p class="confidence-line">Understand your month before it gets expensive. Built with Laravel, Chart.js, and practical server-side AI.</p>
 
         <div class="hero-ctas">
-          <a href="{{ route('login') }}" class="cta cta-primary">Open dashboard</a>
-          <a href="{{ route('products') }}" class="cta cta-ghost">Explore product</a>
+          <a href="{{ route('login', ['mode' => 'signup']) }}" class="cta cta-primary">Start for free</a>
+          <a href="{{ route('products') }}" class="cta cta-ghost">Explore features</a>
         </div>
 
         <div class="hero-proof-row" aria-label="Product capabilities">
-          <span>Cash flow</span>
-          <span>Budgets</span>
+          <span>Income tracking</span>
+          <span>Smart budgets</span>
           <span>AI insights</span>
-          <span>Saving goals</span>
+          <span>Free to start</span>
         </div>
       </section>
 

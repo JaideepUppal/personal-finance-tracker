@@ -12,7 +12,10 @@
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="site-header">
       <div class="site-header-inner">
-        <a href="{{ route('landing') }}" class="brand-logo">Ledgerly</a>
+        <a href="{{ route('landing') }}" class="brand-logo">
+          <span class="brand-mark" aria-hidden="true">L</span>
+          <span>Ledgerly</span>
+        </a>
         <nav class="nav-links">
           <a class="nav-link" href="{{ route('products') }}">Products</a>
           <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
@@ -26,7 +29,7 @@
             <span class="theme-toggle-text">Dark</span>
           </button>
           <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
-          <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link"><button class="signup-btn">Sign up</button></a>
+          <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link"><button class="signup-btn">Start free</button></a>
         </div>
       </div>
     </header>
@@ -110,8 +113,8 @@
       </section>
 
       <div class="cta-row center">
-        <a href="{{ route('login') }}" class="cta cta-primary">Open Dashboard</a>
-        <a href="{{ route('products') }}" class="cta cta-ghost">Explore Features</a>
+        <a href="{{ route('login') }}" class="cta cta-primary">Open dashboard</a>
+        <a href="{{ route('products') }}" class="cta cta-ghost">Explore features</a>
       </div>
     </main>
 
