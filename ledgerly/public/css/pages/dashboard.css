@@ -1920,6 +1920,33 @@ select:disabled {
   text-align: right;
 }
 
+.cat-empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 142px;
+  padding: var(--space-6);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  background:
+    linear-gradient(135deg, var(--primary-subtle), transparent 62%),
+    var(--surface-soft);
+  color: var(--text-main);
+  text-align: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.cat-empty-state strong {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.cat-empty-state span {
+  margin-top: var(--space-1);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .cat-bar span {
   background: var(--row-accent, var(--accent));
 }

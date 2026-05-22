@@ -477,17 +477,20 @@ function lineColors(tone = "primary") {
   const theme = ledgerlyChartTheme;
   const color =
     tone === "income" || tone === "money"
-      ? theme.money
+      ? theme.chart2
       : tone === "expense" || tone === "danger"
-      ? theme.danger
+      ? theme.chart6
+      : tone === "warning"
+      ? theme.chart3
       : tone === "accent"
-      ? theme.accent
-      : theme.primary;
+      ? theme.chart5
+      : theme.chart1;
 
   return {
     border: color,
-    fillTop: colorAlpha(color, theme.mode === "dark" ? 0.24 : 0.18),
-    fillBottom: colorAlpha(color, 0.02),
+    fillTop: colorAlpha(color, theme.mode === "dark" ? 0.28 : 0.2),
+    fillMid: colorAlpha(color, theme.mode === "dark" ? 0.12 : 0.08),
+    fillBottom: colorAlpha(color, theme.mode === "dark" ? 0.03 : 0.015),
   };
 }
 
@@ -517,6 +520,30 @@ function chartYen(value) {
   return "¥" + Math.round(Number(value || 0)).toLocaleString();
 }
 
+function chartAxisYen(value) {
+  const amount = Number(value || 0);
+  const abs = Math.abs(amount);
+  const sign = amount < 0 ? "-" : "";
+
+  if (abs >= 1000000) {
+    const scaled = abs / 1000000;
+    const formatted = scaled
+      .toFixed(scaled >= 10 || Number.isInteger(scaled) ? 0 : 1)
+      .replace(/\.0$/, "");
+    return `${sign}¥${formatted}M`;
+  }
+
+  if (abs >= 10000) {
+    const scaled = abs / 1000;
+    const formatted = scaled
+      .toFixed(scaled >= 100 || Number.isInteger(scaled) ? 0 : 1)
+      .replace(/\.0$/, "");
+    return `${sign}¥${formatted}K`;
+  }
+
+  return `${sign}¥${Math.round(abs).toLocaleString()}`;
+}
+
 function parsedChartValue(context) {
   const parsed = context.parsed;
   if (parsed && typeof parsed === "object") {
@@ -525,15 +552,37 @@ function parsedChartValue(context) {
   return parsed ?? 0;
 }
 
-function chartVerticalGradient(context, topColor, bottomColor) {
+function chartVerticalGradient(context, topColor, bottomColor, midColor = "") {
   const chart = context.chart;
   const area = chart.chartArea;
   if (!area) return topColor;
 
   const gradient = chart.ctx.createLinearGradient(0, area.top, 0, area.bottom);
   gradient.addColorStop(0, topColor);
+  if (midColor) gradient.addColorStop(0.58, midColor);
   gradient.addColorStop(1, bottomColor);
   return gradient;
+}
+
+function chartHasVisibleData(chart) {
+  return (chart.data?.datasets || []).some((dataset) =>
+    (dataset.data || []).some((value) => Math.abs(Number(value || 0)) > 0)
+  );
+}
+
+function roundedRectPath(ctx, x, y, width, height, radius) {
+  const safeRadius = Math.min(radius, width / 2, height / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + safeRadius, y);
+  ctx.lineTo(x + width - safeRadius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+  ctx.lineTo(x + width, y + height - safeRadius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  ctx.lineTo(x + safeRadius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+  ctx.lineTo(x, y + safeRadius);
+  ctx.quadraticCurveTo(x, y, x + safeRadius, y);
+  ctx.closePath();
 }
 
 function ledgerlyLineDataset(label, tone = "primary") {
@@ -548,29 +597,86 @@ function ledgerlyLineDataset(label, tone = "primary") {
       chartVerticalGradient(
         context,
         lineColors(tone).fillTop,
-        lineColors(tone).fillBottom
+        lineColors(tone).fillBottom,
+        lineColors(tone).fillMid
       ),
     pointBackgroundColor: ledgerlyChartTheme.panel,
     pointBorderColor: colors.border,
     pointBorderWidth: 2,
-    pointHoverBackgroundColor: colors.border,
-    pointHoverBorderColor: ledgerlyChartTheme.panel,
-    pointHoverBorderWidth: 2,
-    pointHoverRadius: 3.5,
+    pointHoverBackgroundColor: ledgerlyChartTheme.panel,
+    pointHoverBorderColor: colors.border,
+    pointHoverBorderWidth: 3,
+    pointHoverRadius: 5,
     pointRadius: 0,
-    pointHitRadius: 12,
-    borderWidth: 1.6,
+    pointHitRadius: 18,
+    borderWidth: 2.2,
+    hoverBorderWidth: 2.8,
     cubicInterpolationMode: "monotone",
-    tension: 0.35,
+    tension: 0.44,
     fill: true,
   };
 }
+
+const ledgerlyEmptyStatePlugin = {
+  id: "ledgerlyEmptyState",
+  afterDraw(chart, _args, options = {}) {
+    if (!options.message || chartHasVisibleData(chart)) return;
+
+    const area = chart.chartArea || {
+      left: 0,
+      right: chart.width,
+      top: 0,
+      bottom: chart.height,
+    };
+    const width = Math.min(260, Math.max(170, area.right - area.left - 24));
+    const height = options.detail ? 86 : 68;
+    const x = area.left + (area.right - area.left - width) / 2;
+    const y = area.top + (area.bottom - area.top - height) / 2;
+    const centerX = x + width / 2;
+    const centerY = y + height / 2;
+    const ctx = chart.ctx;
+
+    ctx.save();
+    roundedRectPath(ctx, x, y, width, height, 14);
+    ctx.fillStyle = colorAlpha(
+      ledgerlyChartTheme.primary,
+      ledgerlyChartTheme.mode === "dark" ? 0.08 : 0.055
+    );
+    ctx.fill();
+    ctx.strokeStyle = colorAlpha(
+      ledgerlyChartTheme.border,
+      ledgerlyChartTheme.mode === "dark" ? 0.85 : 0.9
+    );
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = ledgerlyChartTheme.text;
+    ctx.font = `700 13px ${ledgerlyChartTheme.sans}`;
+    ctx.fillText(options.message, centerX, centerY - (options.detail ? 12 : 0));
+
+    if (options.detail) {
+      ctx.fillStyle = ledgerlyChartTheme.muted;
+      ctx.font = `600 11px ${ledgerlyChartTheme.sans}`;
+      ctx.fillText(options.detail, centerX, centerY + 13);
+    }
+
+    ctx.restore();
+  },
+};
 
 function ledgerlyChartPlugins(showLegend = true, settings = {}) {
   const showPercent = Boolean(settings.showPercent);
   const legendPosition = settings.legendPosition || "bottom";
 
   return {
+    ledgerlyEmptyState: {
+      message: settings.emptyMessage || "",
+      detail: settings.emptyDetail || "",
+    },
     legend: {
       display: showLegend,
       position: legendPosition,
@@ -589,13 +695,18 @@ function ledgerlyChartPlugins(showLegend = true, settings = {}) {
       titleColor: ledgerlyChartTheme.tooltipTitle,
       bodyColor: ledgerlyChartTheme.tooltipBody,
       borderColor: ledgerlyChartTheme.tooltipBorder,
-      borderWidth: 1,
-      cornerRadius: 8,
+      borderWidth: 1.5,
+      cornerRadius: 10,
+      caretSize: 6,
+      caretPadding: 8,
       displayColors: true,
       boxPadding: 4,
-      padding: 9,
+      bodySpacing: 5,
+      titleMarginBottom: 7,
+      padding: 11,
+      usePointStyle: true,
       titleFont: { family: ledgerlyChartTheme.sans, size: 11.5, weight: "700" },
-      bodyFont: { family: ledgerlyChartTheme.mono, size: 11.5, weight: "500" },
+      bodyFont: { family: ledgerlyChartTheme.mono, size: 11.5, weight: "700" },
       callbacks: {
         label(context) {
           const label = context.dataset.label ? `${context.dataset.label}: ` : "";
@@ -642,7 +753,7 @@ function ledgerlyChartScales() {
         precision: 0,
         font: { family: ledgerlyChartTheme.sans, size: 10.5, weight: "500" },
         callback(value) {
-          return chartYen(value);
+          return chartAxisYen(value);
         },
       },
       beginAtZero: true,
@@ -651,14 +762,14 @@ function ledgerlyChartScales() {
   };
 }
 
-function ledgerlyDoughnutOptions() {
+function ledgerlyDoughnutOptions(settings = {}) {
   return {
     responsive: true,
     maintainAspectRatio: true,
     aspectRatio: 1,
-    cutout: "72%",
+    cutout: "76%",
     layout: { padding: 8 },
-    plugins: ledgerlyChartPlugins(true, { showPercent: true }),
+    plugins: ledgerlyChartPlugins(true, { showPercent: true, ...settings }),
     animation: { duration: 720, easing: "easeOutQuart" },
   };
 }
@@ -730,8 +841,8 @@ function applyLedgerlyChartTheme(chart) {
       dataset.borderColor = colors.border;
       dataset.pointBackgroundColor = theme.panel;
       dataset.pointBorderColor = colors.border;
-      dataset.pointHoverBackgroundColor = colors.border;
-      dataset.pointHoverBorderColor = theme.panel;
+      dataset.pointHoverBackgroundColor = theme.panel;
+      dataset.pointHoverBorderColor = colors.border;
     }
 
     if (dataset.ledgerlyPaletteType) {
@@ -743,7 +854,7 @@ function applyLedgerlyChartTheme(chart) {
     }
 
     if (dataset.ledgerlyCashflowBars) {
-      dataset.borderColor = [colorAlpha(theme.money, 0.44), colorAlpha(theme.danger, 0.44)];
+      dataset.borderColor = [colorAlpha(theme.chart2, 0.44), colorAlpha(theme.chart6, 0.44)];
     }
   });
 }
@@ -1105,9 +1216,13 @@ if (savedSection && document.getElementById(savedSection)) {
       maintainAspectRatio: false,
       interaction: { intersect: false, mode: "index" },
       layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
-      plugins: ledgerlyChartPlugins(false),
+      plugins: ledgerlyChartPlugins(false, {
+        emptyMessage: "No expenses yet",
+        emptyDetail: "Expense trends will appear here.",
+      }),
       scales: ledgerlyChartScales(),
     },
+    plugins: [ledgerlyEmptyStatePlugin],
   });
 
   const pieChart = new Chart(pieEl.getContext("2d"), {
@@ -1126,8 +1241,11 @@ if (savedSection && document.getElementById(savedSection)) {
         },
       ],
     },
-    plugins: [ledgerlyDoughnutCenterPlugin],
-    options: ledgerlyDoughnutOptions(),
+    plugins: [ledgerlyDoughnutCenterPlugin, ledgerlyEmptyStatePlugin],
+    options: ledgerlyDoughnutOptions({
+      emptyMessage: "No categories yet",
+      emptyDetail: "Expense mix will appear here.",
+    }),
   });
 
   function getVisibleItems() {
@@ -1366,9 +1484,13 @@ if (savedSection && document.getElementById(savedSection)) {
         maintainAspectRatio: false,
         interaction: { intersect: false, mode: "index" },
         layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
-        plugins: ledgerlyChartPlugins(false),
+        plugins: ledgerlyChartPlugins(false, {
+          emptyMessage: "No income yet",
+          emptyDetail: "Income trends will appear here.",
+        }),
         scales: ledgerlyChartScales(),
       },
+      plugins: [ledgerlyEmptyStatePlugin],
     });
 
     // Pie chart with dynamic categories (custom gets its own color)
@@ -1388,8 +1510,11 @@ if (savedSection && document.getElementById(savedSection)) {
           },
         ],
       },
-      plugins: [ledgerlyDoughnutCenterPlugin],
-      options: ledgerlyDoughnutOptions(),
+      plugins: [ledgerlyDoughnutCenterPlugin, ledgerlyEmptyStatePlugin],
+      options: ledgerlyDoughnutOptions({
+        emptyMessage: "No sources yet",
+        emptyDetail: "Income mix will appear here.",
+      }),
     });
 
     const short = (iso) => formatShortDate(iso);
@@ -1866,9 +1991,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       maintainAspectRatio: false,
       interaction: { intersect: false, mode: "index" },
       layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
-      plugins: ledgerlyChartPlugins(false),
+      plugins: ledgerlyChartPlugins(false, {
+        emptyMessage: "No spending yet",
+        emptyDetail: "Daily spend will appear here.",
+      }),
       scales: ledgerlyChartScales(),
     },
+    plugins: [ledgerlyEmptyStatePlugin],
   });
 
   const monthBar = new Chart(monthBarEl.getContext("2d"), {
@@ -1881,20 +2010,33 @@ document.addEventListener("DOMContentLoaded", async () => {
           ledgerlyCashflowBars: true,
           backgroundColor(context) {
             const income = context.dataIndex === 0;
+            const color = income ? ledgerlyChartTheme.chart2 : ledgerlyChartTheme.chart6;
             return chartVerticalGradient(
               context,
-              colorAlpha(income ? ledgerlyChartTheme.money : ledgerlyChartTheme.danger, 0.88),
-              colorAlpha(income ? ledgerlyChartTheme.money : ledgerlyChartTheme.danger, 0.42)
+              colorAlpha(color, 0.9),
+              colorAlpha(color, ledgerlyChartTheme.mode === "dark" ? 0.5 : 0.4),
+              colorAlpha(color, ledgerlyChartTheme.mode === "dark" ? 0.72 : 0.62)
+            );
+          },
+          hoverBackgroundColor(context) {
+            const income = context.dataIndex === 0;
+            const color = income ? ledgerlyChartTheme.chart2 : ledgerlyChartTheme.chart6;
+            return chartVerticalGradient(
+              context,
+              colorAlpha(color, 1),
+              colorAlpha(color, ledgerlyChartTheme.mode === "dark" ? 0.62 : 0.52),
+              colorAlpha(color, ledgerlyChartTheme.mode === "dark" ? 0.84 : 0.74)
             );
           },
           borderColor: [
-            colorAlpha(ledgerlyChartTheme.money, 0.44),
-            colorAlpha(ledgerlyChartTheme.danger, 0.44),
+            colorAlpha(ledgerlyChartTheme.chart2, 0.44),
+            colorAlpha(ledgerlyChartTheme.chart6, 0.44),
           ],
           borderWidth: 0,
-          borderRadius: 6,
+          borderRadius: 8,
           borderSkipped: false,
-          barPercentage: 0.58,
+          hoverBorderWidth: 0,
+          barPercentage: 0.54,
           categoryPercentage: 0.62,
         },
       ],
@@ -1903,13 +2045,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       responsive: true,
       maintainAspectRatio: false,
       layout: { padding: { top: 6, right: 8, bottom: 2, left: 2 } },
-      plugins: ledgerlyChartPlugins(false),
+      plugins: ledgerlyChartPlugins(false, {
+        emptyMessage: "No cashflow yet",
+        emptyDetail: "Income and expenses will appear here.",
+      }),
       scales: ledgerlyChartScales(),
     },
+    plugins: [ledgerlyEmptyStatePlugin],
   });
 
   function drawCatBars(totals) {
     catBarsEl.innerHTML = "";
+    const hasTotals = cats.some((c) => Number(totals[c] || 0) > 0);
+
+    if (!hasTotals) {
+      catBarsEl.innerHTML = `
+        <div class="cat-empty-state" role="status">
+          <strong>No category spend yet</strong>
+          <span>This month’s spending mix will appear here.</span>
+        </div>
+      `;
+      return;
+    }
+
     const max = Math.max(1, ...cats.map((c) => totals[c] || 0));
     const barAccents = {
       food: [ledgerlyChartTheme.chart2, colorAlpha(ledgerlyChartTheme.chart2, 0.72)],
