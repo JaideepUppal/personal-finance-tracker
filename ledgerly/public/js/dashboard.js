@@ -309,6 +309,36 @@ function getCategoryMeta(category, type = "expense") {
   };
 }
 
+const CATEGORY_ICON_COLORS = {
+  food: "var(--chart-2)",
+  rent: "var(--chart-3)",
+  travel: "var(--chart-1)",
+  shopping: "var(--chart-4)",
+  other: "var(--chart-8)",
+  "part-time": "var(--chart-2)",
+  allowance: "var(--chart-1)",
+  stipend: "var(--chart-3)",
+  scholarship: "var(--chart-5)",
+};
+
+function customCategoryIconColor(category = "") {
+  const hash = String(category || "custom")
+    .split("")
+    .reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  return hash % 2 ? "var(--chart-7)" : "var(--chart-6)";
+}
+
+function categoryIconColor(category = "") {
+  const normalized = String(category || "other").toLowerCase();
+  return CATEGORY_ICON_COLORS[normalized] || customCategoryIconColor(normalized);
+}
+
+function renderCategoryIcon(category, type = "expense") {
+  const meta = getCategoryMeta(category, type);
+  const color = categoryIconColor(category);
+  return `<div class="expense-icon" style="--category-icon-color: ${color};">${escapeHtml(meta.icon)}</div>`;
+}
+
 function renderCategoryPill(category, type = "expense") {
   const meta = getCategoryMeta(category, type);
   const tone = String(meta.tone || "custom").replace(/[^a-z0-9-]/g, "");
@@ -881,6 +911,22 @@ window.addEventListener("ledgerly:themechange", refreshLedgerlyCharts);
 const navItems = document.querySelectorAll(".nav-item");
 const sections = document.querySelectorAll(".content-section");
 
+function scrollActiveNavIntoView(sectionId) {
+  if (!window.matchMedia("(max-width: 900px)").matches) return;
+  const activeNav = Array.from(navItems).find(
+    (nav) => nav.getAttribute("data-section") === sectionId
+  );
+  if (!activeNav || typeof activeNav.scrollIntoView !== "function") return;
+
+  activeNav.scrollIntoView({
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth",
+    block: "nearest",
+    inline: "center",
+  });
+}
+
 function activateSection(sectionId) {
   navItems.forEach((nav) => {
     nav.classList.toggle(
@@ -895,6 +941,7 @@ function activateSection(sectionId) {
   });
 
   window.requestAnimationFrame(() => {
+    scrollActiveNavIntoView(sectionId);
     refreshLedgerlyCharts();
   });
 }
@@ -1000,14 +1047,13 @@ if (savedSection && document.getElementById(savedSection)) {
     const meta = getCategoryMeta(category, "expense");
     const safeTitle = escapeHtml(title || "Untitled");
     const safeLabel = escapeHtml(meta.label);
-    const safeIcon = escapeHtml(meta.icon);
 
     // Short visible date for the row (e.g., "Sep 25")
     const display = formatShortDate(now);
 
     item.innerHTML = `
     <div class="expense-info">
-      <div class="expense-icon">${safeIcon}</div>
+      ${renderCategoryIcon(category, "expense")}
       <div class="expense-details">
         <h4>${safeTitle}</h4>
         <p>${display} · ${safeLabel}</p>
@@ -1349,13 +1395,12 @@ if (savedSection && document.getElementById(savedSection)) {
     const meta = getCategoryMeta(category, "income");
     const safeTitle = escapeHtml(title || "Untitled");
     const safeLabel = escapeHtml(meta.label);
-    const safeIcon = escapeHtml(meta.icon);
 
     const display = formatShortDate(isoDate);
 
     item.innerHTML = `
       <div class="expense-info">
-        <div class="expense-icon">${safeIcon}</div>
+        ${renderCategoryIcon(category, "income")}
         <div class="expense-details">
           <h4>${safeTitle}</h4>
           <p>${display} · ${safeLabel}</p>
@@ -2151,6 +2196,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const heroMonthEl = document.getElementById("dashHeroMonth");
   const healthScoreEl = document.getElementById("dashHealthScore");
   const healthLabelEl = document.getElementById("dashHealthLabel");
+  const healthPanelEl = document.querySelector(".hero-health-panel");
   const heroNarrativeEl = document.getElementById("dashHeroNarrative");
   const savingsRateEl = document.getElementById("dashSavingsRate");
   const cashFlowEl = document.getElementById("dashCashFlow");
@@ -2372,17 +2418,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let healthLabel = "Waiting for data";
     let healthTone = "";
+    let healthPanelTone = "health-empty";
     if (healthScore !== null) {
       if (healthScore >= 82) {
         healthLabel = "Strong month";
+        healthPanelTone = "health-good";
       } else if (healthScore >= 65) {
         healthLabel = "Stable month";
+        healthPanelTone = "health-good";
       } else if (healthScore >= 50) {
         healthLabel = "Watch pressure";
         healthTone = "warning";
+        healthPanelTone = "health-warn";
       } else {
         healthLabel = "Needs attention";
         healthTone = "danger";
+        healthPanelTone = "health-danger";
       }
     }
 
@@ -2440,6 +2491,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     cashFlowEl?.classList.toggle("positive", snapshot.balance >= 0);
     healthLabelEl?.classList.remove("warning", "danger");
     if (healthTone) healthLabelEl?.classList.add(healthTone);
+    healthPanelEl?.classList.remove(
+      "health-empty",
+      "health-good",
+      "health-warn",
+      "health-danger"
+    );
+    healthPanelEl?.classList.add(healthPanelTone);
   }
 
   // Simple month-to-date vs last-month-to-date % change helper
@@ -2536,7 +2594,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       recentWrap.innerHTML = `
       <div class="expense-item">
         <div class="expense-info">
-          <div class="expense-icon">💳</div>
+          ${renderCategoryIcon("other", "expense")}
         <div class="expense-details">
           <h4>No expenses yet</h4>
           <p>Add some in Expense Tracking</p>
@@ -2572,10 +2630,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       row.dataset.category = cat;
       const safeTitle = escapeHtml(title);
       const safeLabel = escapeHtml(meta.label);
-      const safeIcon = escapeHtml(meta.icon);
       row.innerHTML = `
       <div class="expense-info">
-        <div class="expense-icon">${safeIcon}</div>
+        ${renderCategoryIcon(cat, "expense")}
         <div class="expense-details">
           <h4>${safeTitle}</h4>
           <p>${fmtShort(iso)} · ${safeLabel}</p>
@@ -2731,11 +2788,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       const meta = getCategoryMeta(category, "expense");
       const safeTitle = escapeHtml(title || "Expense");
       const safeLabel = escapeHtml(meta.label);
-      const safeIcon = escapeHtml(meta.icon);
 
       div.innerHTML = `
         <div class="expense-info">
-          <div class="expense-icon">${safeIcon}</div>
+          ${renderCategoryIcon(category, "expense")}
         <div class="expense-details">
           <h4>${safeTitle}</h4>
           <p>${display} · ${safeLabel}</p>

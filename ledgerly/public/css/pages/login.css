@@ -207,6 +207,7 @@ button {
   cursor: pointer;
 }
 
+a:focus-visible,
 button:focus-visible,
 input:focus-visible {
   outline: 3px solid var(--focus-ring);
@@ -242,6 +243,40 @@ a {
     border-color 160ms ease,
     color 160ms ease,
     transform 160ms ease;
+}
+
+.auth-back-link {
+  position: fixed;
+  top: var(--space-4);
+  left: var(--space-4);
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 var(--space-4);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: var(--shadow-xs);
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.auth-back-link:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.auth-back-link:active {
+  transform: translateY(1px);
 }
 
 .theme-toggle:hover {
@@ -761,16 +796,19 @@ form > button:active {
 }
 
 @media (max-width: 560px) {
+  .auth-back-link,
   .theme-toggle {
     top: var(--space-3);
-    right: var(--space-3);
-    width: 42px;
-    min-width: 42px;
-    padding: 0;
   }
 
-  .theme-toggle-text {
-    display: none;
+  .auth-back-link {
+    left: var(--space-3);
+    padding: 0 var(--space-3);
+  }
+
+  .theme-toggle {
+    right: var(--space-3);
+    padding: 0 var(--space-3);
   }
 
   .auth-shell {

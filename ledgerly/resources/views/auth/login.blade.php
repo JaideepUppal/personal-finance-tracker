@@ -11,6 +11,8 @@
 </head>
 <body>
 
+<a href="{{ route('landing') }}" class="auth-back-link">Back to home</a>
+
 <button class="theme-toggle auth-theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
     <span class="theme-toggle-icon" aria-hidden="true"></span>
     <span class="theme-toggle-text">Dark</span>

@@ -900,15 +900,53 @@ select:disabled {
 
 .hero-health-panel {
   grid-area: health;
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 164px;
   padding: var(--space-4);
   border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-left-color: var(--border-strong);
   border-radius: var(--radius);
   background: var(--surface-raised);
   box-shadow: var(--shadow-xs);
+}
+
+.hero-health-panel::after {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted-2);
+  content: "";
+}
+
+.hero-health-panel.health-good {
+  border-left-color: var(--positive);
+}
+
+.hero-health-panel.health-good::after {
+  background: var(--positive);
+}
+
+.hero-health-panel.health-warn {
+  border-left-color: var(--warning);
+}
+
+.hero-health-panel.health-warn::after {
+  background: var(--warning);
+}
+
+.hero-health-panel.health-danger {
+  border-left-color: var(--negative);
+}
+
+.hero-health-panel.health-danger::after {
+  background: var(--negative);
 }
 
 .health-label,
@@ -1628,16 +1666,22 @@ select:disabled {
 }
 
 .expense-icon {
+  --category-icon-color: var(--text-soft);
+
   display: grid;
   place-items: center;
   width: 36px;
   height: 36px;
   flex: 0 0 36px;
+  border: 1px solid color-mix(in srgb, var(--category-icon-color) 20%, transparent);
   border-radius: var(--radius-sm);
   background: var(--surface);
-  color: var(--text-soft);
+  background: color-mix(in srgb, var(--category-icon-color) 13%, var(--surface) 87%);
+  color: var(--category-icon-color);
+  font-family: var(--font-mono);
   font-size: 14px;
   font-weight: 700;
+  letter-spacing: 0;
 }
 
 .expense-details,
@@ -1777,7 +1821,11 @@ select:disabled {
 }
 
 .bill-chip {
-  min-height: 26px;
+  min-height: 22px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  letter-spacing: var(--tracking-wider);
 }
 
 .chip-paid {
@@ -2271,10 +2319,26 @@ select:disabled {
     z-index: 25;
     min-height: auto;
     overflow-x: auto;
+    overscroll-behavior-x: contain;
     padding: var(--space-3) var(--space-4);
     background: var(--header-bg);
     border-right: 0;
     border-bottom: 1px solid var(--border);
+    scrollbar-width: thin;
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 18px,
+      #000 calc(100% - 18px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      90deg,
+      transparent 0,
+      #000 18px,
+      #000 calc(100% - 18px),
+      transparent 100%
+    );
   }
 
   .sidebar-product {
@@ -2527,6 +2591,24 @@ select:disabled {
 
   .onboarding-actions {
     flex-direction: column-reverse;
+  }
+}
+
+@media (max-width: 560px) {
+  .header {
+    padding: var(--space-3);
+  }
+
+  .user-section {
+    gap: var(--space-2);
+  }
+
+  .theme-toggle {
+    padding: 0 var(--space-3);
+  }
+
+  .user-name {
+    display: none;
   }
 }
 
