@@ -32,7 +32,7 @@
       <option value="__custom__">Custom</option>
     </select>
     <button id="qExpAddBtn" class="filter-btn">Add</button>
-    <button id="qExpCancelBtn" class="filter-btn">Cancel</button>
+    <button id="qExpCancelBtn" class="filter-btn filter-btn-ghost">Cancel</button>
   </div>
 </div>
 

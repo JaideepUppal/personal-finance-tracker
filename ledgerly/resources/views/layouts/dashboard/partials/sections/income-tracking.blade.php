@@ -1,6 +1,6 @@
 <section id="income-tracking" class="content-section">
   <div class="section-heading">
-    <p class="section-kicker">Cash inflows</p>
+    <p class="section-kicker">Your income</p>
     <h1 class="section-title">Income Tracking</h1>
   </div>
 
@@ -17,7 +17,7 @@
   <div class="panel">
     <div class="panel-header">
       <div>
-        <p class="panel-kicker">Capture income</p>
+        <p class="panel-kicker">Add income</p>
       <h2 class="panel-title">Add Income</h2>
       </div>
     </div>
@@ -67,7 +67,7 @@
       <div class="panel-header">
         <div>
           <p class="panel-kicker">Trend view</p>
-        <h2 class="panel-title">Income Trend (Last 7 entries)</h2>
+        <h2 class="panel-title">Income Trend (Recent 7)</h2>
         </div>
       </div>
       <canvas id="incLineChart" role="img" aria-label="Income trend chart for recent income"></canvas>
@@ -76,7 +76,7 @@
     <div class="chart-container panel">
       <div class="panel-header">
         <div>
-          <p class="panel-kicker">Source mix</p>
+          <p class="panel-kicker">Income sources</p>
         <h2 class="panel-title">Source Breakdown</h2>
         </div>
       </div>
@@ -87,7 +87,7 @@
   <div class="panel">
     <div class="panel-header">
       <div>
-        <p class="panel-kicker">Ledger feed</p>
+        <p class="panel-kicker">Recent income</p>
       <h2 class="panel-title">Recent Income</h2>
       </div>
     </div>

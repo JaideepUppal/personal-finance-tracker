@@ -1,6 +1,6 @@
 <section id="saving-goals" class="content-section">
   <div class="section-heading">
-    <p class="section-kicker">Longer-term capital</p>
+    <p class="section-kicker">Saving goals</p>
     <h1 class="section-title">Saving Goals</h1>
   </div>
 
@@ -8,7 +8,7 @@
   <div class="panel">
     <div class="panel-header">
       <div>
-        <p class="panel-kicker">New objective</p>
+        <p class="panel-kicker">Add a goal</p>
       <h3 class="panel-title">Create a new goal</h3>
       </div>
     </div>

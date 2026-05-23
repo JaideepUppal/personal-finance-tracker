@@ -1,6 +1,6 @@
 <section id="analytics" class="content-section">
   <div class="section-heading">
-    <p class="section-kicker">AI analytics suite</p>
+    <p class="section-kicker">AI-powered insights</p>
     <h1 class="section-title">Analytics</h1>
   </div>
 
@@ -8,7 +8,7 @@
     <div id="aiMonthlyInsightsPanel" class="panel ai-feature-panel">
       <div class="panel-header ai-feature-header">
         <div>
-          <p class="panel-kicker">Monthly narrative</p>
+          <p class="panel-kicker">Monthly summary</p>
           <h2 class="panel-title">AI Monthly Spending Insights</h2>
           <p class="ai-coach-copy">Spot patterns in this month's income, spending, savings rate, and largest recent expenses.</p>
         </div>
@@ -57,7 +57,7 @@
   <div id="aiChatPanel" class="panel ai-chat-panel is-collapsed">
     <div class="panel-header ai-chat-header">
       <div>
-        <p class="panel-kicker">Contextual assistant</p>
+        <p class="panel-kicker">Ask a question</p>
         <h2 class="panel-title">AI Finance Chatbot</h2>
         <p class="ai-coach-copy">
           Ask focused questions about budgeting, spending habits, saving goals, and how to use Ledgerly.

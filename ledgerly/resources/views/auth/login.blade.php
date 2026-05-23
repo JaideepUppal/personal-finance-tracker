@@ -70,7 +70,7 @@
 
             <div class="auth-switch" role="group" aria-label="Choose authentication mode">
                 <button class="auth-switch-btn auth-switch-signin" id="signIn" type="button">Sign in</button>
-                <button class="auth-switch-btn auth-switch-signup" id="signUp" type="button">Create account</button>
+                <button class="auth-switch-btn auth-switch-signup" id="signUp" type="button">Create an account</button>
             </div>
 
             <div class="auth-forms">
@@ -80,7 +80,7 @@
                         @csrf
                         <div class="form-heading">
                             <h3>Sign in</h3>
-                            <span>Use your Ledgerly account to open the finance dashboard.</span>
+                            <span>Welcome back. Your dashboard is waiting.</span>
                         </div>
 
                         <div class="form-field">
@@ -112,10 +112,10 @@
 
                 <!-- Sign Up Form -->
                 <div class="form-container sign-up-container">
-                    <form method="POST" action="{{ route('signup') }}" aria-label="Create account form">
+                    <form method="POST" action="{{ route('signup') }}" aria-label="Create an account form">
                         @csrf
                         <div class="form-heading">
-                            <h3>Create account</h3>
+                            <h3>Create an account</h3>
                             <span>Start tracking spending, budgets, bills, savings, and AI guidance.</span>
                         </div>
 
@@ -157,7 +157,7 @@
                             </div>
                         @endif
 
-                        <button type="submit">Create account</button>
+                        <button type="submit">Create an account</button>
                     </form>
                 </div>
             </div>

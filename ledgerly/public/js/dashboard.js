@@ -989,16 +989,23 @@ if (savedSection && document.getElementById(savedSection)) {
   const catEl = document.getElementById("expCategory");
   const searchEl = document.getElementById("expSearch");
   const sortEl = document.getElementById("expSort");
+  const amountErrorEl = document.getElementById("expAmountError");
 
   amtEl.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
       const value = parseFloat(amtEl.value);
 
       if (value < 0) {
-        document.getElementById("expAmountError").style.display = "block";
+        amountErrorEl.style.display = "block";
       } else {
-        document.getElementById("expAmountError").style.display = "none";
+        amountErrorEl.style.display = "none";
       }
+    }
+  });
+
+  amtEl.addEventListener("input", () => {
+    if (Number(amtEl.value) >= 0) {
+      amountErrorEl.style.display = "none";
     }
   });
 
@@ -1358,8 +1365,15 @@ if (savedSection && document.getElementById(savedSection)) {
   const dateEl = document.getElementById("incDate");
   const searchEl = document.getElementById("incSearch");
   const catCustomEl = document.getElementById("incCategoryCustom");
+  const amountErrorEl = document.getElementById("incAmountError");
 
   if (!list || !totalEl) return;
+
+  amtEl?.addEventListener("input", () => {
+    if (Number(amtEl.value) >= 0 && amountErrorEl) {
+      amountErrorEl.style.display = "none";
+    }
+  });
 
   // Show / hide custom category input
   if (catEl && catCustomEl) {
@@ -2396,7 +2410,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sevenDayPulse = renderCashFlowPulse();
     const topCategoryLabel = snapshot.topCategory
       ? `${prettyCategory(snapshot.topCategory[0])} · ${yen(snapshot.topCategory[1])}`
-      : "No spend yet";
+      : "No spending yet";
 
     let healthScore = null;
     if (hasData) {
@@ -2473,7 +2487,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       budgetPressureEl,
       budgetPressure
         ? `${prettyCategory(budgetPressure.category)} at ${budgetPressure.pct}%`
-        : "No budgets set"
+        : "No budgets yet"
     );
     setText(
       billSignalEl,
@@ -2549,7 +2563,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!prev) return "—";
     const diff = ((cur - prev) / prev) * 100;
     const arrow = diff >= 0 ? "↑" : "↓";
-    return `${arrow} ${Math.abs(Math.round(diff))}% vs last MTD`;
+    return `${arrow} ${Math.abs(Math.round(diff))}% vs last month`;
   }
 
   function renderSummary() {
@@ -2597,7 +2611,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${renderCategoryIcon("other", "expense")}
         <div class="expense-details">
           <h4>No expenses yet</h4>
-          <p>Add some in Expense Tracking</p>
+          <p>Add your first expense in the Expenses section.</p>
           ${renderCategoryPill("other", "expense")}
         </div>
       </div>
@@ -2831,17 +2845,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             ${
               status !== "paid"
                 ? `
-              <div class="bill-status-wrapper">
-                <select class="bill-status-select"
-                  aria-label="Mark bill status"
-                  data-id="${escapeHtml(String(b.id))}">
-                  <option value="">Mark as</option>
-                  <option value="paid">Paid</option>
-                  <option value="due">Due Soon</option>
-                  <option value="overdue">Overdue</option>
-                  <option value="upcoming">Upcoming</option>
-                </select>
-              </div>`
+              <select class="bill-status-select"
+                aria-label="Mark bill status"
+                data-id="${escapeHtml(String(b.id))}">
+                <option value="">Mark as</option>
+                <option value="paid">Paid</option>
+                <option value="due">Due Soon</option>
+                <option value="overdue">Overdue</option>
+                <option value="upcoming">Upcoming</option>
+              </select>`
                 : ""
             }
             <button class="bill-remove" aria-label="Remove bill">×</button>
@@ -3032,7 +3044,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             class="filter-input sg-contrib-input"
             placeholder="Add amount (¥)"
           />
-          <button class="filter-btn sg-contrib-btn">Add</button>
+          <button class="filter-btn sg-contrib-btn">Add funds</button>
         </div>
       `;
       listEl.appendChild(card);
@@ -3108,7 +3120,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const amt = Number(input?.value || 0);
       if (!amt || amt <= 0) {
         e.target.textContent = "Enter amount";
-        setTimeout(() => (e.target.textContent = "Add"), 900);
+        setTimeout(() => (e.target.textContent = "Add funds"), 900);
         return;
       }
 

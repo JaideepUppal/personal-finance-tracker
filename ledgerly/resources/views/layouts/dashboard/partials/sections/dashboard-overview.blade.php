@@ -50,15 +50,7 @@
             <span><i class="pulse-dot expense" aria-hidden="true"></i>Spending</span>
           </div>
         </div>
-        <div id="dashCashFlowBars" class="cashflow-bars">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
+        <div id="dashCashFlowBars" class="cashflow-bars" aria-hidden="true"></div>
       </div>
     </div>
 
@@ -80,7 +72,7 @@
       </div>
       <div id="aiCoachError" class="ai-coach-error hidden" role="alert" aria-live="polite"></div>
       <div id="aiCoachOutput" class="ai-coach-output" aria-live="polite">
-        Your AI Finance Coach summary will appear here.
+        Press “Analyze my month” to get personalized suggestions based on your financial activity this month.
       </div>
     </div>
   </div>
@@ -127,23 +119,23 @@
   <div class="dashboard-insight-grid" aria-label="Monthly insight rail">
     <div class="insight-cell">
       <span class="insight-label">Top category</span>
-      <strong id="dashTopCategory">No spend yet</strong>
-      <p>Highest concentration this month.</p>
+      <strong id="dashTopCategory">No spending yet</strong>
+      <p>Where you spent the most this month.</p>
     </div>
     <div class="insight-cell">
       <span class="insight-label">Budget pressure</span>
-      <strong id="dashBudgetPressure">No budgets set</strong>
+      <strong id="dashBudgetPressure">No budgets yet</strong>
       <p>Closest category to its monthly limit.</p>
     </div>
     <div class="insight-cell">
       <span class="insight-label">Bill signal</span>
       <strong id="dashBillSignal">No recurring bills</strong>
-      <p>Recurring obligations needing attention.</p>
+      <p>Bills that are upcoming or overdue.</p>
     </div>
     <div class="insight-cell insight-cell-wide">
       <span class="insight-label">Smart next step</span>
       <strong id="dashRecommendation">Add your first transaction</strong>
-      <p>Ledgerly updates this recommendation as your data changes.</p>
+      <p>Based on your current activity.</p>
     </div>
   </div>
 

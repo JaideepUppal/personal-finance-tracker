@@ -1539,6 +1539,20 @@ select:disabled {
   box-shadow: var(--shadow-xs);
 }
 
+.filter-btn.filter-btn-ghost {
+  border-color: var(--border-strong);
+  background: var(--surface);
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.filter-btn.filter-btn-ghost:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary);
+  box-shadow: none;
+}
+
 .ai-feature-button,
 .ai-coach-button,
 .ai-chat-send {
@@ -2275,6 +2289,18 @@ select:disabled {
     grid-template-columns: 1fr;
   }
 
+  .ai-feature-header,
+  .ai-coach-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .ai-feature-button,
+  .ai-coach-button {
+    width: 100%;
+  }
+
   .ai-tools-grid,
   .summary-grid,
   .dashboard-insight-grid {
@@ -2283,6 +2309,11 @@ select:disabled {
 
   .add-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .add-row .filter-btn {
+    width: auto;
+    justify-self: start;
   }
 }
 
@@ -2434,6 +2465,26 @@ select:disabled {
   .add-btn {
     right: var(--space-4);
     bottom: var(--space-4);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .dashboard-hero {
+    grid-template-columns: minmax(0, 1fr) 160px;
+    grid-template-areas:
+      "copy health"
+      "metrics metrics"
+      "pulse pulse";
+    padding: var(--space-6);
+  }
+
+  .hero-metrics-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .summary-grid,
+  .dashboard-insight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

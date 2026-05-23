@@ -1,6 +1,6 @@
 <section id="expense-tracking" class="content-section">
   <div class="section-heading">
-    <p class="section-kicker">Transaction operations</p>
+    <p class="section-kicker">Your spending</p>
     <h1 class="section-title">Expense Tracking</h1>
   </div>
 
@@ -19,7 +19,7 @@
   <div class="panel">
     <div class="panel-header">
       <div>
-        <p class="panel-kicker">Capture spend</p>
+        <p class="panel-kicker">Add expense</p>
       <h2 class="panel-title">Add Expense</h2>
       </div>
     </div>
@@ -79,7 +79,7 @@
       <div class="panel-header">
         <div>
           <p class="panel-kicker">Trend view</p>
-        <h2 class="panel-title">Expense Trend (Last 7 entries)</h2>
+        <h2 class="panel-title">Spending Trend (Recent 7)</h2>
         </div>
       </div>
       <canvas id="expLineChart" role="img" aria-label="Expense trend chart for recent expenses"></canvas>
@@ -100,7 +100,7 @@
   <div class="panel">
     <div class="panel-header">
       <div>
-        <p class="panel-kicker">Ledger feed</p>
+        <p class="panel-kicker">Recent expenses</p>
       <h2 class="panel-title">Recent Expenses</h2>
       </div>
 

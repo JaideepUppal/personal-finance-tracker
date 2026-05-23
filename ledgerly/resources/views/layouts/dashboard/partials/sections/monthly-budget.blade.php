@@ -1,13 +1,13 @@
 <section id="monthly-budget" class="content-section">
   <div class="section-heading">
-    <p class="section-kicker">Planning controls</p>
+    <p class="section-kicker">Monthly budgets</p>
     <h1 class="section-title">Monthly Budget</h1>
   </div>
 
   <div class="filters-bar">
-    <span id="budTotalLimit" class="total-pill">Budget: ¥0</span>
-    <span id="budTotalSpent" class="total-pill">Spent: ¥0</span>
-    <span id="budTotalRemain" class="total-pill">Left: ¥0</span>
+    <span id="budTotalLimit" class="total-pill">Budget: —</span>
+    <span id="budTotalSpent" class="total-pill">Spent: —</span>
+    <span id="budTotalRemain" class="total-pill">Left: —</span>
   </div>
 
   <div class="panel">
@@ -46,7 +46,7 @@
 
   <div class="panel">
     <div class="budget-wrapper">
-      <p class="panel-kicker">Budget cockpit</p>
+      <p class="panel-kicker">Your budget limits</p>
       <h2 class="panel-title">Your Categories</h2>
     </div>
 
