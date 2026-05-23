@@ -10,30 +10,7 @@
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
-    <!-- Header -->
-    <header class="site-header">
-      <div class="site-header-inner">
-        <a href="{{ route('landing') }}" class="brand-logo">
-          <span class="brand-mark" aria-hidden="true">L</span>
-          <span>Ledgerly</span>
-        </a>
-        <nav class="nav-links">
-          <a class="nav-link" href="{{ route('products') }}">Products</a>
-          <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
-          <a class="nav-link" href="{{ route('pricing') }}">Pricing</a>
-          <a class="nav-link" href="{{ route('about') }}">About</a>
-          <a class="nav-link" href="{{ route('help') }}">Help</a>
-        </nav>
-        <div class="auth-actions">
-          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
-            <span class="theme-toggle-icon" aria-hidden="true"></span>
-            <span class="theme-toggle-text">Dark</span>
-          </button>
-          <a href="{{ route('login') }}" class="login-btn-link"><button class="login-btn">Log in</button></a>
-          <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link"><button class="signup-btn">Start free</button></a>
-        </div>
-      </div>
-    </header>
+    @include('layouts.landing.partials.header')
 
     <main id="main-content" class="page" tabindex="-1">
       <h1 class="page-title">Built for student finance</h1>
@@ -98,8 +75,6 @@
       </div>
     </main>
 
-    <footer class="page-footer">
-      <p class="footer-text">© {{ date('Y') }} Ledgerly.</p>
-    </footer>
+    @include('layouts.landing.partials.footer')
   </body>
 </html>

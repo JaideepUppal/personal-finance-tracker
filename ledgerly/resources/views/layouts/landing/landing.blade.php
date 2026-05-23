@@ -12,38 +12,7 @@
 
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
-    <!-- HEADER / NAV -->
-    <header class="site-header">
-      <div class="site-header-inner">
-        <div class="brand-logo">
-          <span class="brand-mark" aria-hidden="true">L</span>
-          <span>Ledgerly</span>
-        </div>
-
-        <nav class="nav-links" aria-label="Main navigation">
-            <a class="nav-link" href="{{ route('products') }}">Products</a>
-          <a class="nav-link" href="{{ route('solutions') }}">Solutions</a>
-          <a class="nav-link" href="{{ route('pricing') }}">Pricing</a>
-          <a class="nav-link" href="{{ route('about') }}">About</a>
-          <a class="nav-link" href="{{ route('help') }}">Help</a>
-        </nav>
-
-        <div class="auth-actions">
-          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode">
-            <span class="theme-toggle-icon" aria-hidden="true"></span>
-            <span class="theme-toggle-text">Dark</span>
-          </button>
-
-          <a href="{{route('login')}}" class="login-btn-link">
-            <button class="login-btn">Log in</button>
-          </a>
-
-          <a href="{{ route('login', ['mode' => 'signup']) }}" class="signup-btn-link">
-            <button class="signup-btn">Start free</button>
-          </a>
-        </div>
-      </div>
-    </header>
+    @include('layouts.landing.partials.header', ['brandLink' => false])
 
     <!-- HERO -->
     <main id="main-content" class="hero" tabindex="-1">
@@ -167,11 +136,6 @@
       </article>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="page-footer">
-      <p class="footer-text">
-        © {{ date('Y') }} Ledgerly. AI-powered finance platform built with Laravel.
-      </p>
-    </footer>
+    @include('layouts.landing.partials.footer', ['tagline' => 'AI-powered finance platform built with Laravel.'])
   </body>
 </html>
